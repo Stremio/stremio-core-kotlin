@@ -1,0 +1,58 @@
+buildscript {
+    ext {
+        stremio_core_android_profile = "debug"
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:7.0.3"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0"
+        classpath "org.mozilla.rust-android-gradle:plugin:0.9.0"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+apply plugin: "org.mozilla.rust-android-gradle.rust-android"
+
+android {
+    compileSdkVersion 31
+    ndkVersion "21.0.6113669"
+
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 31
+        versionCode 1
+        versionName "1.0.0"
+    }
+}
+
+cargo {
+    module = "./"
+    libname = "stremio_core_android"
+    targets = ["arm", "arm64", "x86"]
+    verbose = true
+    profile = rootProject.ext.has("stremio_core_android_profile") ? rootProject.ext.get("stremio_core_android_profile") : "debug"
+}
+
+dependencies {
+    implementation "androidx.core:core-ktx:1.7.0"
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == "javaPreCompileDebug" || task.name == "javaPreCompileRelease") {
+        task.dependsOn "cargoBuild"
+    }
+}
