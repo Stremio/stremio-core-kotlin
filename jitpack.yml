@@ -1,0 +1,4 @@
+before_install:
+  - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  - rustup toolchain install 1.47.0
+  - rustup default 1.47.0
