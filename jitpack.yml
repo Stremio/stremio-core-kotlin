@@ -3,3 +3,4 @@ before_install:
   - source $HOME/.cargo/env
   - rustup toolchain install 1.47.0
   - rustup default 1.47.0
+  - yes | sdkmanager "ndk;21.0.6113669" >/dev/null
