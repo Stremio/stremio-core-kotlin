@@ -101,6 +101,7 @@ pub enum KotlinClassName {
     CatalogWithFilters_SelectableExtra,
     CatalogWithFilters_SelectableExtraOption,
     CatalogWithFilters_SelectablePage,
+    LibraryByType,
     LibraryWithFilters,
     LibraryWithFilters_Selected,
     LibraryWithFilters_LibraryRequest,
@@ -330,6 +331,7 @@ impl KotlinClassName {
             KotlinClassName::CatalogWithFilters_SelectablePage => {
                 "com/stremio/core/models/CatalogWithFilters$SelectablePage"
             }
+            KotlinClassName::LibraryByType => "com/stremio/core/models/LibraryByType",
             KotlinClassName::LibraryWithFilters => "com/stremio/core/models/LibraryWithFilters",
             KotlinClassName::LibraryWithFilters_Selected => {
                 "com/stremio/core/models/LibraryWithFilters$Selected"

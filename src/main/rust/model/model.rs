@@ -1,5 +1,6 @@
 use crate::bridge::TryIntoKotlin;
 use crate::env::AndroidEnv;
+use crate::model::LibraryByType;
 use jni::objects::JObject;
 use jni::JNIEnv;
 use stremio_core::models::catalog_with_filters::CatalogWithFilters;
@@ -25,6 +26,7 @@ pub struct AndroidModel {
     pub continue_watching_preview: ContinueWatchingPreview,
     pub discover: CatalogWithFilters<MetaItemPreview>,
     pub library: LibraryWithFilters<NotRemovedFilter>,
+    pub library_by_type: LibraryByType,
     pub board: CatalogsWithExtra,
     pub search: CatalogsWithExtra,
     pub meta_details: MetaDetails,
@@ -34,18 +36,21 @@ pub struct AndroidModel {
 
 impl AndroidModel {
     pub fn new(profile: Profile, library: LibraryBucket) -> (AndroidModel, Effects) {
+        let ctx = Ctx::new(profile, library);
         let (continue_watching_preview, continue_watching_preview_effects) =
-            ContinueWatchingPreview::new(&library);
-        let (discover, discover_effects) = CatalogWithFilters::<MetaItemPreview>::new(&profile);
-        let (library_, library_effects) = LibraryWithFilters::<NotRemovedFilter>::new(&library);
+            ContinueWatchingPreview::new(&ctx.library);
+        let (discover, discover_effects) = CatalogWithFilters::<MetaItemPreview>::new(&ctx.profile);
+        let (library_, library_effects) = LibraryWithFilters::<NotRemovedFilter>::new(&ctx.library);
+        let (library_by_type, library_by_type_effects) = LibraryByType::new::<AndroidEnv>(&ctx);
         let (streaming_server, streaming_server_effects) =
-            StreamingServer::new::<AndroidEnv>(&profile);
+            StreamingServer::new::<AndroidEnv>(&ctx.profile);
         let model = AndroidModel {
-            ctx: Ctx::new(profile, library),
+            ctx,
             auth_link: Default::default(),
             continue_watching_preview,
             discover,
             library: library_,
+            library_by_type,
             board: Default::default(),
             search: Default::default(),
             meta_details: Default::default(),
@@ -56,6 +61,7 @@ impl AndroidModel {
             continue_watching_preview_effects
                 .join(discover_effects)
                 .join(library_effects)
+                .join(library_by_type_effects)
                 .join(streaming_server_effects),
         )
     }
@@ -69,6 +75,9 @@ impl AndroidModel {
             AndroidModelField::AuthLink => self.auth_link.try_into_kotlin(&(), env),
             AndroidModelField::Discover => self.discover.try_into_kotlin(&self.ctx, env),
             AndroidModelField::Library => self.library.try_into_kotlin(&"library".to_owned(), env),
+            AndroidModelField::LibraryByType => self
+                .library_by_type
+                .try_into_kotlin(&"library".to_owned(), env),
             AndroidModelField::ContinueWatchingPreview => {
                 self.continue_watching_preview.try_into_kotlin(&(), env)
             }

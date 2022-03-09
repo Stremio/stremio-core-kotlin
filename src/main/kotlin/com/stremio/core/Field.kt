@@ -6,6 +6,7 @@ enum class Field(val value: String) {
     ContinueWatchingPreview("continue_watching_preview"),
     Discover("discover"),
     Library("library"),
+    LibraryByType("library_by_type"),
     Board("board"),
     Search("search"),
     MetaDetails("meta_details"),

@@ -17,6 +17,7 @@ impl TryFromKotlin for AndroidModelField {
             "continue_watching_preview" => Ok(AndroidModelField::ContinueWatchingPreview),
             "discover" => Ok(AndroidModelField::Discover),
             "library" => Ok(AndroidModelField::Library),
+            "library_by_type" => Ok(AndroidModelField::LibraryByType),
             "board" => Ok(AndroidModelField::Board),
             "search" => Ok(AndroidModelField::Search),
             "meta_details" => Ok(AndroidModelField::MetaDetails),
