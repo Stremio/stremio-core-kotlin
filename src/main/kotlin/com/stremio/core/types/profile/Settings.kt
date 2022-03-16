@@ -8,12 +8,12 @@ data class Settings(
     val playInExternalPlayer: Boolean,
     val hardwareDecoding: Boolean,
     val subtitlesLanguage: String,
-    val subtitlesSize: UByte,
+    val subtitlesSize: Int,
     val subtitlesFont: String,
     val subtitlesBold: Boolean,
-    val subtitlesOffset: UByte,
+    val subtitlesOffset: Int,
     val subtitlesTextColor: String,
     val subtitlesBackgroundColor: String,
     val subtitlesOutlineColor: String,
-    val seekTimeDuration: UInt
+    val seekTimeDuration: Long
 )

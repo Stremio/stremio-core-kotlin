@@ -59,11 +59,11 @@ impl<'a> TryIntoKotlin<'a, ()> for Selected {
 impl<'a> TryIntoKotlin<'a, ()> for SeriesInfo {
     fn try_into_kotlin(&self, _: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
         let classes = AndroidEnv::kotlin_classes().unwrap();
-        let season = (self.season as i32).into();
-        let episode = (self.episode as i32).into();
+        let season = (self.season as i64).into();
+        let episode = (self.episode as i64).into();
         env.new_object(
             classes.get(&KotlinClassName::Video_SeriesInfo).unwrap(),
-            "(II)V",
+            "(JJ)V",
             &[season, episode],
         )
     }

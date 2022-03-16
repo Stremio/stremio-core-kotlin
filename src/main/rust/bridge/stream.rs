@@ -68,7 +68,7 @@ impl<'a> TryIntoKotlin<'a, ()> for StreamSource {
                     .auto_local(env);
                 let file_idx = match file_idx {
                     Some(file_idx) => {
-                        env.new_object("kotlin/UInt", "(I)V", &[(*file_idx as i32).into()])?
+                        env.new_object("java/lang/Integer", "(I)V", &[(*file_idx as i32).into()])?
                     }
                     _ => JObject::null(),
                 };
@@ -76,7 +76,7 @@ impl<'a> TryIntoKotlin<'a, ()> for StreamSource {
                 let announce = announce.try_into_kotlin(&(), env)?.auto_local(env);
                 env.new_object(
                     classes.get(&KotlinClassName::StreamSource_Torrent).unwrap(),
-                    "(Ljava/lang/String;Lkotlin/UInt;Ljava/util/List;)V",
+                    "(Ljava/lang/String;Ljava/lang/Integer;Ljava/util/List;)V",
                     &[
                         info_hash.as_obj().into(),
                         file_idx.as_obj().into(),

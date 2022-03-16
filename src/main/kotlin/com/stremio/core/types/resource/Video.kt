@@ -13,7 +13,7 @@ data class Video(
 //    val trailerStreams: List<Stream>,
 ) {
     data class SeriesInfo(
-        val season: UInt,
-        val episode: UInt
+        val season: Long,
+        val episode: Long
     )
 }

@@ -3,6 +3,8 @@ use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
 use jni::objects::JObject;
 use jni::JNIEnv;
+use std::cmp;
+use std::convert::TryFrom;
 use stremio_core::types::profile::{Auth, GDPRConsent, Profile, Settings, User};
 use url::Url;
 
@@ -118,9 +120,9 @@ impl TryFromKotlin for Settings {
             .auto_local(env);
         let subtitles_language = String::try_from_kotlin(subtitles_language.as_obj(), env)?;
         let subtitles_size = env
-            .call_method(value, "getSubtitlesSize-w2LRezQ", "()B", &[])?
-            .b()?;
-        let subtitles_size = subtitles_size as u8;
+            .call_method(value, "getSubtitlesSize", "()I", &[])?
+            .i()?;
+        let subtitles_size = u8::try_from(cmp::max(subtitles_size, 0)).unwrap_or(u8::MAX);
         let subtitles_font = env
             .call_method(
                 value,
@@ -135,9 +137,9 @@ impl TryFromKotlin for Settings {
             .call_method(value, "getSubtitlesBold", "()Z", &[])?
             .z()?;
         let subtitles_offset = env
-            .call_method(value, "getSubtitlesOffset-w2LRezQ", "()B", &[])?
-            .b()?;
-        let subtitles_offset = subtitles_offset as u8;
+            .call_method(value, "getSubtitlesOffset", "()I", &[])?
+            .i()?;
+        let subtitles_offset = u8::try_from(cmp::max(subtitles_offset, 0)).unwrap_or(u8::MAX);
         let subtitles_text_color = env
             .call_method(
                 value,
@@ -171,9 +173,9 @@ impl TryFromKotlin for Settings {
         let subtitles_outline_color =
             String::try_from_kotlin(subtitles_outline_color.as_obj(), env)?;
         let seek_time_duration = env
-            .call_method(value, "getSeekTimeDuration-pVg5ArA", "()I", &[])?
-            .i()?;
-        let seek_time_duration = seek_time_duration as u32;
+            .call_method(value, "getSeekTimeDuration", "()J", &[])?
+            .j()?;
+        let seek_time_duration = u32::try_from(cmp::max(seek_time_duration, 0)).unwrap_or(u32::MAX);
         Ok(Settings {
             interface_language,
             streaming_server_url,
@@ -215,13 +217,13 @@ impl<'a> TryIntoKotlin<'a, ()> for Settings {
             .subtitles_language
             .try_into_kotlin(&(), env)?
             .auto_local(env);
-        let subtitles_size = self.subtitles_size.into();
+        let subtitles_size = (self.subtitles_size as i32).into();
         let subtitles_font = self
             .subtitles_font
             .try_into_kotlin(&(), env)?
             .auto_local(env);
         let subtitles_bold = self.subtitles_bold.into();
-        let subtitles_offset = self.subtitles_offset.into();
+        let subtitles_offset = (self.subtitles_offset as i32).into();
         let subtitles_text_color = self
             .subtitles_text_color
             .try_into_kotlin(&(), env)?
@@ -234,11 +236,11 @@ impl<'a> TryIntoKotlin<'a, ()> for Settings {
             .subtitles_outline_color
             .try_into_kotlin(&(), env)?
             .auto_local(env);
-        let seek_time_duration = (self.seek_time_duration as i32).into();
+        let seek_time_duration = (self.seek_time_duration as i64).into();
         env.new_object(
             classes.get(&KotlinClassName::Settings).unwrap(),
             format!(
-                "(L{};L{};ZZZZL{};BL{};ZBL{};L{};L{};I)V",
+                "(L{};L{};ZZZZL{};IL{};ZIL{};L{};L{};J)V",
                 KotlinClassName::String.value(),
                 KotlinClassName::String.value(),
                 KotlinClassName::String.value(),
