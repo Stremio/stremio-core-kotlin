@@ -3,6 +3,7 @@ use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
 use jni::objects::JObject;
 use jni::JNIEnv;
+use std::cmp;
 use std::convert::TryFrom;
 use std::num::NonZeroUsize;
 use stremio_core::models::library_with_filters::{
@@ -44,14 +45,9 @@ impl TryFromKotlin for LibraryRequest {
             .l()?
             .auto_local(env);
         let sort = Sort::try_from_kotlin(sort.as_obj(), env)?;
-        let page = env
-            .call_method(request, "getPage-pVg5ArA", "()I", &[])?
-            .i()?;
-        let page = usize::try_from(page).unwrap_or(usize::MAX);
-        let page = LibraryRequestPage(
-            NonZeroUsize::new(page)
-                .unwrap_or_else(|| panic!("Invalid LibraryRequest.page: {}", page)),
-        );
+        let page = env.call_method(request, "getPage", "()J", &[])?.j()?;
+        let page = usize::try_from(cmp::max(page, 1)).unwrap_or(usize::MAX);
+        let page = LibraryRequestPage(NonZeroUsize::new(page).unwrap());
         Ok(LibraryRequest { r#type, sort, page })
     }
 }
@@ -113,13 +109,13 @@ impl<'a> TryIntoKotlin<'a, ()> for LibraryRequest {
         let classes = AndroidEnv::kotlin_classes().unwrap();
         let r#type = self.r#type.try_into_kotlin(&(), env)?.auto_local(env);
         let sort = self.sort.try_into_kotlin(&(), env)?.auto_local(env);
-        let page = i32::try_from(self.page.0.get()).unwrap_or(i32::MAX).into();
+        let page = i64::try_from(self.page.0.get()).unwrap_or(i64::MAX).into();
         env.new_object(
             classes
                 .get(&KotlinClassName::LibraryWithFilters_LibraryRequest)
                 .unwrap(),
             format!(
-                "(Ljava/lang/String;L{};I)V",
+                "(Ljava/lang/String;L{};J)V",
                 KotlinClassName::LibraryWithFilters_Sort.value()
             ),
             &[r#type.as_obj().into(), sort.as_obj().into(), page],

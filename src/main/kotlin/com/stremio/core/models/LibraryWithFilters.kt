@@ -15,7 +15,7 @@ data class LibraryWithFilters(
     data class LibraryRequest(
         val type: String?,
         val sort: Sort,
-        val page: UInt
+        val page: Long
     )
 
     enum class Sort(val value: String) {
