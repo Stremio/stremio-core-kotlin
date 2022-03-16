@@ -15,5 +15,5 @@ data class Settings(
     val subtitlesTextColor: String,
     val subtitlesBackgroundColor: String,
     val subtitlesOutlineColor: String,
-    val seekTimeDuration: UInt
+    val seekTimeDuration: Long
 )
