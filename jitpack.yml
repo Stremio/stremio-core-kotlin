@@ -10,3 +10,5 @@ before_install:
   - rustup target add i686-linux-android
   - rustup target add x86_64-linux-android
   - yes | sdkmanager "ndk;21.0.6113669" >/dev/null
+  - yes | sdkmanager "cmake;3.10.2.4988404" >/dev/null
+  - export PATH=$PATH:$ANDROID_HOME/cmake/3.10.2.4988404/bin
