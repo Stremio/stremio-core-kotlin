@@ -1,4 +1,5 @@
 use crate::bridge::{TryFromKotlin, TryIntoKotlin};
+use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
 use jni::objects::JObject;
 use jni::JNIEnv;
@@ -6,7 +7,12 @@ use jni::JNIEnv;
 impl<'a, T: TryIntoKotlin<'a, U>, U> TryIntoKotlin<'a, U> for Vec<T> {
     #[inline]
     fn try_into_kotlin(&self, args: &U, env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let list = env.new_object("java/util/ArrayList", "()V", &[])?;
+        let classes = AndroidEnv::kotlin_classes().unwrap();
+        let list = env.new_object(
+            classes.get(&KotlinClassName::ArrayList).unwrap(),
+            "()V",
+            &[],
+        )?;
         let list = env.get_list(list)?;
         for item in self.iter() {
             let item = item.try_into_kotlin(args, env)?.auto_local(env);

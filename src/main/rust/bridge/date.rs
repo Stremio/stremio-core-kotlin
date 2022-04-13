@@ -1,5 +1,5 @@
 use crate::bridge::{TryFromKotlin, TryIntoKotlin};
-use crate::env::KotlinClassName;
+use crate::env::{AndroidEnv, KotlinClassName};
 use chrono::{DateTime, TimeZone, Utc};
 use jni::objects::JObject;
 use jni::JNIEnv;
@@ -7,8 +7,9 @@ use jni::JNIEnv;
 impl<'a> TryIntoKotlin<'a, ()> for DateTime<Utc> {
     #[inline]
     fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
+        let classes = AndroidEnv::kotlin_classes().unwrap();
         env.new_object(
-            KotlinClassName::Date.value(),
+            classes.get(&KotlinClassName::Date).unwrap(),
             "(J)V",
             &[self.timestamp_millis().into()],
         )

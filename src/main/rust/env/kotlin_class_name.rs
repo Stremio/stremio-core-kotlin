@@ -7,7 +7,10 @@ use strum_macros::EnumIter;
 #[allow(non_camel_case_types)]
 pub enum KotlinClassName {
     String,
+    Integer,
+    Double,
     Date,
+    ArrayList,
     Pair,
     Core,
     Storage_Result,
@@ -153,7 +156,10 @@ impl KotlinClassName {
     pub fn value(&self) -> &str {
         match self {
             KotlinClassName::String => "java/lang/String",
+            KotlinClassName::Integer => "java/lang/Integer",
+            KotlinClassName::Double => "java/lang/Double",
             KotlinClassName::Date => "java/util/Date",
+            KotlinClassName::ArrayList => "java/util/ArrayList",
             KotlinClassName::Pair => "kotlin/Pair",
             KotlinClassName::Core => "com/stremio/core/Core",
             KotlinClassName::Storage_Result => "com/stremio/core/Storage$Result",

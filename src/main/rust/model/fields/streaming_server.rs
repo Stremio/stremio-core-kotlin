@@ -119,7 +119,11 @@ impl<'a> TryIntoKotlin<'a, ()> for StreamingServerSettings {
             .try_into_kotlin(&(), env)?
             .auto_local(env);
         let cache_size = match self.cache_size {
-            Some(cache_size) => env.new_object("java/lang/Double", "(D)V", &[cache_size.into()])?,
+            Some(cache_size) => env.new_object(
+                classes.get(&KotlinClassName::Double).unwrap(),
+                "(D)V",
+                &[cache_size.into()],
+            )?,
             _ => JObject::null(),
         };
         let cache_size = env.auto_local(cache_size);

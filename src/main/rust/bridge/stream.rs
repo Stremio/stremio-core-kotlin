@@ -67,9 +67,11 @@ impl<'a> TryIntoKotlin<'a, ()> for StreamSource {
                     .try_into_kotlin(&(), env)?
                     .auto_local(env);
                 let file_idx = match file_idx {
-                    Some(file_idx) => {
-                        env.new_object("java/lang/Integer", "(I)V", &[(*file_idx as i32).into()])?
-                    }
+                    Some(file_idx) => env.new_object(
+                        classes.get(&KotlinClassName::Integer).unwrap(),
+                        "(I)V",
+                        &[(*file_idx as i32).into()],
+                    )?,
                     _ => JObject::null(),
                 };
                 let file_idx = file_idx.auto_local(env);
