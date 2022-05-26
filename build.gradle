@@ -1,6 +1,8 @@
 buildscript {
     ext {
         stremio_core_android_profile = "debug"
+        pbandkVersion = "0.14.0"
+        protobufVersion = "3.21.0"
     }
 
     repositories {
@@ -10,9 +12,10 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.3"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0"
+        classpath "com.android.tools.build:gradle:7.0.4"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
         classpath "org.mozilla.rust-android-gradle:plugin:0.9.0"
+        classpath "com.google.protobuf:protobuf-gradle-plugin:0.8.18"
     }
 }
 
@@ -26,6 +29,7 @@ allprojects {
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 apply plugin: "org.mozilla.rust-android-gradle.rust-android"
+apply plugin: "com.google.protobuf"
 
 android {
     compileSdkVersion 31
@@ -49,6 +53,31 @@ cargo {
 
 dependencies {
     implementation "androidx.core:core-ktx:1.7.0"
+    implementation "pro.streem.pbandk:pbandk-runtime:$pbandkVersion"
+}
+
+protobuf {
+    generatedFilesBaseDir = "$projectDir/src"
+    protoc {
+        artifact = "com.google.protobuf:protoc:$protobufVersion"
+    }
+    plugins {
+        pbandk {
+            artifact = "pro.streem.pbandk:protoc-gen-pbandk-jvm:$pbandkVersion:jvm8@jar"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove "java"
+            }
+            task.plugins {
+                pbandk {
+                    option "kotlin_package=com.stremio.core.v1"
+                }
+            }
+        }
+    }
 }
 
 tasks.whenTaskAdded { task ->

@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package stremio.core.v1;
+
+message Stream {
+  oneof source {
+    Url url = 1;
+    YouTube youtube = 2;
+    Torrent torrent = 3;
+    External external = 4;
+    PlayerFrame player_frame = 5;
+  }
+  optional string name = 6;
+  optional string description = 7;
+  optional string thumbnail = 8;
+  //    repeated Subtitle subtitles = 9;
+  StreamBehaviorHints behavior_hints = 10;
+  StreamDeepLinks deep_links = 11;
+
+  message Url {
+    string url = 1;
+  }
+
+  message YouTube {
+    string yt_id = 1;
+  }
+
+  message Torrent {
+    string info_hash = 1;
+    optional int32 file_idx = 2;
+    repeated string announce = 3;
+  }
+
+  message External {
+    string external_url = 1;
+  }
+
+  message PlayerFrame {
+    string player_frame_url = 1;
+  }
+}
+
+message StreamBehaviorHints {
+  bool not_web_ready = 1;
+  optional string binge_group = 2;
+  repeated string country_whitelist = 3;
+  map<string, string> headers = 4;
+}
+
+message StreamDeepLinks {
+  string player = 1;
+  ExternalPlayerLink external_player = 2;
+
+  message ExternalPlayerLink {
+    string href = 1;
+    optional string download = 2;
+  }
+}

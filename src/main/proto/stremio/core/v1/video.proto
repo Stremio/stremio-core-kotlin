@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package stremio.core.v1;
+
+import "google/protobuf/timestamp.proto";
+import "stremio/core/v1/stream.proto";
+
+message Video {
+  string id = 1;
+  string title = 2;
+  optional google.protobuf.Timestamp released = 3;
+  optional string overview = 4;
+  optional string thumbnail = 5;
+  repeated Stream streams = 6;
+  optional SeriesInfo seriesInfo = 7;
+
+  message SeriesInfo {
+    int64 season = 1;
+    int64 episode = 2;
+  }
+}

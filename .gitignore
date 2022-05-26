@@ -1,3 +1,5 @@
 /build
 /target
 /.gradle
+/src/debug
+/src/release
