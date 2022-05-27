@@ -1,12 +1,15 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
+use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
 use jni::objects::JObject;
 use jni::JNIEnv;
+use prost::Message;
 use stremio_core::models::catalogs_with_extra::{CatalogsWithExtra, Selected};
 use stremio_core::models::common::{Loadable, ResourceError};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::ExtraValue;
+use crate::protobuf::stremio::core;
+use crate::protobuf::stremio::core::models;
 
 impl TryFromKotlin for Selected {
     fn try_from_kotlin<'a>(selected: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
@@ -83,5 +86,19 @@ impl<'a> TryIntoKotlin<'a, Ctx> for CatalogsWithExtra {
             ),
             &[selected.as_obj().into(), catalogs.as_obj().into()],
         )
+    }
+}
+impl ToProtobuf<Ctx> for CatalogsWithExtra {
+    fn to_protobuf(&self, args: &Ctx) -> Vec<u8> {
+        let selected = self.selected.map(|s|
+            models::catalogs_with_extra::Selected {
+                extra: vec![]
+            }
+        );
+        let catalogs_with_extra = models::CatalogsWithExtra {
+            selected,
+            catalogs: vec![]
+        };
+        return catalogs_with_extra.encode_to_vec();
     }
 }

@@ -10,11 +10,7 @@ import "stremio/core/types/meta_item.proto";
 
 message CatalogsWithExtra {
   optional Selected selected = 1;
-  oneof content {
-    Loading loading = 2;
-    Error error = 3;
-    Catalog catalog = 4;
-  }
+  repeated Catalog catalogs = 2;
 
   message Selected {
     repeated stremio.core.types.ExtraValue extra = 1;
@@ -22,5 +18,13 @@ message CatalogsWithExtra {
 }
 
 message Catalog {
+  oneof content {
+    Loading loading = 1;
+    Error error = 2;
+    Metas metas = 3;
+  }
+}
+
+message Metas {
   repeated stremio.core.types.MetaItem items = 1;
 }

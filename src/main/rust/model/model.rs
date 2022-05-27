@@ -1,8 +1,9 @@
-use crate::bridge::TryIntoKotlin;
+use crate::bridge::{ToProtobuf, TryIntoKotlin};
 use crate::env::AndroidEnv;
 use crate::model::LibraryByType;
 use jni::objects::JObject;
 use jni::JNIEnv;
+use prost::Message;
 use stremio_core::models::catalog_with_filters::CatalogWithFilters;
 use stremio_core::models::catalogs_with_extra::CatalogsWithExtra;
 use stremio_core::models::continue_watching_preview::ContinueWatchingPreview;
@@ -85,6 +86,15 @@ impl AndroidModel {
             AndroidModelField::Search => self.search.try_into_kotlin(&self.ctx, env),
             AndroidModelField::MetaDetails => self.meta_details.try_into_kotlin(&self.ctx, env),
             AndroidModelField::StreamingServer => self.streaming_server.try_into_kotlin(&(), env),
+        }
+    }
+
+    pub fn get_state_binary<'a>(
+        &self,
+        field: &AndroidModelField,
+    ) -> Vec<u8> {
+        match field {
+            AndroidModelField::Board => self.board.to_protobuf(&self.ctx)
         }
     }
 }

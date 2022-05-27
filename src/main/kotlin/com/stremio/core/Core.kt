@@ -5,9 +5,11 @@ import com.stremio.core.proto.types.resource.Video
 import com.stremio.core.runtime.EnvError
 import com.stremio.core.runtime.RuntimeEvent
 import com.stremio.core.runtime.msg.Action
+import pbandk.Message
 import pbandk.decodeFromByteArray
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.full.companionObjectInstance
 
 object Core {
     init {
@@ -34,11 +36,15 @@ object Core {
 
     external fun dispatch(action: Action, field: Field?)
 
-    private external fun getSeriesInfoBinary(): ByteArray
+    external fun getSeriesInfoBinary(): ByteArray
 
-    fun getSeriesInfo(): Video.SeriesInfo {
+    external fun getStateBinary(field: Field): ByteArray
+
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T : Message> getProtobufState(field: Field): T {
         val protobuf = getSeriesInfoBinary()
-        return Video.SeriesInfo.decodeFromByteArray(protobuf)
+        val companion = T::class.companionObjectInstance as Message.Companion<T>
+        return companion.decodeFromByteArray(protobuf)
     }
 
     @JvmStatic

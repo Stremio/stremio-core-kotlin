@@ -162,6 +162,28 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getState(
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateBinary(
+    env: JNIEnv,
+    _class: JClass,
+    field: JObject,
+) -> jobject {
+    let field = AndroidModelField::try_from_kotlin(field, &env)
+        .exception_describe(&env)
+        .expect("AndroidModelField convert failed");
+    let runtime = RUNTIME.read().expect("RUNTIME read failed");
+    let runtime = runtime
+        .as_ref()
+        .expect("RUNTIME not initialized")
+        .as_ref()
+        .expect("RUNTIME not initialized");
+    let model = runtime.model().expect("model read failed");
+    let message_buf = model.get_state_binary(&field).encode_to_vec();
+    env.byte_array_from_slice(&message_buf)
+        .exception_describe(&env)
+        .expect("state convert failed")
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn Java_com_stremio_core_Core_getSeriesInfoBinary(
     env: JNIEnv,
     _class: JClass
