@@ -1354,6 +1354,7 @@ dependencies = [
  "auto_impl",
  "base64",
  "boolinator",
+ "bytes",
  "cfg-if 0.1.10",
  "chrono",
  "either",

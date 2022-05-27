@@ -1,9 +1,10 @@
 use glob::glob;
 
 fn main() {
-    std::env::set_var("OUT_DIR", "./src/rust/generated");
-    for path in glob("src/main/proto/**/*.proto").unwrap().filter_map(Result::ok) {
-        println!("Generating {}", path.display());
-        prost_build::compile_protos(&[path], &["src/main/proto"]).expect("Expect proto file");
-    }
+    // let proto_paths = glob("src/main/proto/**/*.proto").unwrap()
+    //     .filter_map(Result::ok)
+    //     .collect::<Vec<_>>();
+    // prost_build::compile_protos(&proto_paths, &["src/main/proto/"])
+    //     .expect("Protobuf files generated");
+    prost_build::compile_protos(&["src/main/proto/stremio/core/types/video.proto"], &["src/main/proto/"]).expect("Expect proto file");
 }
