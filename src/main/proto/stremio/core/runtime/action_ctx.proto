@@ -29,7 +29,7 @@ message ActionCtx {
   message Logout {
   }
   message UpdateSettings {
-    stremio.core.types.Settings args = 1;
+    stremio.core.types.Profile.Settings args = 1;
   }
   message AddToLibrary {
     stremio.core.types.MetaItem args = 1;

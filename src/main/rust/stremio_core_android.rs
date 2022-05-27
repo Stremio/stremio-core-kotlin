@@ -19,6 +19,8 @@ use stremio_core::runtime::msg::Action;
 use stremio_core::runtime::{Env, EnvError, Runtime, RuntimeAction};
 use stremio_core::types::library::LibraryBucket;
 use stremio_core::types::profile::Profile;
+use stremio_core::types::resource::SeriesInfo;
+use crate::stremio;
 
 lazy_static! {
     static ref RUNTIME: RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, EnvError>>> =
@@ -157,4 +159,21 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getState(
         .exception_describe(&env)
         .expect("state convert failed")
         .into_inner()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_stremio_core_Core_getSeriesInfo(
+    env: JNIEnv,
+    _class: JClass
+) -> jobject {
+    let series_info = stremio::core::types::video::SeriesInfo {
+        season: 1,
+        episode: 1
+    };
+    let mut buf = Vec::new();
+    buf.reserve(series_info.encoded_len());
+    series_info.encode(&mut buf).unwrap();
+    let series_info = buf.try_into_kotlin(&(), &env)?
+        .auto_local(&env);
+    series_info.as_obj().into()
 }

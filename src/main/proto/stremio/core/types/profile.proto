@@ -8,24 +8,24 @@ message Profile {
   optional Auth auth = 1;
   // repeated Descriptor addons = 2;
   Settings settings = 3;
-}
 
-message Settings {
-  string interfaceLanguage = 1;
-  string streamingServerUrl = 2;
-  bool bingeWatching = 3;
-  bool playInBackground = 4;
-  bool playInExternalPlayer = 5;
-  bool hardwareDecoding = 6;
-  string subtitlesLanguage = 7;
-  int32 subtitlesSize = 8;
-  string subtitlesFont = 9;
-  bool subtitlesBold = 10;
-  int32 subtitlesOffset = 11;
-  string subtitlesTextColor = 12;
-  string subtitlesBackgroundColor = 13;
-  string subtitlesOutlineColor = 14;
-  int64 seekTimeDuration = 15;
+  message Settings {
+    string interface_language = 1;
+    string streaming_server_url = 2;
+    bool binge_watching = 3;
+    bool play_in_background = 4;
+    bool play_in_external_player = 5;
+    bool hardware_decoding = 6;
+    string subtitles_language = 7;
+    int32 subtitles_size = 8;
+    string subtitles_font = 9;
+    bool subtitles_bold = 10;
+    int32 subtitles_offset = 11;
+    string subtitles_text_color = 12;
+    string subtitles_background_color = 13;
+    string subtitles_outline_color = 14;
+    int64 seek_time_duration = 15;
+  }
 }
 
 message Auth{

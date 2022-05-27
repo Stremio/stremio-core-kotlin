@@ -80,7 +80,7 @@ message Event {
     string id = 2;
   }
   message SettingsUpdated {
-    stremio.core.types.Settings settings = 1;
+    stremio.core.types.Profile.Settings settings = 1;
   }
   message LibraryItemAdded {
     string id = 1;
