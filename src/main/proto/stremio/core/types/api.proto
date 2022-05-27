@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package stremio.core.types;
+
+option java_package = "com.stremio.core.proto.types.api";
+
+import "google/protobuf/timestamp.proto";
+import "stremio/core/types/profile.proto";
+
+message AuthRequest {
+  oneof request {
+    Login login = 1;
+    LoginWithToken login_with_token = 2;
+    Register register = 3;
+  }
+
+  message Login {
+    string email = 1;
+    string password = 2;
+    bool facebook = 3;
+  }
+
+  message LoginWithToken {
+    string token = 1;
+  }
+
+  message Register {
+    string email = 1;
+    string password = 2;
+    GDPRConsentRequest gdprConsentRequest = 3;
+  }
+}
+
+message GDPRConsentRequest {
+  GDPRConsent gdprConsent = 1;
+  google.protobuf.Timestamp time = 2;
+  string from = 3;
+}
+
+message LinkAuthKey{
+  string auth_key = 1;
+}
+
+message LinkCodeResponse {
+  string code = 1;
+  string link = 2;
+  string qrcode = 3;
+}
+

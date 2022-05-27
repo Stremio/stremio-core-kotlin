@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package stremio.core.models;
+
+option java_package = "com.stremio.core.proto.models";
+
+import "stremio/core/models/catalogs_with_extra.proto";
+import "stremio/core/models/loadable.proto";
+import "stremio/core/types/addon.proto";
+import "stremio/core/types/meta_item.proto";
+
+message CatalogWithFilters {
+  optional Selected selected = 1;
+  Selectable selectable = 2;
+  oneof content {
+    Loading loading = 3;
+    Error error = 4;
+    Catalog catalog = 5;
+  }
+
+  message Selected {
+    stremio.core.types.ResourceRequest request = 1;
+  }
+  message Selectable {
+    repeated SelectableType types = 1;
+    repeated SelectableCatalog catalogs = 2;
+    repeated SelectableExtra extra = 3;
+    optional SelectablePage prev_page = 4;
+    optional SelectablePage next_page = 5;
+  }
+
+  message SelectableType {
+    optional string type = 1;
+    bool selected = 2;
+    stremio.core.types.ResourceRequest request = 3;
+    DiscoverDeepLinks deep_links = 4;
+  }
+
+  message SelectableCatalog {
+    string name = 1;
+    bool selected = 2;
+    stremio.core.types.ResourceRequest request = 3;
+    DiscoverDeepLinks deep_links = 4;
+  }
+
+  message SelectableExtra {
+    string name = 1;
+    bool is_required = 2;
+    repeated SelectableExtraOption options = 3;
+  }
+
+  message SelectableExtraOption {
+    optional string value = 1;
+    bool selected = 2;
+    stremio.core.types.ResourceRequest request = 3;
+    DiscoverDeepLinks deep_links = 4;
+  }
+
+  message SelectablePage {
+    stremio.core.types.ResourceRequest request = 1;
+    DiscoverDeepLinks deep_links = 2;
+  }
+}
+
+message DiscoverDeepLinks {
+  string discover = 1;
+}

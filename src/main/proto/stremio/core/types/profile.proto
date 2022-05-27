@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package stremio.core.types;
+
+option java_package = "com.stremio.core.proto.types.profile";
+
+message Profile {
+  optional Auth auth = 1;
+  // repeated Descriptor addons = 2;
+  Settings settings = 3;
+}
+
+message Settings {
+  string interfaceLanguage = 1;
+  string streamingServerUrl = 2;
+  bool bingeWatching = 3;
+  bool playInBackground = 4;
+  bool playInExternalPlayer = 5;
+  bool hardwareDecoding = 6;
+  string subtitlesLanguage = 7;
+  int32 subtitlesSize = 8;
+  string subtitlesFont = 9;
+  bool subtitlesBold = 10;
+  int32 subtitlesOffset = 11;
+  string subtitlesTextColor = 12;
+  string subtitlesBackgroundColor = 13;
+  string subtitlesOutlineColor = 14;
+  int64 seekTimeDuration = 15;
+}
+
+message Auth{
+  string key = 1;
+  User user = 2;
+}
+
+message User{
+  string id = 1;
+  string email = 2;
+  optional string fb_id = 3;
+  optional string avatar = 4;
+  GDPRConsent gdpr_consent = 5;
+}
+
+message GDPRConsent {
+  bool tos = 1;
+  bool privacy = 2;
+  bool marketing = 3;
+}

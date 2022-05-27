@@ -1,10 +1,12 @@
 syntax = "proto3";
 
-package stremio.core.v1;
+package stremio.core.types;
+
+option java_package = "com.stremio.core.proto.types.resource";
 
 import "google/protobuf/timestamp.proto";
-import "stremio/core/v1/stream.proto";
-import "stremio/core/v1/video.proto";
+import "stremio/core/types/stream.proto";
+import "stremio/core/types/video.proto";
 
 message MetaItem {
   string id = 1;
@@ -43,7 +45,8 @@ message MetaItemBehaviorHints {
   bool has_scheduled_videos = 3;
 }
 
-message  MetaItemDeepLinks {
+message MetaItemDeepLinks {
   optional string meta_details_videos = 1;
   optional string meta_details_streams = 2;
+  optional string player = 3;
 }

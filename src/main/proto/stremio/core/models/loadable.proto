@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package stremio.core.models;
+
+option java_package = "com.stremio.core.proto.models.common";
+
+message Loading {
+}
+
+message Error {
+  string message = 1;
+}

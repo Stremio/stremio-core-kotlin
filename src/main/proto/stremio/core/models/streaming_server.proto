@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package stremio.core.models;
+
+option java_package = "com.stremio.core.proto.models";
+
+import "stremio/core/models/loadable.proto";
+
+message StreamingServer {
+  Selected selected = 1;
+  oneof settings {
+    Loading settings_loading = 2;
+    Error settings_error = 3;
+    Settings content = 4;
+  }
+  oneof base_url {
+    Loading url_loading = 5;
+    Error url_error = 6;
+    string url = 7;
+  }
+
+  message Selected {
+    string transportUrl = 1;
+  }
+  message Settings {
+    string appPath = 1;
+    string cacheRoot = 2;
+    string serverVersion = 3;
+    optional double cacheSize = 4;
+    uint64 btMaxConnections = 5;
+    uint64 btHandshakeTimeout = 6;
+    uint64 btRequestTimeout = 7;
+    double btDownloadSpeedSoftLimit = 8;
+    double btDownloadSpeedHardLimit = 9;
+    uint64 btMinPeersForStable = 10;
+  }
+}

@@ -41,6 +41,10 @@ android {
         versionCode 5
         versionName "1.0.4"
     }
+
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    }
 }
 
 cargo {
@@ -72,9 +76,7 @@ protobuf {
                 remove "java"
             }
             task.plugins {
-                pbandk {
-                    option "kotlin_package=com.stremio.core.v1"
-                }
+                pbandk {}
             }
         }
     }

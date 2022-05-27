@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package stremio.core.models;
+
+option java_package = "com.stremio.core.proto.models";
+
+import "stremio/core/models/loadable.proto";
+import "stremio/core/types/api.proto";
+
+message AuthLink {
+  optional Code code = 1;
+  optional AuthKey data = 2;
+
+  message Code {
+    oneof content {
+      Loading loading = 2;
+      Error error = 3;
+      stremio.core.types.LinkCodeResponse code = 4;
+    }
+  }
+
+  message AuthKey {
+    oneof content {
+      Loading loading = 2;
+      Error error = 3;
+      stremio.core.types.LinkAuthKey auth_key = 4;
+    }
+  }
+}

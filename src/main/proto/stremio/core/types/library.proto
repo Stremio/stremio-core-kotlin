@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package stremio.core.types;
+
+option java_package = "com.stremio.core.proto.types.library";
+
+import "stremio/core/types/meta_item.proto";
+
+message LibraryItem {
+  string id = 1;
+  string type = 2;
+  string name = 3;
+  optional string poster = 4;
+  PosterShape poster_shape = 5;
+  LibraryItemState state = 6;
+  MetaItemBehaviorHints behavior_hints = 7;
+  MetaItemDeepLinks deep_links = 8;
+}
+
+message LibraryItemState {
+  uint64 time_offset = 1;
+  uint64 duration = 2;
+}

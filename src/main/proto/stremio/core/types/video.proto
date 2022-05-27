@@ -1,9 +1,11 @@
 syntax = "proto3";
 
-package stremio.core.v1;
+package stremio.core.types;
+
+option java_package = "com.stremio.core.proto.types.resource";
 
 import "google/protobuf/timestamp.proto";
-import "stremio/core/v1/stream.proto";
+import "stremio/core/types/stream.proto";
 
 message Video {
   string id = 1;

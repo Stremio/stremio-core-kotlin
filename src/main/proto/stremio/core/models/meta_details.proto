@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package stremio.core.models;
+
+option java_package = "com.stremio.core.proto.models";
+
+import "stremio/core/models/loadable.proto";
+import "stremio/core/types/addon.proto";
+import "stremio/core/types/meta_item.proto";
+import "stremio/core/types/stream.proto";
+
+message MetaDetails {
+  optional Selected selected = 1;
+  optional string title = 2;
+  oneof meta_item {
+    Loading loading = 3;
+    Error error = 4;
+    stremio.core.types.MetaItem content = 5;
+  }
+  repeated LoadableStreams streams = 6;
+
+  message Selected {
+    stremio.core.types.ResourcePath meta_path = 1;
+    optional stremio.core.types.ResourcePath stream_path = 2;
+  }
+}
+
+message LoadableStreams {
+  oneof stream {
+    Loading loading = 1;
+    Error error = 2;
+    stremio.core.types.Stream content = 3;
+  }
+}

@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package stremio.core.models;
+
+option java_package = "com.stremio.core.proto.models";
+
+import "stremio/core/models/loadable.proto";
+import "stremio/core/types/addon.proto";
+import "stremio/core/types/meta_item.proto";
+
+message CatalogsWithExtra {
+  optional Selected selected = 1;
+  oneof content {
+    Loading loading = 2;
+    Error error = 3;
+    Catalog catalog = 4;
+  }
+
+  message Selected {
+    repeated stremio.core.types.ExtraValue extra = 1;
+  }
+}
+
+message Catalog {
+  repeated stremio.core.types.MetaItem items = 1;
+}

@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package stremio.core.v1;
+package stremio.core.types;
+
+option java_package = "com.stremio.core.proto.types.resource";
 
 message Stream {
   oneof source {

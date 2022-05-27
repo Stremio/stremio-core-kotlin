@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package stremio.core.runtime;
+
+option java_package = "com.stremio.core.proto.runtime.msg";
+
+import "stremio/core/runtime/action_ctx.proto";
+import "stremio/core/runtime/action_link.proto";
+import "stremio/core/runtime/action_load.proto";
+import "stremio/core/runtime/action_streaming_server.proto";
+
+message Action {
+  oneof action {
+    ActionCtx ctx = 1;
+    ActionLink link = 2;
+    ActionStreamingServer streaming_server = 3;
+    //    Player player = 4;
+    ActionLoad load = 5;
+    ActionUnload unload = 6;
+  }
+
+  message ActionUnload {
+  }
+}
