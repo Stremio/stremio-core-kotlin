@@ -1,9 +1,11 @@
 package com.stremio.core
 
 import android.util.Log
+import com.stremio.core.proto.types.resource.Video
 import com.stremio.core.runtime.EnvError
 import com.stremio.core.runtime.RuntimeEvent
 import com.stremio.core.runtime.msg.Action
+import pbandk.decodeFromByteArray
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -31,6 +33,13 @@ object Core {
     external fun <T> getState(field: Field): T
 
     external fun dispatch(action: Action, field: Field?)
+
+    private external fun getSeriesInfoBinary(): ByteArray
+
+    fun getSeriesInfo(): Video.SeriesInfo {
+        val protobuf = getSeriesInfoBinary()
+        return Video.SeriesInfo.decodeFromByteArray(protobuf)
+    }
 
     @JvmStatic
     private fun onRuntimeEvent(event: RuntimeEvent) {
