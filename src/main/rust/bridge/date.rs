@@ -1,6 +1,6 @@
 use chrono::{DateTime, TimeZone, Utc};
-use jni::JNIEnv;
 use jni::objects::JObject;
+use jni::JNIEnv;
 
 use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};

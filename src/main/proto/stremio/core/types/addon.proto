@@ -2,7 +2,7 @@ syntax = "proto2";
 
 package stremio.core.types;
 
-option java_package = "com.stremio.core.proto.types.addon";
+option java_package = "com.stremio.core.types.addon";
 
 message ResourceRequest{
   required string base = 1;

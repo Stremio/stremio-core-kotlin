@@ -2,12 +2,12 @@ syntax = "proto2";
 
 package stremio.core.types;
 
-option java_package = "com.stremio.core.proto.types.resource";
+option java_package = "com.stremio.core.types.resource";
 
 message Stream {
   oneof source {
     Url url = 1;
-    YouTube youtube = 2;
+    YouTube you_tube = 2;
     Torrent torrent = 3;
     External external = 4;
     PlayerFrame player_frame = 5;

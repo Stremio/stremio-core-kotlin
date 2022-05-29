@@ -193,7 +193,7 @@ impl<'a> TryIntoKotlin<'a, ()> for Event {
                     classes
                         .get(&KotlinClassName::Event_SettingsUpdated)
                         .unwrap(),
-                    format!("(L{};)V", KotlinClassName::Settings.value()),
+                    format!("(L{};)V", KotlinClassName::Profile_Settings.value()),
                     &[settings.as_obj().into()],
                 )
             }

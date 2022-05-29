@@ -1,5 +1,5 @@
-use jni::JNIEnv;
 use jni::objects::JObject;
+use jni::JNIEnv;
 use prost::Message;
 
 use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin, TryIntoKotlin};

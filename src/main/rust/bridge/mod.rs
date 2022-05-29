@@ -16,9 +16,6 @@ pub use env_error::*;
 mod event;
 pub use event::*;
 
-mod external_player_link;
-pub use external_player_link::*;
-
 mod extra_value;
 pub use extra_value::*;
 
@@ -27,9 +24,6 @@ pub use jobject::*;
 
 mod library_item;
 pub use library_item::*;
-
-mod link_code_response;
-pub use link_code_response::*;
 
 mod link;
 pub use link::*;

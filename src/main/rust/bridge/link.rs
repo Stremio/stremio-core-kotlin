@@ -1,10 +1,10 @@
-use jni::JNIEnv;
 use jni::objects::JObject;
+use jni::JNIEnv;
 use stremio_core::types::resource::Link;
 use url::Url;
 
-use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
-use crate::env::{AndroidEnv, KotlinClassName};
+use crate::bridge::{ToProtobuf, TryFromKotlin};
+use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::types;
 
@@ -46,30 +46,6 @@ impl TryFromKotlin for Link {
             category,
             url,
         })
-    }
-}
-
-impl<'a> TryIntoKotlin<'a, ()> for Link {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let name = self.name.try_into_kotlin(&(), env)?.auto_local(env);
-        let category = self.category.try_into_kotlin(&(), env)?.auto_local(env);
-        let url = self.url.try_into_kotlin(&(), env)?.auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::Link).unwrap(),
-            format!(
-                "(L{};L{};L{};)V",
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value()
-            ),
-            &[
-                name.as_obj().into(),
-                category.as_obj().into(),
-                url.as_obj().into(),
-            ],
-        )
     }
 }
 

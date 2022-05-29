@@ -35,14 +35,14 @@ impl TryFromKotlin for Action {
                     Ok(KotlinClassName::ActionCtx_Logout) => Ok(Action::Ctx(ActionCtx::Logout)),
                     Ok(KotlinClassName::ActionCtx_UpdateSettings) => {
                         let settings =
-                            get_args(action_ctx.as_obj(), KotlinClassName::Settings, env)?
+                            get_args(action_ctx.as_obj(), KotlinClassName::Profile_Settings, env)?
                                 .auto_local(env);
                         let settings = Settings::try_from_kotlin(settings.as_obj(), env)?;
                         Ok(Action::Ctx(ActionCtx::UpdateSettings(settings)))
                     }
                     Ok(KotlinClassName::ActionCtx_AddToLibrary) => {
                         let meta_preview =
-                            get_args(action_ctx.as_obj(), KotlinClassName::MetaItemPreview, env)?
+                            get_args(action_ctx.as_obj(), KotlinClassName::MetaItem, env)?
                                 .auto_local(env);
                         let meta_preview =
                             MetaItemPreview::try_from_kotlin(meta_preview.as_obj(), env)?;

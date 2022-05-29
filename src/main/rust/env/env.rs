@@ -26,7 +26,7 @@ lazy_static! {
     static ref CONCURRENT_RUNTIME: RwLock<tokio::runtime::Runtime> = RwLock::new(
         tokio::runtime::Builder::new_multi_thread()
             .thread_name("CONCURRENT_RUNTIME_THREAD")
-            .worker_threads(5)
+            .worker_threads(30)
             .enable_all()
             .build()
             .expect("CONCURRENT_RUNTIME create failed")

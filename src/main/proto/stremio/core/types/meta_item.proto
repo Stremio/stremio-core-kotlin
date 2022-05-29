@@ -2,7 +2,7 @@ syntax = "proto2";
 
 package stremio.core.types;
 
-option java_package = "com.stremio.core.proto.types.resource";
+option java_package = "com.stremio.core.types.resource";
 
 import "google/protobuf/timestamp.proto";
 import "stremio/core/types/stream.proto";

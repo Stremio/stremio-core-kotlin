@@ -1,5 +1,3 @@
-use jni::objects::JObject;
-use jni::JNIEnv;
 use prost::Message;
 use stremio_core::models::catalog_with_filters::CatalogWithFilters;
 use stremio_core::models::catalogs_with_extra::CatalogsWithExtra;
@@ -16,7 +14,7 @@ use stremio_core::types::profile::Profile;
 use stremio_core::types::resource::MetaItemPreview;
 use stremio_derive::Model;
 
-use crate::bridge::{ToProtobuf, TryIntoKotlin};
+use crate::bridge::ToProtobuf;
 use crate::env::AndroidEnv;
 use crate::model::LibraryByType;
 
@@ -67,28 +65,6 @@ impl AndroidModel {
                 .join(streaming_server_effects),
         )
     }
-    pub fn get_state<'a>(
-        &self,
-        field: &AndroidModelField,
-        env: &'a JNIEnv,
-    ) -> jni::errors::Result<JObject<'a>> {
-        match field {
-            AndroidModelField::Ctx => self.ctx.try_into_kotlin(&(), env),
-            AndroidModelField::AuthLink => self.auth_link.try_into_kotlin(&(), env),
-            AndroidModelField::Discover => self.discover.try_into_kotlin(&self.ctx, env),
-            AndroidModelField::Library => self.library.try_into_kotlin(&"library".to_owned(), env),
-            AndroidModelField::LibraryByType => self
-                .library_by_type
-                .try_into_kotlin(&"library".to_owned(), env),
-            AndroidModelField::ContinueWatchingPreview => {
-                self.continue_watching_preview.try_into_kotlin(&(), env)
-            }
-            AndroidModelField::Board => self.board.try_into_kotlin(&self.ctx, env),
-            AndroidModelField::Search => self.search.try_into_kotlin(&self.ctx, env),
-            AndroidModelField::MetaDetails => self.meta_details.try_into_kotlin(&self.ctx, env),
-            AndroidModelField::StreamingServer => self.streaming_server.try_into_kotlin(&(), env),
-        }
-    }
 
     pub fn get_state_binary(&self, field: &AndroidModelField) -> Vec<u8> {
         match field {
@@ -111,7 +87,6 @@ impl AndroidModel {
             AndroidModelField::StreamingServer => {
                 self.streaming_server.to_protobuf(&()).encode_to_vec()
             }
-            _ => unimplemented!(),
         }
     }
 }

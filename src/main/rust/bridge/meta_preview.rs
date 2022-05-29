@@ -1,11 +1,11 @@
 use chrono::{DateTime, Utc};
-use jni::JNIEnv;
 use jni::objects::JObject;
+use jni::JNIEnv;
 use stremio_core::types::resource::{Link, MetaItemBehaviorHints, MetaItemPreview, PosterShape};
 use stremio_deeplinks::MetaItemDeepLinks;
 
-use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin, TryIntoKotlin};
-use crate::env::{AndroidEnv, KotlinClassName};
+use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin};
+use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::types;
 
@@ -42,37 +42,6 @@ impl TryFromKotlin for MetaItemBehaviorHints {
     }
 }
 
-impl<'a> TryIntoKotlin<'a, ()> for MetaItemBehaviorHints {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let default_video_id = self
-            .default_video_id
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        let featured_video_id = self
-            .featured_video_id
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        let has_scheduled_videos = self.has_scheduled_videos.into();
-        env.new_object(
-            classes
-                .get(&KotlinClassName::MetaItemBehaviorHints)
-                .unwrap(),
-            format!(
-                "(L{};L{};Z)V",
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value()
-            ),
-            &[
-                default_video_id.as_obj().into(),
-                featured_video_id.as_obj().into(),
-                has_scheduled_videos,
-            ],
-        )
-    }
-}
-
 impl TryFromKotlin for MetaItemDeepLinks {
     fn try_from_kotlin<'a>(value: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
         let meta_details_videos = env
@@ -101,33 +70,6 @@ impl TryFromKotlin for MetaItemDeepLinks {
             meta_details_videos,
             meta_details_streams,
         })
-    }
-}
-
-impl<'a> TryIntoKotlin<'a, ()> for MetaItemDeepLinks {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let meta_details_videos = self
-            .meta_details_videos
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        let meta_details_streams = self
-            .meta_details_streams
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::MetaItemDeepLinks).unwrap(),
-            format!(
-                "(L{};L{};)V",
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value()
-            ),
-            &[
-                meta_details_videos.as_obj().into(),
-                meta_details_streams.as_obj().into(),
-            ],
-        )
     }
 }
 
@@ -274,67 +216,6 @@ impl TryFromKotlin for MetaItemPreview {
             behavior_hints,
             trailer_streams: Default::default(),
         })
-    }
-}
-
-impl<'a> TryIntoKotlin<'a, ()> for MetaItemPreview {
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let id = self.id.try_into_kotlin(&(), env)?.auto_local(env);
-        let r#type = self.r#type.try_into_kotlin(&(), env)?.auto_local(env);
-        let name = self.name.try_into_kotlin(&(), env)?.auto_local(env);
-        let poster = self.poster.try_into_kotlin(&(), env)?.auto_local(env);
-        let background = self.background.try_into_kotlin(&(), env)?.auto_local(env);
-        let logo = self.logo.try_into_kotlin(&(), env)?.auto_local(env);
-        let description = self.description.try_into_kotlin(&(), env)?.auto_local(env);
-        let release_info = self.release_info.try_into_kotlin(&(), env)?.auto_local(env);
-        let runtime = self.runtime.try_into_kotlin(&(), env)?.auto_local(env);
-        let released = self.released.try_into_kotlin(&(), env)?.auto_local(env);
-        let poster_shape = self.poster_shape.try_into_kotlin(&(), env)?.auto_local(env);
-        let links = self.links.try_into_kotlin(&(), env)?.auto_local(env);
-        let behavior_hints = self
-            .behavior_hints
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        let deep_links = MetaItemDeepLinks::from(self)
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::MetaItemPreview).unwrap(),
-            format!(
-                "(L{};L{};L{};L{};L{};L{};L{};L{};L{};L{};L{};L{};L{};L{};)V",
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::Date.value(),
-                KotlinClassName::PosterShape.value(),
-                "java/util/List",
-                KotlinClassName::MetaItemBehaviorHints.value(),
-                KotlinClassName::MetaItemDeepLinks.value()
-            ),
-            &[
-                id.as_obj().into(),
-                r#type.as_obj().into(),
-                name.as_obj().into(),
-                poster.as_obj().into(),
-                background.as_obj().into(),
-                logo.as_obj().into(),
-                description.as_obj().into(),
-                release_info.as_obj().into(),
-                runtime.as_obj().into(),
-                released.as_obj().into(),
-                poster_shape.as_obj().into(),
-                links.as_obj().into(),
-                behavior_hints.as_obj().into(),
-                deep_links.as_obj().into(),
-            ],
-        )
     }
 }
 

@@ -1,8 +1,8 @@
 use std::cmp;
 use std::convert::TryFrom;
 
+use jni::objects::{JObject, JValue};
 use jni::JNIEnv;
-use jni::objects::JObject;
 use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
 use stremio_core::types::profile::{Auth, GDPRConsent, Profile, Settings, User};
 use url::Url;
@@ -33,46 +33,6 @@ impl<'a> TryIntoKotlin<'a, ()> for GDPRConsent {
             classes.get(&KotlinClassName::GDPRConsent).unwrap(),
             "(ZZZ)V",
             &[self.tos.into(), self.privacy.into(), self.marketing.into()],
-        )
-    }
-}
-
-impl<'a> TryIntoKotlin<'a, ()> for User {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let id = self.id.try_into_kotlin(&(), env)?.auto_local(env);
-        let email = self.email.try_into_kotlin(&(), env)?.auto_local(env);
-        let fb_id = self.fb_id.try_into_kotlin(&(), env)?.auto_local(env);
-        let avatar = self.avatar.try_into_kotlin(&(), env)?.auto_local(env);
-        let gdpr_consent = self.gdpr_consent.try_into_kotlin(&(), env)?.auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::User).unwrap(),
-            format!(
-                "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;L{};)V",
-                KotlinClassName::GDPRConsent.value()
-            ),
-            &[
-                id.as_obj().into(),
-                email.as_obj().into(),
-                fb_id.as_obj().into(),
-                avatar.as_obj().into(),
-                gdpr_consent.as_obj().into(),
-            ],
-        )
-    }
-}
-
-impl<'a> TryIntoKotlin<'a, ()> for Auth {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let key = self.key.0.try_into_kotlin(&(), env)?.auto_local(env);
-        let user = self.user.try_into_kotlin(&(), env)?.auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::Auth).unwrap(),
-            format!("(Ljava/lang/String;L{};)V", KotlinClassName::User.value()),
-            &[key.as_obj().into(), user.as_obj().into()],
         )
     }
 }
@@ -241,10 +201,15 @@ impl<'a> TryIntoKotlin<'a, ()> for Settings {
             .try_into_kotlin(&(), env)?
             .auto_local(env);
         let seek_time_duration = (self.seek_time_duration as i64).into();
+        let unknown_fields = env.new_object(
+            classes.get(&KotlinClassName::HashMap).unwrap(),
+            "()V",
+            &[],
+        )?.auto_local(env);
         env.new_object(
-            classes.get(&KotlinClassName::Settings).unwrap(),
+            classes.get(&KotlinClassName::Profile_Settings).unwrap(),
             format!(
-                "(L{};L{};ZZZZL{};IL{};ZIL{};L{};L{};J)V",
+                "(L{};L{};ZZZZL{};IL{};ZIL{};L{};L{};JL{};)V",
                 KotlinClassName::String.value(),
                 KotlinClassName::String.value(),
                 KotlinClassName::String.value(),
@@ -252,6 +217,7 @@ impl<'a> TryIntoKotlin<'a, ()> for Settings {
                 KotlinClassName::String.value(),
                 KotlinClassName::String.value(),
                 KotlinClassName::String.value(),
+                KotlinClassName::Map.value(),
             ),
             &[
                 interface_language.as_obj().into(),
@@ -269,25 +235,8 @@ impl<'a> TryIntoKotlin<'a, ()> for Settings {
                 subtitles_background_color.as_obj().into(),
                 subtitles_outline_color.as_obj().into(),
                 seek_time_duration,
+                unknown_fields.as_obj().into(),
             ],
-        )
-    }
-}
-
-impl<'a> TryIntoKotlin<'a, ()> for Profile {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let auth = self.auth.try_into_kotlin(&(), env)?.auto_local(env);
-        let settings = self.settings.try_into_kotlin(&(), env)?.auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::Profile).unwrap(),
-            format!(
-                "(L{};L{};)V",
-                KotlinClassName::Auth.value(),
-                KotlinClassName::Settings.value()
-            ),
-            &[auth.as_obj().into(), settings.as_obj().into()],
         )
     }
 }

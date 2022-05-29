@@ -1,43 +1,9 @@
-use jni::JNIEnv;
-use jni::objects::JObject;
 use stremio_core::models::common::{Loadable, ResourceLoadable};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream};
 
-use crate::bridge::{ToProtobuf, ToProtobufAny, TryIntoKotlin};
-use crate::env::{AndroidEnv, KotlinClassName};
-use crate::jni_ext::JObjectExt;
+use crate::bridge::{ToProtobuf, ToProtobufAny};
 use crate::protobuf::stremio::core::models;
-
-impl<'a, U, R: TryIntoKotlin<'a, U>> TryIntoKotlin<'a, (Option<String>, U)>
-for ResourceLoadable<R>
-{
-    #[inline]
-    fn try_into_kotlin(
-        &self,
-        args: &(Option<String>, U),
-        env: &JNIEnv<'a>,
-    ) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let title = args.0.try_into_kotlin(&(), env)?.auto_local(env);
-        let request = self.request.try_into_kotlin(&(), env)?.auto_local(env);
-        let content = self.content.try_into_kotlin(&args.1, env)?.auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::ResourceLoadable).unwrap(),
-            format!(
-                "(L{};L{};L{};)V",
-                KotlinClassName::String.value(),
-                KotlinClassName::ResourceRequest.value(),
-                KotlinClassName::Loadable.value()
-            ),
-            &[
-                title.as_obj().into(),
-                request.as_obj().into(),
-                content.as_obj().into(),
-            ],
-        )
-    }
-}
 
 impl ToProtobuf<models::LoadableCatalog, Ctx> for ResourceLoadable<Vec<MetaItemPreview>> {
     fn to_protobuf(&self, ctx: &Ctx) -> models::LoadableCatalog {

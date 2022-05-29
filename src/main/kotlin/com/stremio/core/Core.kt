@@ -1,7 +1,6 @@
 package com.stremio.core
 
 import android.util.Log
-import com.stremio.core.proto.types.resource.Video
 import com.stremio.core.runtime.EnvError
 import com.stremio.core.runtime.RuntimeEvent
 import com.stremio.core.runtime.msg.Action
@@ -32,17 +31,13 @@ object Core {
 
     external fun initialize(storage: Storage): EnvError?
 
-    external fun <T> getState(field: Field): T
-
     external fun dispatch(action: Action, field: Field?)
-
-    external fun getSeriesInfoBinary(): ByteArray
 
     external fun getStateBinary(field: Field): ByteArray
 
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T : Message> getProtobufState(field: Field): T {
-        val protobuf = getSeriesInfoBinary()
+    inline fun <reified T : Message> getState(field: Field): T {
+        val protobuf = getStateBinary(field)
         val companion = T::class.companionObjectInstance as Message.Companion<T>
         return companion.decodeFromByteArray(protobuf)
     }
