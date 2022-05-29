@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package stremio.core.types;
 
@@ -9,10 +9,10 @@ import "stremio/core/types/stream.proto";
 import "stremio/core/types/video.proto";
 
 message MetaItem {
-  string id = 1;
-  string type = 2;
-  string name = 3;
-  PosterShape poster_shape = 4;
+  required string id = 1;
+  required string type = 2;
+  required string name = 3;
+  required PosterShape poster_shape = 4;
   optional string poster = 5;
   optional string background = 6;
   optional string logo = 7;
@@ -23,8 +23,8 @@ message MetaItem {
   repeated Link links = 12;
   repeated Stream trailer_streams = 13;
   repeated Video videos = 14;
-  MetaItemBehaviorHints behavior_hints = 15;
-  MetaItemDeepLinks deep_links = 16;
+  required MetaItemBehaviorHints behavior_hints = 15;
+  required MetaItemDeepLinks deep_links = 16;
 }
 
 enum PosterShape {
@@ -34,15 +34,15 @@ enum PosterShape {
 }
 
 message Link {
-  string name = 1;
-  string category = 2;
-  string url = 3;
+  required string name = 1;
+  required string category = 2;
+  required string url = 3;
 }
 
 message MetaItemBehaviorHints {
   optional string default_video_id = 1;
   optional string featured_video_id = 2;
-  bool has_scheduled_videos = 3;
+  required bool has_scheduled_videos = 3;
 }
 
 message MetaItemDeepLinks {

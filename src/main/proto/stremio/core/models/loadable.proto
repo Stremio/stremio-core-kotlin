@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package stremio.core.models;
 
@@ -8,5 +8,5 @@ message Loading {
 }
 
 message Error {
-  string message = 1;
+  required string message = 1;
 }

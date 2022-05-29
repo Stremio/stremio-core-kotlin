@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package stremio.core.models;
 
@@ -16,14 +16,14 @@ message MetaDetails {
   repeated LoadableStreams streams = 4;
 
   message Selected {
-    stremio.core.types.ResourcePath meta_path = 1;
+    required stremio.core.types.ResourcePath meta_path = 1;
     optional stremio.core.types.ResourcePath stream_path = 2;
   }
 }
 
 message LoadableMetaItem {
-  string title = 1;
-  stremio.core.types.ResourceRequest request = 2;
+  required string title = 1;
+  required stremio.core.types.ResourceRequest request = 2;
   oneof content {
     Loading loading = 3;
     Error error = 4;
@@ -32,8 +32,8 @@ message LoadableMetaItem {
 }
 
 message LoadableStreams {
-  string title = 1;
-  stremio.core.types.ResourceRequest request = 2;
+  required string title = 1;
+  required stremio.core.types.ResourceRequest request = 2;
   oneof content {
     Loading loading = 3;
     Error error = 4;

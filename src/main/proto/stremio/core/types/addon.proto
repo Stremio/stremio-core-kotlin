@@ -1,24 +1,24 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package stremio.core.types;
 
 option java_package = "com.stremio.core.proto.types.addon";
 
 message ResourceRequest{
-  string base = 1;
-  ResourcePath path = 2;
+  required string base = 1;
+  required ResourcePath path = 2;
 }
 
 message ResourcePath {
-  string resource = 1;
-  string type = 2;
-  string id = 3;
+  required string resource = 1;
+  required string type = 2;
+  required string id = 3;
   repeated ExtraValue extra = 4;
 }
 
 message ExtraValue{
-  string name = 1;
-  string value = 2;
+  required string name = 1;
+  required string value = 2;
 }
 
 enum ResourceType {

@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package stremio.core.types;
 
@@ -7,42 +7,42 @@ option java_package = "com.stremio.core.proto.types.profile";
 message Profile {
   optional Auth auth = 1;
   // repeated Descriptor addons = 2;
-  Settings settings = 3;
+  required Settings settings = 3;
 
   message Settings {
-    string interface_language = 1;
-    string streaming_server_url = 2;
-    bool binge_watching = 3;
-    bool play_in_background = 4;
-    bool play_in_external_player = 5;
-    bool hardware_decoding = 6;
-    string subtitles_language = 7;
-    int32 subtitles_size = 8;
-    string subtitles_font = 9;
-    bool subtitles_bold = 10;
-    int32 subtitles_offset = 11;
-    string subtitles_text_color = 12;
-    string subtitles_background_color = 13;
-    string subtitles_outline_color = 14;
-    int64 seek_time_duration = 15;
+    required string interface_language = 1;
+    required string streaming_server_url = 2;
+    required bool binge_watching = 3;
+    required bool play_in_background = 4;
+    required bool play_in_external_player = 5;
+    required bool hardware_decoding = 6;
+    required string subtitles_language = 7;
+    required int32 subtitles_size = 8;
+    required string subtitles_font = 9;
+    required bool subtitles_bold = 10;
+    required int32 subtitles_offset = 11;
+    required string subtitles_text_color = 12;
+    required string subtitles_background_color = 13;
+    required string subtitles_outline_color = 14;
+    required int64 seek_time_duration = 15;
   }
 }
 
 message Auth{
-  string key = 1;
-  User user = 2;
+  required string key = 1;
+  required User user = 2;
 }
 
 message User{
-  string id = 1;
-  string email = 2;
+  required string id = 1;
+  required string email = 2;
   optional string fb_id = 3;
   optional string avatar = 4;
-  GDPRConsent gdpr_consent = 5;
+  required GDPRConsent gdpr_consent = 5;
 }
 
 message GDPRConsent {
-  bool tos = 1;
-  bool privacy = 2;
-  bool marketing = 3;
+  required bool tos = 1;
+  required bool privacy = 2;
+  required bool marketing = 3;
 }

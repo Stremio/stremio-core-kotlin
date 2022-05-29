@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package stremio.core.models;
 
@@ -7,5 +7,5 @@ option java_package = "com.stremio.core.proto.models";
 import "stremio/core/types/profile.proto";
 
 message Ctx {
-  stremio.core.types.Profile profile = 1;
+  required stremio.core.types.Profile profile = 1;
 }

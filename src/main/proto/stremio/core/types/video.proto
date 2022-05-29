@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package stremio.core.types;
 
@@ -8,8 +8,8 @@ import "google/protobuf/timestamp.proto";
 import "stremio/core/types/stream.proto";
 
 message Video {
-  string id = 1;
-  string title = 2;
+  required string id = 1;
+  required string title = 2;
   optional google.protobuf.Timestamp released = 3;
   optional string overview = 4;
   optional string thumbnail = 5;
@@ -17,7 +17,7 @@ message Video {
   optional SeriesInfo seriesInfo = 7;
 
   message SeriesInfo {
-    int64 season = 1;
-    int64 episode = 2;
+    required int64 season = 1;
+    required int64 episode = 2;
   }
 }

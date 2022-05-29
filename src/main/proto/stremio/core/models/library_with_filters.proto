@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package stremio.core.models;
 
@@ -8,16 +8,16 @@ import "stremio/core/types/library.proto";
 
 message LibraryWithFilters {
   optional Selected selected = 1;
-  Selectable selectable = 2;
+  required Selectable selectable = 2;
   repeated stremio.core.types.LibraryItem catalog = 3;
 
   message Selected {
-    LibraryRequest request = 1;
+    required LibraryRequest request = 1;
   }
   message LibraryRequest {
     optional string type = 1;
-    Sort sort = 2;
-    int64 page = 3;
+    required Sort sort = 2;
+    required int64 page = 3;
   }
   enum Sort {
     lastwatched = 0;
@@ -32,14 +32,14 @@ message LibraryWithFilters {
   }
   message SelectableType {
     optional string type = 1;
-    bool selected = 2;
+    required bool selected = 2;
   }
   message SelectableSort {
-    Sort sort = 1;
-    bool selected = 2;
+    required Sort sort = 1;
+    required bool selected = 2;
   }
   message SelectablePage {
-    LibraryRequest request = 1;
+    required LibraryRequest request = 1;
   }
 }
 

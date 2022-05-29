@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package stremio.core.models;
 
@@ -10,11 +10,11 @@ import "stremio/core/types/addon.proto";
 
 message CatalogWithFilters {
   optional Selected selected = 1;
-  Selectable selectable = 2;
+  required Selectable selectable = 2;
   optional LoadableCatalog catalog = 3;
 
   message Selected {
-    stremio.core.types.ResourceRequest request = 1;
+    required stremio.core.types.ResourceRequest request = 1;
   }
   message Selectable {
     repeated SelectableType types = 1;
@@ -25,38 +25,30 @@ message CatalogWithFilters {
   }
 
   message SelectableType {
-    string type = 1;
-    bool selected = 2;
-    stremio.core.types.ResourceRequest request = 3;
-    DiscoverDeepLinks deep_links = 4;
+    required string type = 1;
+    required bool selected = 2;
+    required stremio.core.types.ResourceRequest request = 3;
   }
 
   message SelectableCatalog {
-    string name = 1;
-    bool selected = 2;
-    stremio.core.types.ResourceRequest request = 3;
-    DiscoverDeepLinks deep_links = 4;
+    required string name = 1;
+    required bool selected = 2;
+    required stremio.core.types.ResourceRequest request = 3;
   }
 
   message SelectableExtra {
-    string name = 1;
-    bool is_required = 2;
+    required string name = 1;
+    required bool is_required = 2;
     repeated SelectableExtraOption options = 3;
   }
 
   message SelectableExtraOption {
     optional string value = 1;
-    bool selected = 2;
-    stremio.core.types.ResourceRequest request = 3;
-    DiscoverDeepLinks deep_links = 4;
+    required bool selected = 2;
+    required stremio.core.types.ResourceRequest request = 3;
   }
 
   message SelectablePage {
-    stremio.core.types.ResourceRequest request = 1;
-    DiscoverDeepLinks deep_links = 2;
+    required stremio.core.types.ResourceRequest request = 1;
   }
-}
-
-message DiscoverDeepLinks {
-  string discover = 1;
 }

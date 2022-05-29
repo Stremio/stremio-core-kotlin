@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package stremio.core.models;
 
@@ -18,8 +18,8 @@ message CatalogsWithExtra {
 }
 
 message LoadableCatalog {
-  string title = 1;
-  stremio.core.types.ResourceRequest request = 2;
+  required string title = 1;
+  required stremio.core.types.ResourceRequest request = 2;
   oneof content {
     Loading loading = 3;
     Error error = 4;
