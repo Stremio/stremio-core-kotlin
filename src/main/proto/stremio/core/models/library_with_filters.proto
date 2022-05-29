@@ -14,41 +14,32 @@ message LibraryWithFilters {
   message Selected {
     LibraryRequest request = 1;
   }
+  message LibraryRequest {
+    optional string type = 1;
+    Sort sort = 2;
+    int64 page = 3;
+  }
+  enum Sort {
+    lastwatched = 0;
+    name = 1;
+    timeswatched = 2;
+  }
   message Selectable {
     repeated SelectableType types = 1;
     repeated SelectableSort sorts = 2;
     optional SelectablePage prev_page = 3;
     optional SelectablePage next_page = 4;
   }
-
   message SelectableType {
     optional string type = 1;
     bool selected = 2;
-    LibraryDeepLinks deep_links = 3;
   }
   message SelectableSort {
-    LibraryRequest.Sort sort = 1;
+    Sort sort = 1;
     bool selected = 2;
-    LibraryDeepLinks deep_links = 3;
   }
   message SelectablePage {
     LibraryRequest request = 1;
-    LibraryDeepLinks deep_links = 2;
   }
 }
 
-message LibraryRequest {
-  optional string type = 1;
-  Sort sort = 2;
-  int64 page = 3;
-
-  enum Sort {
-    lastwatched = 0;
-    name = 1;
-    timeswatched = 2;
-  }
-}
-
-message LibraryDeepLinks {
-  string library = 1;
-}

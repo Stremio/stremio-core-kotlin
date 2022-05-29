@@ -10,21 +10,23 @@ import "stremio/core/types/meta_item.proto";
 
 message CatalogsWithExtra {
   optional Selected selected = 1;
-  repeated Catalog catalogs = 2;
+  repeated LoadableCatalog catalogs = 2;
 
   message Selected {
     repeated stremio.core.types.ExtraValue extra = 1;
   }
 }
 
-message Catalog {
+message LoadableCatalog {
+  string title = 1;
+  stremio.core.types.ResourceRequest request = 2;
   oneof content {
-    Loading loading = 1;
-    Error error = 2;
-    Metas metas = 3;
+    Loading loading = 3;
+    Error error = 4;
+    Catalog ready = 5;
   }
 }
 
-message Metas {
-  repeated stremio.core.types.MetaItem items = 1;
+message Catalog {
+  repeated stremio.core.types.MetaItem meta_items = 1;
 }

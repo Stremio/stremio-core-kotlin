@@ -11,11 +11,7 @@ import "stremio/core/types/addon.proto";
 message CatalogWithFilters {
   optional Selected selected = 1;
   Selectable selectable = 2;
-  oneof content {
-    Loading loading = 3;
-    Error error = 4;
-    Catalog catalog = 5;
-  }
+  optional LoadableCatalog catalog = 3;
 
   message Selected {
     stremio.core.types.ResourceRequest request = 1;
@@ -29,7 +25,7 @@ message CatalogWithFilters {
   }
 
   message SelectableType {
-    optional string type = 1;
+    string type = 1;
     bool selected = 2;
     stremio.core.types.ResourceRequest request = 3;
     DiscoverDeepLinks deep_links = 4;

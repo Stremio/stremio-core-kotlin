@@ -8,16 +8,8 @@ import "stremio/core/models/loadable.proto";
 
 message StreamingServer {
   Selected selected = 1;
-  oneof settings_loadable {
-    Loading settings_loading = 2;
-    Error settings_error = 3;
-    Settings content = 4;
-  }
-  oneof base_url_loadable {
-    Loading url_loading = 5;
-    Error url_error = 6;
-    string base_url = 7;
-  }
+  LoadableSettings settings = 2;
+  LoadableBaseUrl base_url = 3;
 
   message Selected {
     string transport_url = 1;
@@ -33,5 +25,21 @@ message StreamingServer {
     double bt_download_speed_soft_limit = 8;
     double bt_download_speed_hard_limit = 9;
     uint64 bt_min_peers_for_stable = 10;
+  }
+}
+
+message LoadableSettings {
+  oneof content {
+    Loading loading = 1;
+    Error error = 2;
+    StreamingServer.Settings ready = 3;
+  }
+}
+
+message LoadableBaseUrl {
+  oneof content {
+    Loading loading = 5;
+    Error error = 6;
+    string ready = 7;
   }
 }
