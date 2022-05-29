@@ -1,9 +1,11 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
+use jni::JNIEnv;
+use jni::objects::JObject;
+use stremio_core::types::addon::ExtraValue;
+
+use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
-use jni::objects::JObject;
-use jni::JNIEnv;
-use stremio_core::types::addon::ExtraValue;
+use crate::protobuf::stremio::core::types;
 
 impl<'a> TryIntoKotlin<'a, ()> for ExtraValue {
     #[inline]
@@ -36,5 +38,14 @@ impl TryFromKotlin for ExtraValue {
             .auto_local(env);
         let value = String::try_from_kotlin(value.as_obj(), env)?;
         Ok(ExtraValue { name, value })
+    }
+}
+
+impl ToProtobuf<types::ExtraValue, ()> for ExtraValue {
+    fn to_protobuf(&self, _args: &()) -> types::ExtraValue {
+        types::ExtraValue {
+            name: self.name.to_string(),
+            value: self.value.to_string(),
+        }
     }
 }

@@ -1,6 +1,3 @@
-use crate::bridge::{ToProtobuf, TryIntoKotlin};
-use crate::env::AndroidEnv;
-use crate::model::LibraryByType;
 use jni::objects::JObject;
 use jni::JNIEnv;
 use prost::Message;
@@ -18,6 +15,10 @@ use stremio_core::types::library::LibraryBucket;
 use stremio_core::types::profile::Profile;
 use stremio_core::types::resource::MetaItemPreview;
 use stremio_derive::Model;
+
+use crate::bridge::{ToProtobuf, TryIntoKotlin};
+use crate::env::AndroidEnv;
+use crate::model::LibraryByType;
 
 #[derive(Model)]
 #[model(AndroidEnv)]
@@ -89,12 +90,28 @@ impl AndroidModel {
         }
     }
 
-    pub fn get_state_binary<'a>(
-        &self,
-        field: &AndroidModelField,
-    ) -> Vec<u8> {
+    pub fn get_state_binary(&self, field: &AndroidModelField) -> Vec<u8> {
         match field {
-            AndroidModelField::Board => self.board.to_protobuf(&self.ctx)
+            AndroidModelField::Ctx => self.ctx.to_protobuf(&()).encode_to_vec(),
+            AndroidModelField::AuthLink => self.auth_link.to_protobuf(&()).encode_to_vec(),
+            AndroidModelField::ContinueWatchingPreview => self
+                .continue_watching_preview
+                .to_protobuf(&())
+                .encode_to_vec(),
+            AndroidModelField::Library => self.library.to_protobuf(&()).encode_to_vec(),
+            AndroidModelField::LibraryByType => {
+                self.library_by_type.to_protobuf(&()).encode_to_vec()
+            }
+            AndroidModelField::Board => self.board.to_protobuf(&self.ctx).encode_to_vec(),
+            AndroidModelField::Search => self.search.to_protobuf(&self.ctx).encode_to_vec(),
+            AndroidModelField::Discover => self.discover.to_protobuf(&self.ctx).encode_to_vec(),
+            AndroidModelField::MetaDetails => {
+                self.meta_details.to_protobuf(&self.ctx).encode_to_vec()
+            }
+            AndroidModelField::StreamingServer => {
+                self.streaming_server.to_protobuf(&()).encode_to_vec()
+            }
+            _ => unimplemented!(),
         }
     }
 }

@@ -1,10 +1,12 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
-use crate::env::{AndroidEnv, KotlinClassName};
-use crate::jni_ext::JObjectExt;
-use jni::objects::JObject;
 use jni::JNIEnv;
+use jni::objects::JObject;
 use stremio_core::types::resource::Link;
 use url::Url;
+
+use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
+use crate::env::{AndroidEnv, KotlinClassName};
+use crate::jni_ext::JObjectExt;
+use crate::protobuf::stremio::core::types;
 
 impl TryFromKotlin for Link {
     fn try_from_kotlin<'a>(value: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
@@ -68,5 +70,15 @@ impl<'a> TryIntoKotlin<'a, ()> for Link {
                 url.as_obj().into(),
             ],
         )
+    }
+}
+
+impl ToProtobuf<types::Link, ()> for Link {
+    fn to_protobuf(&self, _args: &()) -> types::Link {
+        types::Link {
+            name: self.name.to_string(),
+            category: self.category.to_string(),
+            url: self.url.to_string(),
+        }
     }
 }

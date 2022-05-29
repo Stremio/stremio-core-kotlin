@@ -1,6 +1,8 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
+use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
+use crate::model::LibraryByType;
+use crate::protobuf::stremio::core::models;
 use jni::objects::JObject;
 use jni::JNIEnv;
 use std::cmp;
@@ -257,5 +259,90 @@ impl<'a, F> TryIntoKotlin<'a, String> for LibraryWithFilters<F> {
                 catalog.as_obj().into(),
             ],
         )
+    }
+}
+
+impl ToProtobufAny<models::library_with_filters::Sort, ()> for Sort {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::Sort {
+        match self {
+            Sort::LastWatched => models::library_with_filters::Sort::LastWatched,
+            Sort::Name => models::library_with_filters::Sort::Name,
+            Sort::TimesWatched => models::library_with_filters::Sort::TimesWatched,
+        }
+    }
+}
+
+impl ToProtobuf<models::library_with_filters::LibraryRequest, ()> for LibraryRequest {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::LibraryRequest {
+        models::library_with_filters::LibraryRequest {
+            r#type: self.r#type.clone(),
+            sort: self.sort.to_protobuf(&()) as i32,
+            page: i64::try_from(self.page.0.get()).unwrap_or(i64::MAX),
+        }
+    }
+}
+
+impl ToProtobuf<models::library_with_filters::Selected, ()> for Selected {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::Selected {
+        models::library_with_filters::Selected {
+            request: self.request.to_protobuf(&()),
+        }
+    }
+}
+
+impl ToProtobuf<models::library_with_filters::SelectableType, ()> for SelectableType {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::SelectableType {
+        models::library_with_filters::SelectableType {
+            r#type: self.r#type.clone(),
+            selected: self.selected,
+            request: self.request.to_protobuf(&()),
+        }
+    }
+}
+
+impl ToProtobuf<models::library_with_filters::SelectableSort, ()> for SelectableSort {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::SelectableSort {
+        models::library_with_filters::SelectableSort {
+            sort: self.sort.to_protobuf(&()) as i32,
+            selected: self.selected,
+            request: self.request.to_protobuf(&()),
+        }
+    }
+}
+
+impl ToProtobuf<models::library_with_filters::SelectablePage, ()> for SelectablePage {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::SelectablePage {
+        models::library_with_filters::SelectablePage {
+            request: self.request.to_protobuf(&()),
+        }
+    }
+}
+
+impl ToProtobuf<models::library_with_filters::Selectable, ()> for Selectable {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::Selectable {
+        models::library_with_filters::Selectable {
+            types: self.types.to_protobuf(&()),
+            sorts: self.sorts.to_protobuf(&()),
+            prev_page: self.prev_page.to_protobuf(&()),
+            next_page: self.next_page.to_protobuf(&()),
+        }
+    }
+}
+
+impl<F> ToProtobuf<models::LibraryWithFilters, ()> for LibraryWithFilters<F> {
+    fn to_protobuf(&self, _args: &()) -> models::LibraryWithFilters {
+        models::LibraryWithFilters {
+            selected: self.selected.to_protobuf(&()),
+            selectable: self.selectable.to_protobuf(&()),
+            catalog: self.catalog.to_protobuf(&()),
+        }
+    }
+}
+
+impl ToProtobuf<models::LibraryByType, ()> for LibraryByType {
+    fn to_protobuf(&self, _args: &()) -> models::LibraryByType {
+        models::LibraryByType {
+            catalogs: self.catalogs.to_protobuf(&()),
+        }
     }
 }

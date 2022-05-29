@@ -1,10 +1,12 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
-use crate::env::{AndroidEnv, KotlinClassName};
-use crate::jni_ext::JObjectExt;
-use jni::objects::JObject;
 use jni::JNIEnv;
+use jni::objects::JObject;
 use stremio_core::types::addon::{ResourcePath, ResourceRequest};
 use url::Url;
+
+use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
+use crate::env::{AndroidEnv, KotlinClassName};
+use crate::jni_ext::JObjectExt;
+use crate::protobuf::stremio::core::types;
 
 impl<'a> TryIntoKotlin<'a, ()> for ResourceRequest {
     #[inline]
@@ -43,5 +45,14 @@ impl TryFromKotlin for ResourceRequest {
             .auto_local(env);
         let path = ResourcePath::try_from_kotlin(path.as_obj(), env)?;
         Ok(ResourceRequest { base, path })
+    }
+}
+
+impl ToProtobuf<types::ResourceRequest, ()> for ResourceRequest {
+    fn to_protobuf(&self, _args: &()) -> types::ResourceRequest {
+        types::ResourceRequest {
+            base: self.base.to_string(),
+            path: self.path.to_protobuf(&()),
+        }
     }
 }

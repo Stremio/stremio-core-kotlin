@@ -20,9 +20,9 @@ message LibraryWithFilters {
     required int64 page = 3;
   }
   enum Sort {
-    lastwatched = 0;
-    name = 1;
-    timeswatched = 2;
+    LastWatched = 0;
+    Name = 1;
+    TimesWatched = 2;
   }
   message Selectable {
     repeated SelectableType types = 1;
@@ -33,10 +33,12 @@ message LibraryWithFilters {
   message SelectableType {
     optional string type = 1;
     required bool selected = 2;
+    required LibraryRequest request = 3;
   }
   message SelectableSort {
     required Sort sort = 1;
     required bool selected = 2;
+    required LibraryRequest request = 3;
   }
   message SelectablePage {
     required LibraryRequest request = 1;

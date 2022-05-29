@@ -1,6 +1,7 @@
-use crate::bridge::TryIntoKotlin;
+use crate::bridge::{ToProtobuf, ToProtobufAny, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
+use crate::protobuf::stremio::core::models;
 use jni::objects::JObject;
 use jni::JNIEnv;
 use stremio_core::models::link::Link;
@@ -34,5 +35,14 @@ impl<'a> TryIntoKotlin<'a, ()> for Link<LinkAuthKey> {
             ),
             &[code.as_obj().into(), data.as_obj().into()],
         )
+    }
+}
+
+impl ToProtobuf<models::AuthLink, ()> for Link<LinkAuthKey> {
+    fn to_protobuf(&self, _args: &()) -> models::AuthLink {
+        models::AuthLink {
+            code: self.code.to_protobuf(&()),
+            data: self.data.to_protobuf(&()),
+        }
     }
 }

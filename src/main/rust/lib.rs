@@ -7,5 +7,3 @@ mod protobuf;
 
 mod jni_ext;
 mod stremio_core_android;
-
-

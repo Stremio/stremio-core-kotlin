@@ -1,9 +1,11 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
+use jni::JNIEnv;
+use jni::objects::JObject;
+use stremio_core::types::addon::{ExtraValue, ResourcePath};
+
+use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
-use jni::objects::JObject;
-use jni::JNIEnv;
-use stremio_core::types::addon::{ExtraValue, ResourcePath};
+use crate::protobuf::stremio::core::types;
 
 impl<'a> TryIntoKotlin<'a, ()> for ResourcePath {
     #[inline]
@@ -60,5 +62,16 @@ impl TryFromKotlin for ResourcePath {
             id,
             extra,
         })
+    }
+}
+
+impl ToProtobuf<types::ResourcePath, ()> for ResourcePath {
+    fn to_protobuf(&self, _args: &()) -> types::ResourcePath {
+        types::ResourcePath {
+            resource: self.resource.to_string(),
+            r#type: self.r#type.to_string(),
+            id: self.id.to_string(),
+            extra: self.extra.to_protobuf(&()),
+        }
     }
 }

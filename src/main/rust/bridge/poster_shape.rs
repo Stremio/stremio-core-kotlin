@@ -1,9 +1,11 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
+use jni::JNIEnv;
+use jni::objects::JObject;
+use stremio_core::types::resource::PosterShape;
+
+use crate::bridge::{ToProtobufAny, TryFromKotlin, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
-use jni::objects::JObject;
-use jni::JNIEnv;
-use stremio_core::types::resource::PosterShape;
+use crate::protobuf::stremio::core::types;
 
 impl<'a> TryIntoKotlin<'a, ()> for PosterShape {
     #[inline]
@@ -38,6 +40,16 @@ impl TryFromKotlin for PosterShape {
             "Poster" => Ok(PosterShape::Poster),
             "Landscape" => Ok(PosterShape::Landscape),
             _ => Ok(PosterShape::Square),
+        }
+    }
+}
+
+impl ToProtobufAny<types::PosterShape, ()> for PosterShape {
+    fn to_protobuf(&self, _args: &()) -> types::PosterShape {
+        match self {
+            PosterShape::Poster => types::PosterShape::Poster,
+            PosterShape::Landscape => types::PosterShape::Landscape,
+            PosterShape::Square => types::PosterShape::Square,
         }
     }
 }

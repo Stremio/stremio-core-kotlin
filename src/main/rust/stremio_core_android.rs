@@ -19,8 +19,6 @@ use stremio_core::runtime::msg::Action;
 use stremio_core::runtime::{Env, EnvError, Runtime, RuntimeAction};
 use stremio_core::types::library::LibraryBucket;
 use stremio_core::types::profile::Profile;
-use prost::Message;
-use crate::protobuf::stremio;
 
 lazy_static! {
     static ref RUNTIME: RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, EnvError>>> =
@@ -177,24 +175,8 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateBinary(
         .as_ref()
         .expect("RUNTIME not initialized");
     let model = runtime.model().expect("model read failed");
-    let message_buf = model.get_state_binary(&field).encode_to_vec();
+    let message_buf = model.get_state_binary(&field);
     env.byte_array_from_slice(&message_buf)
-        .exception_describe(&env)
-        .expect("state convert failed")
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn Java_com_stremio_core_Core_getSeriesInfoBinary(
-    env: JNIEnv,
-    _class: JClass
-) -> jobject {
-    let series_info = stremio::core::types::video::SeriesInfo {
-        season: 5,
-        episode: 4
-    };
-
-    let buf = series_info.encode_to_vec();
-    env.byte_array_from_slice(&buf)
         .exception_describe(&env)
         .expect("state convert failed")
 }

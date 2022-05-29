@@ -1,11 +1,13 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
-use crate::env::{AndroidEnv, KotlinClassName};
-use crate::jni_ext::JObjectExt;
 use chrono::{DateTime, Utc};
-use jni::objects::JObject;
 use jni::JNIEnv;
+use jni::objects::JObject;
 use stremio_core::types::resource::{Link, MetaItemBehaviorHints, MetaItemPreview, PosterShape};
 use stremio_deeplinks::MetaItemDeepLinks;
+
+use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin, TryIntoKotlin};
+use crate::env::{AndroidEnv, KotlinClassName};
+use crate::jni_ext::JObjectExt;
+use crate::protobuf::stremio::core::types;
 
 impl TryFromKotlin for MetaItemBehaviorHints {
     fn try_from_kotlin<'a>(value: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
@@ -333,5 +335,48 @@ impl<'a> TryIntoKotlin<'a, ()> for MetaItemPreview {
                 deep_links.as_obj().into(),
             ],
         )
+    }
+}
+
+impl ToProtobuf<types::MetaItemBehaviorHints, ()> for MetaItemBehaviorHints {
+    fn to_protobuf(&self, _args: &()) -> types::MetaItemBehaviorHints {
+        types::MetaItemBehaviorHints {
+            default_video_id: self.default_video_id.clone(),
+            featured_video_id: self.featured_video_id.clone(),
+            has_scheduled_videos: self.has_scheduled_videos,
+        }
+    }
+}
+
+impl ToProtobuf<types::MetaItemDeepLinks, ()> for MetaItemDeepLinks {
+    fn to_protobuf(&self, _args: &()) -> types::MetaItemDeepLinks {
+        types::MetaItemDeepLinks {
+            meta_details_videos: self.meta_details_videos.clone(),
+            meta_details_streams: self.meta_details_streams.clone(),
+            player: None, // TODO populate
+        }
+    }
+}
+
+impl ToProtobuf<types::MetaItem, ()> for MetaItemPreview {
+    fn to_protobuf(&self, _args: &()) -> types::MetaItem {
+        types::MetaItem {
+            id: self.id.to_string(),
+            r#type: self.r#type.to_string(),
+            name: self.name.to_string(),
+            poster_shape: self.poster_shape.to_protobuf(&()) as i32,
+            poster: self.poster.clone(),
+            background: self.background.clone(),
+            logo: self.logo.clone(),
+            description: self.description.clone(),
+            release_info: self.release_info.clone(),
+            runtime: self.runtime.clone(),
+            released: self.released.to_protobuf(&()),
+            links: self.links.to_protobuf(&()),
+            trailer_streams: self.trailer_streams.to_protobuf(&()),
+            videos: vec![],
+            behavior_hints: self.behavior_hints.to_protobuf(&()),
+            deep_links: MetaItemDeepLinks::from(self).to_protobuf(&()),
+        }
     }
 }
