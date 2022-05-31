@@ -59,22 +59,22 @@ impl ToProtobuf<types::video::SeriesInfo, ()> for SeriesInfo {
     }
 }
 
-impl ToProtobuf<types::Video, ()> for Video {
-    fn to_protobuf(&self, _args: &()) -> types::Video {
+impl ToProtobuf<types::Video, Option<String>> for Video {
+    fn to_protobuf(&self, addon_name: &Option<String>) -> types::Video {
         types::Video {
             id: self.id.to_string(),
             title: self.title.to_string(),
             released: self.released.to_protobuf(&()),
             overview: self.overview.clone(),
             thumbnail: self.thumbnail.clone(),
-            streams: self.streams.to_protobuf(&()),
+            streams: self.streams.to_protobuf(&(addon_name)),
             series_info: self.series_info.to_protobuf(&()),
         }
     }
 }
 
-impl ToProtobuf<types::MetaItem, ()> for MetaItem {
-    fn to_protobuf(&self, _args: &()) -> types::MetaItem {
+impl ToProtobuf<types::MetaItem, Option<String>> for MetaItem {
+    fn to_protobuf(&self, addon_name: &Option<String>) -> types::MetaItem {
         types::MetaItem {
             id: self.id.to_string(),
             r#type: self.r#type.to_string(),
@@ -88,8 +88,8 @@ impl ToProtobuf<types::MetaItem, ()> for MetaItem {
             runtime: self.runtime.clone(),
             released: self.released.to_protobuf(&()),
             links: self.links.to_protobuf(&()),
-            trailer_streams: self.trailer_streams.to_protobuf(&()),
-            videos: self.videos.to_protobuf(&()),
+            trailer_streams: self.trailer_streams.to_protobuf(&(None)),
+            videos: self.videos.to_protobuf(&(addon_name)),
             behavior_hints: self.behavior_hints.to_protobuf(&()),
             deep_links: MetaItemDeepLinks::from(self).to_protobuf(&()),
         }

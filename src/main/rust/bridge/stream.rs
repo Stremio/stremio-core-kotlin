@@ -38,11 +38,11 @@ impl ToProtobufAny<types::stream::Source, ()> for StreamSource {
     }
 }
 
-impl ToProtobuf<types::Stream, ()> for Stream {
-    fn to_protobuf(&self, _args: &()) -> types::Stream {
+impl ToProtobuf<types::Stream, Option<String>> for Stream {
+    fn to_protobuf(&self, addon_name: &Option<String>) -> types::Stream {
         let deep_links = StreamDeepLinks::from(self);
         types::Stream {
-            name: self.name.clone(),
+            name: self.name.clone().or(addon_name.to_owned()),
             description: self.description.clone(),
             thumbnail: self.thumbnail.clone(),
             behavior_hints: types::StreamBehaviorHints {

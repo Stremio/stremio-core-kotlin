@@ -62,12 +62,12 @@ impl ToProtobuf<models::LoadableMetaItem, Ctx> for &ResourceLoadable<MetaItem> {
             .map(|addon| {
                 let addon_name = addon.manifest.name.to_owned();
                 models::LoadableMetaItem {
-                    title: addon_name,
+                    title: addon_name.clone(),
                     request: self.request.to_protobuf(&()),
                     content: Some(match &self.content {
-                        Loadable::Ready(ready) => {
-                            models::loadable_meta_item::Content::Ready(ready.to_protobuf(&()))
-                        }
+                        Loadable::Ready(ready) => models::loadable_meta_item::Content::Ready(
+                            ready.to_protobuf(&(Some(addon_name.clone()))),
+                        ),
                         Loadable::Err(error) => {
                             models::loadable_meta_item::Content::Error(models::Error {
                                 message: error.to_string(),
@@ -92,12 +92,12 @@ impl ToProtobuf<models::LoadableStreams, Ctx> for ResourceLoadable<Vec<Stream>> 
             .map(|addon| {
                 let addon_name = addon.manifest.name.to_owned();
                 models::LoadableStreams {
-                    title: addon_name,
+                    title: addon_name.clone(),
                     request: self.request.to_protobuf(&()),
                     content: Some(match &self.content {
                         Loadable::Ready(ready) => {
                             models::loadable_streams::Content::Ready(models::Streams {
-                                streams: ready.to_protobuf(&()),
+                                streams: ready.to_protobuf(&(Some(addon_name.clone()))),
                             })
                         }
                         Loadable::Err(error) => {
