@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use jni::objects::JObject;
 use jni::JNIEnv;
-use stremio_core::types::resource::{Link, MetaItemBehaviorHints, MetaItemPreview, PosterShape};
+use stremio_core::types::resource::{MetaItemBehaviorHints, MetaItemPreview, PosterShape};
 use stremio_deeplinks::MetaItemDeepLinks;
 
 use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin};
@@ -185,11 +185,6 @@ impl TryFromKotlin for MetaItemPreview {
             .l()?
             .auto_local(env);
         let poster_shape = PosterShape::try_from_kotlin(poster_shape.as_obj(), env)?;
-        let links = env
-            .call_method(value, "getLinks", "()Ljava/util/List;", &[])?
-            .l()?
-            .auto_local(env);
-        let links = Vec::<Link>::try_from_kotlin(links.as_obj(), env)?;
         let behavior_hints = env
             .call_method(
                 value,
@@ -212,7 +207,7 @@ impl TryFromKotlin for MetaItemPreview {
             runtime,
             released,
             poster_shape,
-            links,
+            links: Default::default(),
             behavior_hints,
             trailer_streams: Default::default(),
         })
@@ -239,9 +234,9 @@ impl ToProtobuf<types::MetaItemDeepLinks, ()> for MetaItemDeepLinks {
     }
 }
 
-impl ToProtobuf<types::MetaItem, ()> for MetaItemPreview {
-    fn to_protobuf(&self, _args: &()) -> types::MetaItem {
-        types::MetaItem {
+impl ToProtobuf<types::MetaItemPreview, ()> for MetaItemPreview {
+    fn to_protobuf(&self, _args: &()) -> types::MetaItemPreview {
+        types::MetaItemPreview {
             id: self.id.to_string(),
             r#type: self.r#type.to_string(),
             name: self.name.to_string(),
@@ -254,8 +249,6 @@ impl ToProtobuf<types::MetaItem, ()> for MetaItemPreview {
             runtime: self.runtime.clone(),
             released: self.released.to_protobuf(&()),
             links: self.links.to_protobuf(&()),
-            trailer_streams: self.trailer_streams.to_protobuf(&()),
-            videos: vec![],
             behavior_hints: self.behavior_hints.to_protobuf(&()),
             deep_links: MetaItemDeepLinks::from(self).to_protobuf(&()),
         }

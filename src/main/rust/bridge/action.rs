@@ -42,7 +42,7 @@ impl TryFromKotlin for Action {
                     }
                     Ok(KotlinClassName::ActionCtx_AddToLibrary) => {
                         let meta_preview =
-                            get_args(action_ctx.as_obj(), KotlinClassName::MetaItem, env)?
+                            get_args(action_ctx.as_obj(), KotlinClassName::MetaItemPreview, env)?
                                 .auto_local(env);
                         let meta_preview =
                             MetaItemPreview::try_from_kotlin(meta_preview.as_obj(), env)?;

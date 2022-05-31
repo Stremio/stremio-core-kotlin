@@ -48,7 +48,7 @@ pub enum KotlinClassName {
     RuntimeEvent,
     RuntimeEvent_NewState,
     RuntimeEvent_CoreEvent,
-    MetaItem,
+    MetaItemPreview,
     MetaItemBehaviorHints,
     PosterShape,
     ResourceRequest,
@@ -188,7 +188,7 @@ impl KotlinClassName {
             KotlinClassName::RuntimeEvent_CoreEvent => {
                 "com/stremio/core/runtime/RuntimeEvent$CoreEvent"
             }
-            KotlinClassName::MetaItem => "com/stremio/core/types/resource/MetaItem",
+            KotlinClassName::MetaItemPreview => "com/stremio/core/types/resource/MetaItemPreview",
             KotlinClassName::MetaItemBehaviorHints => {
                 "com/stremio/core/types/resource/MetaItemBehaviorHints"
             }

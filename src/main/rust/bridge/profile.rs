@@ -1,8 +1,8 @@
 use std::cmp;
 use std::convert::TryFrom;
 
-use jni::objects::{JObject, JValue};
 use jni::JNIEnv;
+use jni::objects::JObject;
 use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
 use stremio_core::types::profile::{Auth, GDPRConsent, Profile, Settings, User};
 use url::Url;
