@@ -67,7 +67,9 @@ impl ToProtobuf<types::Video, Option<String>> for Video {
             released: self.released.to_protobuf(&()),
             overview: self.overview.clone(),
             thumbnail: self.thumbnail.clone(),
-            streams: self.streams.to_protobuf(&(addon_name)),
+            streams: self
+                .streams
+                .to_protobuf(&(addon_name.to_owned(), None, None)),
             series_info: self.series_info.to_protobuf(&()),
         }
     }
@@ -88,7 +90,7 @@ impl ToProtobuf<types::MetaItem, Option<String>> for MetaItem {
             runtime: self.runtime.clone(),
             released: self.released.to_protobuf(&()),
             links: self.links.to_protobuf(&()),
-            trailer_streams: self.trailer_streams.to_protobuf(&(None)),
+            trailer_streams: self.trailer_streams.to_protobuf(&(None, None, None)),
             videos: self.videos.to_protobuf(&(addon_name)),
             behavior_hints: self.behavior_hints.to_protobuf(&()),
             deep_links: MetaItemDeepLinks::from(self).to_protobuf(&()),
@@ -115,6 +117,7 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
                         .find(|catalog| catalog.content.is_loading())
                 }
             });
+        let meta_request = meta_item.map(|item| &item.request);
         let title = meta_item
             .and_then(|meta_item| meta_item.content.as_ref().ready())
             .map(|meta_item| {
@@ -147,7 +150,7 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
             selected: self.selected.to_protobuf(&()),
             title,
             meta_item: meta_item.to_protobuf(ctx),
-            streams: self.streams.to_protobuf(ctx),
+            streams: self.streams.to_protobuf(&(ctx, meta_request)),
         }
     }
 }

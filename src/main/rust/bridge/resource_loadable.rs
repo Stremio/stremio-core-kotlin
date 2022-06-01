@@ -1,5 +1,6 @@
 use stremio_core::models::common::{Loadable, ResourceLoadable};
 use stremio_core::models::ctx::Ctx;
+use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream};
 
 use crate::bridge::{ToProtobuf, ToProtobufAny};
@@ -83,8 +84,13 @@ impl ToProtobuf<models::LoadableMetaItem, Ctx> for &ResourceLoadable<MetaItem> {
     }
 }
 
-impl ToProtobuf<models::LoadableStreams, Ctx> for ResourceLoadable<Vec<Stream>> {
-    fn to_protobuf(&self, ctx: &Ctx) -> models::LoadableStreams {
+impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
+    for ResourceLoadable<Vec<Stream>>
+{
+    fn to_protobuf(
+        &self,
+        (ctx, meta_request): &(&Ctx, Option<&ResourceRequest>),
+    ) -> models::LoadableStreams {
         ctx.profile
             .addons
             .iter()
@@ -92,12 +98,16 @@ impl ToProtobuf<models::LoadableStreams, Ctx> for ResourceLoadable<Vec<Stream>> 
             .map(|addon| {
                 let addon_name = addon.manifest.name.to_owned();
                 models::LoadableStreams {
-                    title: addon_name.clone(),
+                    title: addon_name.to_owned(),
                     request: self.request.to_protobuf(&()),
                     content: Some(match &self.content {
                         Loadable::Ready(ready) => {
                             models::loadable_streams::Content::Ready(models::Streams {
-                                streams: ready.to_protobuf(&(Some(addon_name.clone()))),
+                                streams: ready.to_protobuf(&(
+                                    Some(addon_name.to_owned()),
+                                    Some(&self.request),
+                                    meta_request.to_owned(),
+                                )),
                             })
                         }
                         Loadable::Err(error) => {

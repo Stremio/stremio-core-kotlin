@@ -1,3 +1,4 @@
+use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{Stream, StreamSource};
 use stremio_deeplinks::StreamDeepLinks;
 
@@ -38,16 +39,36 @@ impl ToProtobufAny<types::stream::Source, ()> for StreamSource {
     }
 }
 
-impl ToProtobuf<types::Stream, Option<String>> for Stream {
-    fn to_protobuf(&self, addon_name: &Option<String>) -> types::Stream {
-        let deep_links = StreamDeepLinks::from(self);
+impl
+    ToProtobuf<
+        types::Stream,
+        (
+            Option<String>,
+            Option<&ResourceRequest>,
+            Option<&ResourceRequest>,
+        ),
+    > for Stream
+{
+    fn to_protobuf(
+        &self,
+        (addon_name, stream_request, meta_request): &(
+            Option<String>,
+            Option<&ResourceRequest>,
+            Option<&ResourceRequest>,
+        ),
+    ) -> types::Stream {
+        let deep_links = if stream_request.is_some() && meta_request.is_some() {
+            StreamDeepLinks::from((self, stream_request.unwrap(), meta_request.unwrap()))
+        } else {
+            StreamDeepLinks::from(self)
+        };
         types::Stream {
-            name: self.name.clone().or(addon_name.to_owned()),
+            name: self.name.to_owned().or(addon_name.to_owned()),
             description: self.description.clone(),
             thumbnail: self.thumbnail.clone(),
             behavior_hints: types::StreamBehaviorHints {
                 not_web_ready: self.behavior_hints.not_web_ready,
-                binge_group: self.behavior_hints.binge_group.clone(),
+                binge_group: self.behavior_hints.binge_group.to_owned(),
                 country_whitelist: vec![],
                 headers: Default::default(),
             },
