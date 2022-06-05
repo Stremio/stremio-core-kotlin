@@ -2,7 +2,7 @@ buildscript {
     ext {
         stremio_core_android_profile = "debug"
         kotlinVersion = "1.6.10"
-        pbandkVersion = "0.13.0"
+        pbandkVersion = "0.14.1"
         protobufVersion = "3.21.0"
     }
 
