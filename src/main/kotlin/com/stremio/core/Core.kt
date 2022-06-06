@@ -4,6 +4,7 @@ import android.util.Log
 import com.stremio.core.runtime.EnvError
 import com.stremio.core.runtime.RuntimeEvent
 import com.stremio.core.runtime.msg.Action
+import com.stremio.core.types.resource.Stream
 import pbandk.Message
 import pbandk.decodeFromByteArray
 import java.util.*
@@ -35,11 +36,18 @@ object Core {
 
     external fun getStateBinary(field: Field): ByteArray
 
+    private external fun decodeStreamDataBinary(streamData: String): ByteArray
+
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T : Message> getState(field: Field): T {
         val protobuf = getStateBinary(field)
         val companion = T::class.companionObjectInstance as Message.Companion<T>
         return companion.decodeFromByteArray(protobuf)
+    }
+
+    fun decodeStreamData(streamData: String): Stream {
+        val decodedStreamProtobuf = decodeStreamDataBinary(streamData)
+        return Stream.decodeFromByteArray(decodedStreamProtobuf)
     }
 
     @JvmStatic

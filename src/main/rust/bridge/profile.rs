@@ -7,7 +7,7 @@ use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
 use stremio_core::types::profile::{Auth, GDPRConsent, Profile, Settings, User};
 use url::Url;
 
-use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin, TryIntoKotlin};
+use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::types;

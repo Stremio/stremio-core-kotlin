@@ -1,10 +1,11 @@
 use chrono::{DateTime, Utc};
-use jni::objects::JObject;
 use jni::JNIEnv;
+use jni::objects::JObject;
+use stremio_core::deep_links::MetaItemDeepLinks;
+use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{MetaItemBehaviorHints, MetaItemPreview, PosterShape};
-use stremio_deeplinks::MetaItemDeepLinks;
 
-use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin};
+use crate::bridge::{ToProtobuf, TryFromKotlin};
 use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::types;
@@ -38,6 +39,7 @@ impl TryFromKotlin for MetaItemBehaviorHints {
             default_video_id,
             featured_video_id,
             has_scheduled_videos,
+            other: Default::default(),
         })
     }
 }
@@ -69,6 +71,7 @@ impl TryFromKotlin for MetaItemDeepLinks {
         Ok(MetaItemDeepLinks {
             meta_details_videos,
             meta_details_streams,
+            player: None
         })
     }
 }
@@ -229,13 +232,13 @@ impl ToProtobuf<types::MetaItemDeepLinks, ()> for MetaItemDeepLinks {
         types::MetaItemDeepLinks {
             meta_details_videos: self.meta_details_videos.clone(),
             meta_details_streams: self.meta_details_streams.clone(),
-            player: None, // TODO populate
+            player: self.player.clone()
         }
     }
 }
 
-impl ToProtobuf<types::MetaItemPreview, ()> for MetaItemPreview {
-    fn to_protobuf(&self, _args: &()) -> types::MetaItemPreview {
+impl ToProtobuf<types::MetaItemPreview, ResourceRequest> for MetaItemPreview {
+    fn to_protobuf(&self, meta_request: &ResourceRequest) -> types::MetaItemPreview {
         types::MetaItemPreview {
             id: self.id.to_string(),
             r#type: self.r#type.to_string(),
@@ -250,7 +253,7 @@ impl ToProtobuf<types::MetaItemPreview, ()> for MetaItemPreview {
             released: self.released.to_protobuf(&()),
             links: self.links.to_protobuf(&()),
             behavior_hints: self.behavior_hints.to_protobuf(&()),
-            deep_links: MetaItemDeepLinks::from(self).to_protobuf(&()),
+            deep_links: MetaItemDeepLinks::from((self, meta_request)).to_protobuf(&()),
         }
     }
 }

@@ -2,7 +2,7 @@ use jni::objects::JObject;
 use jni::JNIEnv;
 use stremio_core::types::addon::{ExtraValue, ResourcePath};
 
-use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin};
+use crate::bridge::{ToProtobuf, TryFromKotlin};
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::types;
 

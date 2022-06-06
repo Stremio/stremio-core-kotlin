@@ -8,7 +8,7 @@ use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::MetaItemPreview;
 
-use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin};
+use crate::bridge::{ToProtobuf, TryFromKotlin};
 use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::models;

@@ -1,24 +1,28 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
-use crate::env::{AndroidEnv, KotlinClassName};
-use crate::jni_ext::{ExceptionDescribeExt, JObjectExt};
-use crate::model::{AndroidModel, AndroidModelField};
-use boolinator::Boolinator;
-use futures::{future, StreamExt};
-use jni::objects::{JClass, JObject};
-use jni::sys::{jint, jobject, JNI_VERSION_1_6};
-use jni::{JNIEnv, JavaVM};
-use lazy_static::lazy_static;
 use std::os::raw::c_void;
 use std::panic;
 use std::sync::RwLock;
+
+use boolinator::Boolinator;
+use futures::{future, StreamExt};
+use jni::{JavaVM, JNIEnv};
+use jni::objects::{JClass, JObject};
+use jni::sys::{jint, JNI_VERSION_1_6, jobject};
+use lazy_static::lazy_static;
+use prost::Message;
 use stremio_core::constants::{
     LIBRARY_RECENT_STORAGE_KEY, LIBRARY_STORAGE_KEY, PROFILE_STORAGE_KEY,
 };
 use stremio_core::models::common::Loadable;
-use stremio_core::runtime::msg::Action;
 use stremio_core::runtime::{Env, EnvError, Runtime, RuntimeAction};
+use stremio_core::runtime::msg::Action;
 use stremio_core::types::library::LibraryBucket;
 use stremio_core::types::profile::Profile;
+use stremio_core::types::resource::Stream;
+
+use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
+use crate::env::{AndroidEnv, KotlinClassName};
+use crate::jni_ext::{ExceptionDescribeExt, JObjectExt};
+use crate::model::{AndroidModel, AndroidModelField};
 
 lazy_static! {
     static ref RUNTIME: RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, EnvError>>> =
@@ -156,4 +160,22 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateBinary(
     env.byte_array_from_slice(&message_buf)
         .exception_describe(&env)
         .expect("state convert failed")
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataBinary(
+    env: JNIEnv,
+    _class: JClass,
+    field: JObject,
+) -> jobject {
+    let stream_data = String::try_from_kotlin(field, &env)
+        .exception_describe(&env)
+        .expect("stream data convert failed");
+    let stream_buf = Stream::decode(stream_data)
+        .map(|stream| stream.to_protobuf(&(None, None, None)))
+        .map(|protobuf| protobuf.encode_to_vec())
+        .expect("stream decoding failed");
+    env.byte_array_from_slice(&stream_buf)
+        .exception_describe(&env)
+        .expect("stream decoding failed")
 }

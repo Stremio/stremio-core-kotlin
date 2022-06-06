@@ -1,8 +1,8 @@
-use jni::objects::JObject;
 use jni::JNIEnv;
+use jni::objects::JObject;
 use stremio_core::types::resource::PosterShape;
 
-use crate::bridge::{ToProtobufAny, TryFromKotlin};
+use crate::bridge::{ToProtobuf, TryFromKotlin};
 use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::types;
@@ -27,7 +27,7 @@ impl TryFromKotlin for PosterShape {
     }
 }
 
-impl ToProtobufAny<types::PosterShape, ()> for PosterShape {
+impl ToProtobuf<types::PosterShape, ()> for PosterShape {
     fn to_protobuf(&self, _args: &()) -> types::PosterShape {
         match self {
             PosterShape::Poster => types::PosterShape::Poster,
