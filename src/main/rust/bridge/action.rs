@@ -35,7 +35,7 @@ impl TryFromKotlin for Action {
                     Ok(KotlinClassName::ActionCtx_Logout) => Ok(Action::Ctx(ActionCtx::Logout)),
                     Ok(KotlinClassName::ActionCtx_UpdateSettings) => {
                         let settings =
-                            get_args(action_ctx.as_obj(), KotlinClassName::Settings, env)?
+                            get_args(action_ctx.as_obj(), KotlinClassName::Profile_Settings, env)?
                                 .auto_local(env);
                         let settings = Settings::try_from_kotlin(settings.as_obj(), env)?;
                         Ok(Action::Ctx(ActionCtx::UpdateSettings(settings)))

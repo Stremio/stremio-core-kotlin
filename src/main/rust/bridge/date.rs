@@ -1,8 +1,10 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
-use crate::env::{AndroidEnv, KotlinClassName};
 use chrono::{DateTime, TimeZone, Utc};
 use jni::objects::JObject;
 use jni::JNIEnv;
+
+use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
+use crate::env::{AndroidEnv, KotlinClassName};
+use crate::protobuf::google::protobuf::Timestamp;
 
 impl<'a> TryIntoKotlin<'a, ()> for DateTime<Utc> {
     #[inline]
@@ -21,5 +23,14 @@ impl TryFromKotlin for DateTime<Utc> {
         let time = env.call_method(value, "getTime", "()J", &[])?.j()?;
         let (secs, nsecs) = (time / 1000, time % 1000 * 1_000_000);
         Ok(Utc.timestamp(secs, nsecs as u32))
+    }
+}
+
+impl ToProtobuf<Timestamp, ()> for DateTime<Utc> {
+    fn to_protobuf(&self, _args: &()) -> Timestamp {
+        Timestamp {
+            seconds: self.timestamp(),
+            nanos: self.timestamp_subsec_nanos() as i32,
+        }
     }
 }

@@ -1,11 +1,13 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
-use crate::env::{AndroidEnv, KotlinClassName};
-use crate::jni_ext::JObjectExt;
 use chrono::{DateTime, Utc};
 use jni::objects::JObject;
 use jni::JNIEnv;
-use stremio_core::types::resource::{Link, MetaItemBehaviorHints, MetaItemPreview, PosterShape};
+use stremio_core::types::resource::{MetaItemBehaviorHints, MetaItemPreview, PosterShape};
 use stremio_deeplinks::MetaItemDeepLinks;
+
+use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin};
+use crate::env::KotlinClassName;
+use crate::jni_ext::JObjectExt;
+use crate::protobuf::stremio::core::types;
 
 impl TryFromKotlin for MetaItemBehaviorHints {
     fn try_from_kotlin<'a>(value: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
@@ -40,37 +42,6 @@ impl TryFromKotlin for MetaItemBehaviorHints {
     }
 }
 
-impl<'a> TryIntoKotlin<'a, ()> for MetaItemBehaviorHints {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let default_video_id = self
-            .default_video_id
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        let featured_video_id = self
-            .featured_video_id
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        let has_scheduled_videos = self.has_scheduled_videos.into();
-        env.new_object(
-            classes
-                .get(&KotlinClassName::MetaItemBehaviorHints)
-                .unwrap(),
-            format!(
-                "(L{};L{};Z)V",
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value()
-            ),
-            &[
-                default_video_id.as_obj().into(),
-                featured_video_id.as_obj().into(),
-                has_scheduled_videos,
-            ],
-        )
-    }
-}
-
 impl TryFromKotlin for MetaItemDeepLinks {
     fn try_from_kotlin<'a>(value: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
         let meta_details_videos = env
@@ -99,33 +70,6 @@ impl TryFromKotlin for MetaItemDeepLinks {
             meta_details_videos,
             meta_details_streams,
         })
-    }
-}
-
-impl<'a> TryIntoKotlin<'a, ()> for MetaItemDeepLinks {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let meta_details_videos = self
-            .meta_details_videos
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        let meta_details_streams = self
-            .meta_details_streams
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::MetaItemDeepLinks).unwrap(),
-            format!(
-                "(L{};L{};)V",
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value()
-            ),
-            &[
-                meta_details_videos.as_obj().into(),
-                meta_details_streams.as_obj().into(),
-            ],
-        )
     }
 }
 
@@ -241,11 +185,6 @@ impl TryFromKotlin for MetaItemPreview {
             .l()?
             .auto_local(env);
         let poster_shape = PosterShape::try_from_kotlin(poster_shape.as_obj(), env)?;
-        let links = env
-            .call_method(value, "getLinks", "()Ljava/util/List;", &[])?
-            .l()?
-            .auto_local(env);
-        let links = Vec::<Link>::try_from_kotlin(links.as_obj(), env)?;
         let behavior_hints = env
             .call_method(
                 value,
@@ -268,70 +207,50 @@ impl TryFromKotlin for MetaItemPreview {
             runtime,
             released,
             poster_shape,
-            links,
+            links: Default::default(),
             behavior_hints,
             trailer_streams: Default::default(),
         })
     }
 }
 
-impl<'a> TryIntoKotlin<'a, ()> for MetaItemPreview {
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let id = self.id.try_into_kotlin(&(), env)?.auto_local(env);
-        let r#type = self.r#type.try_into_kotlin(&(), env)?.auto_local(env);
-        let name = self.name.try_into_kotlin(&(), env)?.auto_local(env);
-        let poster = self.poster.try_into_kotlin(&(), env)?.auto_local(env);
-        let background = self.background.try_into_kotlin(&(), env)?.auto_local(env);
-        let logo = self.logo.try_into_kotlin(&(), env)?.auto_local(env);
-        let description = self.description.try_into_kotlin(&(), env)?.auto_local(env);
-        let release_info = self.release_info.try_into_kotlin(&(), env)?.auto_local(env);
-        let runtime = self.runtime.try_into_kotlin(&(), env)?.auto_local(env);
-        let released = self.released.try_into_kotlin(&(), env)?.auto_local(env);
-        let poster_shape = self.poster_shape.try_into_kotlin(&(), env)?.auto_local(env);
-        let links = self.links.try_into_kotlin(&(), env)?.auto_local(env);
-        let behavior_hints = self
-            .behavior_hints
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        let deep_links = MetaItemDeepLinks::from(self)
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::MetaItemPreview).unwrap(),
-            format!(
-                "(L{};L{};L{};L{};L{};L{};L{};L{};L{};L{};L{};L{};L{};L{};)V",
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::String.value(),
-                KotlinClassName::Date.value(),
-                KotlinClassName::PosterShape.value(),
-                "java/util/List",
-                KotlinClassName::MetaItemBehaviorHints.value(),
-                KotlinClassName::MetaItemDeepLinks.value()
-            ),
-            &[
-                id.as_obj().into(),
-                r#type.as_obj().into(),
-                name.as_obj().into(),
-                poster.as_obj().into(),
-                background.as_obj().into(),
-                logo.as_obj().into(),
-                description.as_obj().into(),
-                release_info.as_obj().into(),
-                runtime.as_obj().into(),
-                released.as_obj().into(),
-                poster_shape.as_obj().into(),
-                links.as_obj().into(),
-                behavior_hints.as_obj().into(),
-                deep_links.as_obj().into(),
-            ],
-        )
+impl ToProtobuf<types::MetaItemBehaviorHints, ()> for MetaItemBehaviorHints {
+    fn to_protobuf(&self, _args: &()) -> types::MetaItemBehaviorHints {
+        types::MetaItemBehaviorHints {
+            default_video_id: self.default_video_id.clone(),
+            featured_video_id: self.featured_video_id.clone(),
+            has_scheduled_videos: self.has_scheduled_videos,
+        }
+    }
+}
+
+impl ToProtobuf<types::MetaItemDeepLinks, ()> for MetaItemDeepLinks {
+    fn to_protobuf(&self, _args: &()) -> types::MetaItemDeepLinks {
+        types::MetaItemDeepLinks {
+            meta_details_videos: self.meta_details_videos.clone(),
+            meta_details_streams: self.meta_details_streams.clone(),
+            player: None, // TODO populate
+        }
+    }
+}
+
+impl ToProtobuf<types::MetaItemPreview, ()> for MetaItemPreview {
+    fn to_protobuf(&self, _args: &()) -> types::MetaItemPreview {
+        types::MetaItemPreview {
+            id: self.id.to_string(),
+            r#type: self.r#type.to_string(),
+            name: self.name.to_string(),
+            poster_shape: self.poster_shape.to_protobuf(&()) as i32,
+            poster: self.poster.clone(),
+            background: self.background.clone(),
+            logo: self.logo.clone(),
+            description: self.description.clone(),
+            release_info: self.release_info.clone(),
+            runtime: self.runtime.clone(),
+            released: self.released.to_protobuf(&()),
+            links: self.links.to_protobuf(&()),
+            behavior_hints: self.behavior_hints.to_protobuf(&()),
+            deep_links: MetaItemDeepLinks::from(self).to_protobuf(&()),
+        }
     }
 }

@@ -1,9 +1,4 @@
-use crate::bridge::TryIntoKotlin;
-use crate::env::{AndroidEnv, KotlinClassName};
-use crate::jni_ext::JObjectExt;
 use itertools::Itertools;
-use jni::objects::JObject;
-use jni::JNIEnv;
 use stremio_core::constants::TYPE_PRIORITIES;
 use stremio_core::models::common::compare_with_priorities;
 use stremio_core::models::ctx::Ctx;
@@ -83,18 +78,5 @@ impl<E: Env + 'static> UpdateWithCtx<E> for LibraryByType {
                     result.join(effects)
                 }),
         }
-    }
-}
-
-impl<'a> TryIntoKotlin<'a, String> for LibraryByType {
-    #[inline]
-    fn try_into_kotlin(&self, root: &String, env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let catalogs = self.catalogs.try_into_kotlin(&root, env)?.auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::LibraryByType).unwrap(),
-            format!("(L{};)V", "java/util/List"),
-            &[catalogs.as_obj().into()],
-        )
     }
 }

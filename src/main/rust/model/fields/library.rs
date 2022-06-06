@@ -1,28 +1,31 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
-use crate::env::{AndroidEnv, KotlinClassName};
-use crate::jni_ext::JObjectExt;
-use jni::objects::JObject;
-use jni::JNIEnv;
 use std::cmp;
 use std::convert::TryFrom;
 use std::num::NonZeroUsize;
+
+use jni::objects::JObject;
+use jni::JNIEnv;
 use stremio_core::models::library_with_filters::{
     LibraryRequest, LibraryRequestPage, LibraryWithFilters, Selectable, SelectablePage,
     SelectableSort, SelectableType, Selected, Sort,
 };
-use stremio_deeplinks::LibraryDeepLinks;
+
+use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin};
+use crate::env::KotlinClassName;
+use crate::jni_ext::JObjectExt;
+use crate::model::LibraryByType;
+use crate::protobuf::stremio::core::models;
 
 impl TryFromKotlin for Sort {
     fn try_from_kotlin<'a>(value: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
         let value = env
-            .call_method(value, "getValue", "()Ljava/lang/String;", &[])?
+            .call_method(value, "getName", "()Ljava/lang/String;", &[])?
             .l()?
             .auto_local(env);
         let value = String::try_from_kotlin(value.as_obj(), env)?;
         match value.as_ref() {
-            "lastwatched" => Ok(Sort::LastWatched),
-            "name" => Ok(Sort::Name),
-            "timeswatched" => Ok(Sort::TimesWatched),
+            "LastWatched" => Ok(Sort::LastWatched),
+            "Name" => Ok(Sort::Name),
+            "TimesWatched" => Ok(Sort::TimesWatched),
             value => panic!("Invalid sort: {}", value),
         }
     }
@@ -71,191 +74,87 @@ impl TryFromKotlin for Selected {
     }
 }
 
-impl<'a> TryIntoKotlin<'a, ()> for LibraryDeepLinks {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let library = self.library.try_into_kotlin(&(), env)?.auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::LibraryDeepLinks).unwrap(),
-            format!("(L{};)V", KotlinClassName::String.value()),
-            &[library.as_obj().into()],
-        )
+impl ToProtobufAny<models::library_with_filters::Sort, ()> for Sort {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::Sort {
+        match self {
+            Sort::LastWatched => models::library_with_filters::Sort::LastWatched,
+            Sort::Name => models::library_with_filters::Sort::Name,
+            Sort::TimesWatched => models::library_with_filters::Sort::TimesWatched,
+        }
     }
 }
 
-impl<'a> TryIntoKotlin<'a, ()> for Sort {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        env.get_static_field(
-            classes
-                .get(&KotlinClassName::LibraryWithFilters_Sort)
-                .unwrap(),
-            match self {
-                Sort::LastWatched => "LastWatched",
-                Sort::Name => "Name",
-                Sort::TimesWatched => "TimesWatched",
-            },
-            format!("L{};", KotlinClassName::LibraryWithFilters_Sort.value()),
-        )?
-        .l()
+impl ToProtobuf<models::library_with_filters::LibraryRequest, ()> for LibraryRequest {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::LibraryRequest {
+        models::library_with_filters::LibraryRequest {
+            r#type: self.r#type.clone(),
+            sort: self.sort.to_protobuf(&()) as i32,
+            page: i64::try_from(self.page.0.get()).unwrap_or(i64::MAX),
+        }
     }
 }
 
-impl<'a> TryIntoKotlin<'a, ()> for LibraryRequest {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let r#type = self.r#type.try_into_kotlin(&(), env)?.auto_local(env);
-        let sort = self.sort.try_into_kotlin(&(), env)?.auto_local(env);
-        let page = i64::try_from(self.page.0.get()).unwrap_or(i64::MAX).into();
-        env.new_object(
-            classes
-                .get(&KotlinClassName::LibraryWithFilters_LibraryRequest)
-                .unwrap(),
-            format!(
-                "(Ljava/lang/String;L{};J)V",
-                KotlinClassName::LibraryWithFilters_Sort.value()
-            ),
-            &[r#type.as_obj().into(), sort.as_obj().into(), page],
-        )
+impl ToProtobuf<models::library_with_filters::Selected, ()> for Selected {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::Selected {
+        models::library_with_filters::Selected {
+            request: self.request.to_protobuf(&()),
+        }
     }
 }
 
-impl<'a> TryIntoKotlin<'a, ()> for Selected {
-    #[inline]
-    fn try_into_kotlin(&self, _args: &(), env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let request = self.request.try_into_kotlin(&(), env)?.auto_local(env);
-        env.new_object(
-            classes
-                .get(&KotlinClassName::LibraryWithFilters_Selected)
-                .unwrap(),
-            format!(
-                "(L{};)V",
-                KotlinClassName::LibraryWithFilters_LibraryRequest.value()
-            ),
-            &[request.as_obj().into()],
-        )
+impl ToProtobuf<models::library_with_filters::SelectableType, ()> for SelectableType {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::SelectableType {
+        models::library_with_filters::SelectableType {
+            r#type: self.r#type.clone(),
+            selected: self.selected,
+            request: self.request.to_protobuf(&()),
+        }
     }
 }
 
-impl<'a> TryIntoKotlin<'a, String> for SelectableType {
-    #[inline]
-    fn try_into_kotlin(&self, root: &String, env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let r#type = self.r#type.try_into_kotlin(&(), env)?.auto_local(env);
-        let selected = self.selected.into();
-        let deep_links = LibraryDeepLinks::from((root, &self.request))
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        env.new_object(
-            classes
-                .get(&KotlinClassName::LibraryWithFilters_SelectableType)
-                .unwrap(),
-            format!(
-                "(Ljava/lang/String;ZL{};)V",
-                KotlinClassName::LibraryDeepLinks.value()
-            ),
-            &[r#type.as_obj().into(), selected, deep_links.as_obj().into()],
-        )
+impl ToProtobuf<models::library_with_filters::SelectableSort, ()> for SelectableSort {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::SelectableSort {
+        models::library_with_filters::SelectableSort {
+            sort: self.sort.to_protobuf(&()) as i32,
+            selected: self.selected,
+            request: self.request.to_protobuf(&()),
+        }
     }
 }
 
-impl<'a> TryIntoKotlin<'a, String> for SelectableSort {
-    #[inline]
-    fn try_into_kotlin(&self, root: &String, env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let sort = self.sort.try_into_kotlin(&(), env)?.auto_local(env);
-        let selected = self.selected.into();
-        let deep_links = LibraryDeepLinks::from((root, &self.request))
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        env.new_object(
-            classes
-                .get(&KotlinClassName::LibraryWithFilters_SelectableSort)
-                .unwrap(),
-            format!(
-                "(L{};ZL{};)V",
-                KotlinClassName::LibraryWithFilters_Sort.value(),
-                KotlinClassName::LibraryDeepLinks.value()
-            ),
-            &[sort.as_obj().into(), selected, deep_links.as_obj().into()],
-        )
+impl ToProtobuf<models::library_with_filters::SelectablePage, ()> for SelectablePage {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::SelectablePage {
+        models::library_with_filters::SelectablePage {
+            request: self.request.to_protobuf(&()),
+        }
     }
 }
 
-impl<'a> TryIntoKotlin<'a, String> for SelectablePage {
-    #[inline]
-    fn try_into_kotlin(&self, root: &String, env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let request = self.request.try_into_kotlin(&(), env)?.auto_local(env);
-        let deep_links = LibraryDeepLinks::from((root, &self.request))
-            .try_into_kotlin(&(), env)?
-            .auto_local(env);
-        env.new_object(
-            classes
-                .get(&KotlinClassName::LibraryWithFilters_SelectablePage)
-                .unwrap(),
-            format!(
-                "(L{};L{};)V",
-                KotlinClassName::LibraryWithFilters_LibraryRequest.value(),
-                KotlinClassName::LibraryDeepLinks.value()
-            ),
-            &[request.as_obj().into(), deep_links.as_obj().into()],
-        )
+impl ToProtobuf<models::library_with_filters::Selectable, ()> for Selectable {
+    fn to_protobuf(&self, _args: &()) -> models::library_with_filters::Selectable {
+        models::library_with_filters::Selectable {
+            types: self.types.to_protobuf(&()),
+            sorts: self.sorts.to_protobuf(&()),
+            prev_page: self.prev_page.to_protobuf(&()),
+            next_page: self.next_page.to_protobuf(&()),
+        }
     }
 }
 
-impl<'a> TryIntoKotlin<'a, String> for Selectable {
-    #[inline]
-    fn try_into_kotlin(&self, root: &String, env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let types = self.types.try_into_kotlin(&root, env)?.auto_local(env);
-        let sorts = self.sorts.try_into_kotlin(&root, env)?.auto_local(env);
-        let prev_page = self.prev_page.try_into_kotlin(&root, env)?.auto_local(env);
-        let next_page = self.next_page.try_into_kotlin(&root, env)?.auto_local(env);
-        env.new_object(
-            classes
-                .get(&KotlinClassName::LibraryWithFilters_Selectable)
-                .unwrap(),
-            format!(
-                "(L{};L{};L{};L{};)V",
-                "java/util/List",
-                "java/util/List",
-                KotlinClassName::LibraryWithFilters_SelectablePage.value(),
-                KotlinClassName::LibraryWithFilters_SelectablePage.value()
-            ),
-            &[
-                types.as_obj().into(),
-                sorts.as_obj().into(),
-                prev_page.as_obj().into(),
-                next_page.as_obj().into(),
-            ],
-        )
+impl<F> ToProtobuf<models::LibraryWithFilters, ()> for LibraryWithFilters<F> {
+    fn to_protobuf(&self, _args: &()) -> models::LibraryWithFilters {
+        models::LibraryWithFilters {
+            selected: self.selected.to_protobuf(&()),
+            selectable: self.selectable.to_protobuf(&()),
+            catalog: self.catalog.to_protobuf(&()),
+        }
     }
 }
 
-impl<'a, F> TryIntoKotlin<'a, String> for LibraryWithFilters<F> {
-    fn try_into_kotlin(&self, root: &String, env: &JNIEnv<'a>) -> jni::errors::Result<JObject<'a>> {
-        let classes = AndroidEnv::kotlin_classes().unwrap();
-        let selected = self.selected.try_into_kotlin(&(), env)?.auto_local(env);
-        let selectable = self.selectable.try_into_kotlin(root, env)?.auto_local(env);
-        let catalog = self.catalog.try_into_kotlin(&(), env)?.auto_local(env);
-        env.new_object(
-            classes.get(&KotlinClassName::LibraryWithFilters).unwrap(),
-            format!(
-                "(L{};L{};L{};)V",
-                KotlinClassName::LibraryWithFilters_Selected.value(),
-                KotlinClassName::LibraryWithFilters_Selectable.value(),
-                "java/util/List",
-            ),
-            &[
-                selected.as_obj().into(),
-                selectable.as_obj().into(),
-                catalog.as_obj().into(),
-            ],
-        )
+impl ToProtobuf<models::LibraryByType, ()> for LibraryByType {
+    fn to_protobuf(&self, _args: &()) -> models::LibraryByType {
+        models::LibraryByType {
+            catalogs: self.catalogs.to_protobuf(&()),
+        }
     }
 }

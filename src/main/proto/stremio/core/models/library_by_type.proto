@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package stremio.core.models;
+
+option java_package = "com.stremio.core.models";
+
+import "stremio/core/models/library_with_filters.proto";
+
+message LibraryByType {
+  repeated LibraryWithFilters catalogs = 1;
+}

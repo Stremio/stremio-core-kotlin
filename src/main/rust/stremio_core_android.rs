@@ -137,7 +137,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_dispatch(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_stremio_core_Core_getState(
+pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateBinary(
     env: JNIEnv,
     _class: JClass,
     field: JObject,
@@ -152,9 +152,8 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getState(
         .as_ref()
         .expect("RUNTIME not initialized");
     let model = runtime.model().expect("model read failed");
-    model
-        .get_state(&field, &env)
+    let message_buf = model.get_state_binary(&field);
+    env.byte_array_from_slice(&message_buf)
         .exception_describe(&env)
         .expect("state convert failed")
-        .into_inner()
 }

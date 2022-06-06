@@ -1,3 +1,7 @@
 /build
 /target
 /.gradle
+/src/debug
+/src/release
+/**/rust/protobuf/*
+!/**/rust/protobuf/README.md

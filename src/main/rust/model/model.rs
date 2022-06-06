@@ -1,8 +1,4 @@
-use crate::bridge::TryIntoKotlin;
-use crate::env::AndroidEnv;
-use crate::model::LibraryByType;
-use jni::objects::JObject;
-use jni::JNIEnv;
+use prost::Message;
 use stremio_core::models::catalog_with_filters::CatalogWithFilters;
 use stremio_core::models::catalogs_with_extra::CatalogsWithExtra;
 use stremio_core::models::continue_watching_preview::ContinueWatchingPreview;
@@ -17,6 +13,10 @@ use stremio_core::types::library::LibraryBucket;
 use stremio_core::types::profile::Profile;
 use stremio_core::types::resource::MetaItemPreview;
 use stremio_derive::Model;
+
+use crate::bridge::ToProtobuf;
+use crate::env::AndroidEnv;
+use crate::model::LibraryByType;
 
 #[derive(Model)]
 #[model(AndroidEnv)]
@@ -65,26 +65,28 @@ impl AndroidModel {
                 .join(streaming_server_effects),
         )
     }
-    pub fn get_state<'a>(
-        &self,
-        field: &AndroidModelField,
-        env: &'a JNIEnv,
-    ) -> jni::errors::Result<JObject<'a>> {
+
+    pub fn get_state_binary(&self, field: &AndroidModelField) -> Vec<u8> {
         match field {
-            AndroidModelField::Ctx => self.ctx.try_into_kotlin(&(), env),
-            AndroidModelField::AuthLink => self.auth_link.try_into_kotlin(&(), env),
-            AndroidModelField::Discover => self.discover.try_into_kotlin(&self.ctx, env),
-            AndroidModelField::Library => self.library.try_into_kotlin(&"library".to_owned(), env),
-            AndroidModelField::LibraryByType => self
-                .library_by_type
-                .try_into_kotlin(&"library".to_owned(), env),
-            AndroidModelField::ContinueWatchingPreview => {
-                self.continue_watching_preview.try_into_kotlin(&(), env)
+            AndroidModelField::Ctx => self.ctx.to_protobuf(&()).encode_to_vec(),
+            AndroidModelField::AuthLink => self.auth_link.to_protobuf(&()).encode_to_vec(),
+            AndroidModelField::ContinueWatchingPreview => self
+                .continue_watching_preview
+                .to_protobuf(&())
+                .encode_to_vec(),
+            AndroidModelField::Library => self.library.to_protobuf(&()).encode_to_vec(),
+            AndroidModelField::LibraryByType => {
+                self.library_by_type.to_protobuf(&()).encode_to_vec()
             }
-            AndroidModelField::Board => self.board.try_into_kotlin(&self.ctx, env),
-            AndroidModelField::Search => self.search.try_into_kotlin(&self.ctx, env),
-            AndroidModelField::MetaDetails => self.meta_details.try_into_kotlin(&self.ctx, env),
-            AndroidModelField::StreamingServer => self.streaming_server.try_into_kotlin(&(), env),
+            AndroidModelField::Board => self.board.to_protobuf(&self.ctx).encode_to_vec(),
+            AndroidModelField::Search => self.search.to_protobuf(&self.ctx).encode_to_vec(),
+            AndroidModelField::Discover => self.discover.to_protobuf(&self.ctx).encode_to_vec(),
+            AndroidModelField::MetaDetails => {
+                self.meta_details.to_protobuf(&self.ctx).encode_to_vec()
+            }
+            AndroidModelField::StreamingServer => {
+                self.streaming_server.to_protobuf(&()).encode_to_vec()
+            }
         }
     }
 }

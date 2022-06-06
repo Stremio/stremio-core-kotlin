@@ -1,12 +1,14 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
-use crate::env::{AndroidEnv, KotlinClassName};
-use crate::jni_ext::JObjectExt;
+use std::convert::TryInto;
+
 use chrono::{DateTime, Utc};
 use jni::objects::JObject;
 use jni::JNIEnv;
-use std::convert::TryInto;
 use stremio_core::types::api::{AuthRequest, GDPRConsentRequest};
 use stremio_core::types::profile::GDPRConsent;
+
+use crate::bridge::{TryFromKotlin, TryIntoKotlin};
+use crate::env::{AndroidEnv, KotlinClassName};
+use crate::jni_ext::JObjectExt;
 
 impl<'a> TryIntoKotlin<'a, ()> for GDPRConsentRequest {
     #[inline]

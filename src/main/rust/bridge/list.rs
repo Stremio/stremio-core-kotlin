@@ -1,8 +1,10 @@
-use crate::bridge::{TryFromKotlin, TryIntoKotlin};
+use jni::JNIEnv;
+use jni::objects::JObject;
+use prost::Message;
+
+use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
-use jni::objects::JObject;
-use jni::JNIEnv;
 
 impl<'a, T: TryIntoKotlin<'a, U>, U> TryIntoKotlin<'a, U> for Vec<T> {
     #[inline]
@@ -28,5 +30,13 @@ impl<T: TryFromKotlin> TryFromKotlin for Vec<T> {
             .iter()?
             .map(|extra_value| T::try_from_kotlin(extra_value, env))
             .collect::<jni::errors::Result<Vec<_>>>()
+    }
+}
+
+impl<T: ToProtobuf<U, A>, U: Message, A> ToProtobufAny<Vec<U>, A> for Vec<T> {
+    fn to_protobuf(&self, args: &A) -> Vec<U> {
+        self.iter()
+            .map(|item| item.to_protobuf(args))
+            .collect()
     }
 }

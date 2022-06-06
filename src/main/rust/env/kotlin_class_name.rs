@@ -7,10 +7,10 @@ use strum_macros::EnumIter;
 #[allow(non_camel_case_types)]
 pub enum KotlinClassName {
     String,
-    Integer,
-    Double,
     Date,
     ArrayList,
+    Map,
+    HashMap,
     Pair,
     Core,
     Storage_Result,
@@ -48,77 +48,26 @@ pub enum KotlinClassName {
     RuntimeEvent,
     RuntimeEvent_NewState,
     RuntimeEvent_CoreEvent,
-    ExtraValue,
-    MetaItem,
-    Video,
-    Video_SeriesInfo,
     MetaItemPreview,
     MetaItemBehaviorHints,
-    Stream,
-    StreamBehaviorHints,
-    StreamSource,
-    StreamSource_Url,
-    StreamSource_YouTube,
-    StreamSource_Torrent,
-    StreamSource_External,
-    StreamSource_PlayerFrame,
-    Link,
     PosterShape,
-    Loadable,
-    Loadable_Loading,
-    Loadable_Ready,
-    Loadable_Error,
-    ResourceLoadable,
     ResourceRequest,
     ResourcePath,
-    CatalogsWithExtra,
     CatalogsWithExtra_Selected,
-    StreamingServer,
     StreamingServer_Selected,
     StreamingServer_Settings,
-    Ctx,
-    Auth,
-    LinkAuthKey,
-    LinkCodeResponse,
-    Profile,
-    Settings,
-    User,
+    Profile_Settings,
     GDPRConsent,
     AuthRequest,
     AuthRequest_Login,
     AuthRequest_LoginWithToken,
     AuthRequest_Register,
     AuthRequest_GDPRConsentRequest,
-    LinkModel,
-    ContinueWatchingPreview,
-    LibraryItem,
-    LibraryItemState,
-    LibraryItemBehaviorHints,
-    MetaDetails,
     MetaDetails_Selected,
-    CatalogWithFilters,
     CatalogWithFilters_Selected,
-    CatalogWithFilters_Selectable,
-    CatalogWithFilters_SelectableType,
-    CatalogWithFilters_SelectableCatalog,
-    CatalogWithFilters_SelectableExtra,
-    CatalogWithFilters_SelectableExtraOption,
-    CatalogWithFilters_SelectablePage,
-    LibraryByType,
-    LibraryWithFilters,
     LibraryWithFilters_Selected,
     LibraryWithFilters_LibraryRequest,
     LibraryWithFilters_Sort,
-    LibraryWithFilters_Selectable,
-    LibraryWithFilters_SelectableType,
-    LibraryWithFilters_SelectableSort,
-    LibraryWithFilters_SelectablePage,
-    ExternalPlayerLink,
-    LibraryItemDeepLinks,
-    MetaItemDeepLinks,
-    LibraryDeepLinks,
-    DiscoverDeepLinks,
-    StreamDeepLinks,
     Event,
     Event_ProfilePushedToStorage,
     Event_LibraryItemsPushedToStorage,
@@ -156,10 +105,10 @@ impl KotlinClassName {
     pub fn value(&self) -> &str {
         match self {
             KotlinClassName::String => "java/lang/String",
-            KotlinClassName::Integer => "java/lang/Integer",
-            KotlinClassName::Double => "java/lang/Double",
             KotlinClassName::Date => "java/util/Date",
             KotlinClassName::ArrayList => "java/util/ArrayList",
+            KotlinClassName::Map => "java/util/Map",
+            KotlinClassName::HashMap => "java/util/HashMap",
             KotlinClassName::Pair => "kotlin/Pair",
             KotlinClassName::Core => "com/stremio/core/Core",
             KotlinClassName::Storage_Result => "com/stremio/core/Storage$Result",
@@ -239,53 +188,22 @@ impl KotlinClassName {
             KotlinClassName::RuntimeEvent_CoreEvent => {
                 "com/stremio/core/runtime/RuntimeEvent$CoreEvent"
             }
-            KotlinClassName::ExtraValue => "com/stremio/core/types/addon/ExtraValue",
-            KotlinClassName::MetaItem => "com/stremio/core/types/resource/MetaItem",
-            KotlinClassName::Video => "com/stremio/core/types/resource/Video",
-            KotlinClassName::Video_SeriesInfo => "com/stremio/core/types/resource/Video$SeriesInfo",
             KotlinClassName::MetaItemPreview => "com/stremio/core/types/resource/MetaItemPreview",
             KotlinClassName::MetaItemBehaviorHints => {
                 "com/stremio/core/types/resource/MetaItemBehaviorHints"
             }
-            KotlinClassName::Stream => "com/stremio/core/types/resource/Stream",
-            KotlinClassName::StreamBehaviorHints => {
-                "com/stremio/core/types/resource/StreamBehaviorHints"
-            }
-            KotlinClassName::StreamSource => "com/stremio/core/types/resource/StreamSource",
-            KotlinClassName::StreamSource_Url => "com/stremio/core/types/resource/StreamSource$Url",
-            KotlinClassName::StreamSource_YouTube => {
-                "com/stremio/core/types/resource/StreamSource$YouTube"
-            }
-            KotlinClassName::StreamSource_Torrent => {
-                "com/stremio/core/types/resource/StreamSource$Torrent"
-            }
-            KotlinClassName::StreamSource_External => {
-                "com/stremio/core/types/resource/StreamSource$External"
-            }
-            KotlinClassName::StreamSource_PlayerFrame => {
-                "com/stremio/core/types/resource/StreamSource$PlayerFrame"
-            }
-            KotlinClassName::Link => "com/stremio/core/types/resource/Link",
             KotlinClassName::PosterShape => "com/stremio/core/types/resource/PosterShape",
-            KotlinClassName::Loadable => "com/stremio/core/models/common/Loadable",
-            KotlinClassName::Loadable_Loading => "com/stremio/core/models/common/Loadable$Loading",
-            KotlinClassName::Loadable_Ready => "com/stremio/core/models/common/Loadable$Ready",
-            KotlinClassName::Loadable_Error => "com/stremio/core/models/common/Loadable$Error",
-            KotlinClassName::ResourceLoadable => "com/stremio/core/models/common/ResourceLoadable",
             KotlinClassName::ResourceRequest => "com/stremio/core/types/addon/ResourceRequest",
             KotlinClassName::ResourcePath => "com/stremio/core/types/addon/ResourcePath",
-            KotlinClassName::CatalogsWithExtra => "com/stremio/core/models/CatalogsWithExtra",
             KotlinClassName::CatalogsWithExtra_Selected => {
                 "com/stremio/core/models/CatalogsWithExtra$Selected"
             }
-            KotlinClassName::StreamingServer => "com/stremio/core/models/StreamingServer",
             KotlinClassName::StreamingServer_Selected => {
                 "com/stremio/core/models/StreamingServer$Selected"
             }
             KotlinClassName::StreamingServer_Settings => {
                 "com/stremio/core/models/StreamingServer$Settings"
             }
-            KotlinClassName::Ctx => "com/stremio/core/models/Ctx",
             KotlinClassName::AuthRequest => "com/stremio/core/types/api/AuthRequest",
             KotlinClassName::AuthRequest_Login => "com/stremio/core/types/api/AuthRequest$Login",
             KotlinClassName::AuthRequest_LoginWithToken => {
@@ -297,48 +215,12 @@ impl KotlinClassName {
             KotlinClassName::AuthRequest_GDPRConsentRequest => {
                 "com/stremio/core/types/api/AuthRequest$GDPRConsentRequest"
             }
-            KotlinClassName::LinkAuthKey => "com/stremio/core/types/api/LinkAuthKey",
-            KotlinClassName::LinkCodeResponse => "com/stremio/core/types/api/LinkCodeResponse",
-            KotlinClassName::Auth => "com/stremio/core/types/profile/Auth",
-            KotlinClassName::Profile => "com/stremio/core/types/profile/Profile",
-            KotlinClassName::Settings => "com/stremio/core/types/profile/Settings",
-            KotlinClassName::User => "com/stremio/core/types/profile/User",
+            KotlinClassName::Profile_Settings => "com/stremio/core/types/profile/Profile$Settings",
             KotlinClassName::GDPRConsent => "com/stremio/core/types/profile/GDPRConsent",
-            KotlinClassName::LinkModel => "com/stremio/core/models/Link",
-            KotlinClassName::ContinueWatchingPreview => {
-                "com/stremio/core/models/ContinueWatchingPreview"
-            }
-            KotlinClassName::LibraryItem => "com/stremio/core/types/library/LibraryItem",
-            KotlinClassName::LibraryItemState => "com/stremio/core/types/library/LibraryItemState",
-            KotlinClassName::LibraryItemBehaviorHints => {
-                "com/stremio/core/types/library/LibraryItemBehaviorHints"
-            }
-            KotlinClassName::MetaDetails => "com/stremio/core/models/MetaDetails",
             KotlinClassName::MetaDetails_Selected => "com/stremio/core/models/MetaDetails$Selected",
-            KotlinClassName::CatalogWithFilters => "com/stremio/core/models/CatalogWithFilters",
             KotlinClassName::CatalogWithFilters_Selected => {
                 "com/stremio/core/models/CatalogWithFilters$Selected"
             }
-            KotlinClassName::CatalogWithFilters_Selectable => {
-                "com/stremio/core/models/CatalogWithFilters$Selectable"
-            }
-            KotlinClassName::CatalogWithFilters_SelectableType => {
-                "com/stremio/core/models/CatalogWithFilters$SelectableType"
-            }
-            KotlinClassName::CatalogWithFilters_SelectableCatalog => {
-                "com/stremio/core/models/CatalogWithFilters$SelectableCatalog"
-            }
-            KotlinClassName::CatalogWithFilters_SelectableExtra => {
-                "com/stremio/core/models/CatalogWithFilters$SelectableExtra"
-            }
-            KotlinClassName::CatalogWithFilters_SelectableExtraOption => {
-                "com/stremio/core/models/CatalogWithFilters$SelectableExtraOption"
-            }
-            KotlinClassName::CatalogWithFilters_SelectablePage => {
-                "com/stremio/core/models/CatalogWithFilters$SelectablePage"
-            }
-            KotlinClassName::LibraryByType => "com/stremio/core/models/LibraryByType",
-            KotlinClassName::LibraryWithFilters => "com/stremio/core/models/LibraryWithFilters",
             KotlinClassName::LibraryWithFilters_Selected => {
                 "com/stremio/core/models/LibraryWithFilters$Selected"
             }
@@ -348,26 +230,6 @@ impl KotlinClassName {
             KotlinClassName::LibraryWithFilters_Sort => {
                 "com/stremio/core/models/LibraryWithFilters$Sort"
             }
-            KotlinClassName::LibraryWithFilters_Selectable => {
-                "com/stremio/core/models/LibraryWithFilters$Selectable"
-            }
-            KotlinClassName::LibraryWithFilters_SelectableType => {
-                "com/stremio/core/models/LibraryWithFilters$SelectableType"
-            }
-            KotlinClassName::LibraryWithFilters_SelectableSort => {
-                "com/stremio/core/models/LibraryWithFilters$SelectableSort"
-            }
-            KotlinClassName::LibraryWithFilters_SelectablePage => {
-                "com/stremio/core/models/LibraryWithFilters$SelectablePage"
-            }
-            KotlinClassName::ExternalPlayerLink => "com/stremio/core/deeplinks/ExternalPlayerLink",
-            KotlinClassName::LibraryItemDeepLinks => {
-                "com/stremio/core/deeplinks/LibraryItemDeepLinks"
-            }
-            KotlinClassName::MetaItemDeepLinks => "com/stremio/core/deeplinks/MetaItemDeepLinks",
-            KotlinClassName::LibraryDeepLinks => "com/stremio/core/deeplinks/LibraryDeepLinks",
-            KotlinClassName::DiscoverDeepLinks => "com/stremio/core/deeplinks/DiscoverDeepLinks",
-            KotlinClassName::StreamDeepLinks => "com/stremio/core/deeplinks/StreamDeepLinks",
             KotlinClassName::Event => "com/stremio/core/runtime/msg/Event",
             KotlinClassName::Event_ProfilePushedToStorage => {
                 "com/stremio/core/runtime/msg/Event$ProfilePushedToStorage"

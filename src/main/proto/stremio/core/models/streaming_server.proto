@@ -1,0 +1,45 @@
+syntax = "proto2";
+
+package stremio.core.models;
+
+option java_package = "com.stremio.core.models";
+
+import "stremio/core/models/loadable.proto";
+
+message StreamingServer {
+  required Selected selected = 1;
+  required LoadableSettings settings = 2;
+  required LoadableBaseUrl base_url = 3;
+
+  message Selected {
+    required string transport_url = 1;
+  }
+  message Settings {
+    required string app_path = 1;
+    required string cache_root = 2;
+    required string server_version = 3;
+    optional double cache_size = 4;
+    required uint64 bt_max_connections = 5;
+    required uint64 bt_handshake_timeout = 6;
+    required uint64 bt_request_timeout = 7;
+    required double bt_download_speed_soft_limit = 8;
+    required double bt_download_speed_hard_limit = 9;
+    required uint64 bt_min_peers_for_stable = 10;
+  }
+}
+
+message LoadableSettings {
+  oneof content {
+    Loading loading = 1;
+    Error error = 2;
+    StreamingServer.Settings ready = 3;
+  }
+}
+
+message LoadableBaseUrl {
+  oneof content {
+    Loading loading = 5;
+    Error error = 6;
+    string ready = 7;
+  }
+}
