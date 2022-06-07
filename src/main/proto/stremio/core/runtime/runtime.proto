@@ -4,6 +4,7 @@ package stremio.core.runtime;
 
 option java_package = "com.stremio.core.runtime";
 
+import "google/protobuf/empty.proto";
 import "stremio/core/runtime/event.proto";
 
 message EnvError{
@@ -14,12 +15,9 @@ message EnvError{
 message RuntimeEvent {
   oneof event {
     NewState new_state = 1;
-    CoreEvent core_event = 2;
+    Event core_event = 2;
   }
 
   message NewState {
-  }
-  message CoreEvent{
-    required Event event = 1;
   }
 }

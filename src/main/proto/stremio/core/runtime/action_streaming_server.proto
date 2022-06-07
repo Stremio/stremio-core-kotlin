@@ -4,17 +4,12 @@ package stremio.core.runtime;
 
 option java_package = "com.stremio.core.runtime.msg";
 
+import "google/protobuf/empty.proto";
 import "stremio/core/models/streaming_server.proto";
 
 message ActionStreamingServer {
   oneof args {
-    Reload reload = 1;
-    UpdateSettings update_settings = 2;
-  }
-
-  message Reload {
-  }
-  message UpdateSettings {
-    required stremio.core.models.StreamingServer.Settings args = 1;
+    google.protobuf.Empty reload = 1;
+    stremio.core.models.StreamingServer.Settings update_settings = 2;
   }
 }
