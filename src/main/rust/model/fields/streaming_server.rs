@@ -4,7 +4,7 @@ use stremio_core::models::streaming_server::{
     Selected as StreamingServerSelected, Settings as StreamingServerSettings, StreamingServer,
 };
 
-use crate::bridge::{ToProtobuf, TryFromKotlin};
+use crate::bridge::{FromProtobuf, ToProtobuf, TryFromKotlin};
 use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::models;
@@ -89,6 +89,23 @@ impl TryFromKotlin for StreamingServerSettings {
             bt_download_speed_hard_limit,
             bt_min_peers_for_stable,
         })
+    }
+}
+
+impl FromProtobuf<StreamingServerSettings> for models::streaming_server::Settings {
+    fn from_protobuf(&self) -> StreamingServerSettings {
+        StreamingServerSettings {
+            app_path: self.app_path.to_owned(),
+            cache_root: self.cache_root.to_owned(),
+            server_version: self.server_version.to_owned(),
+            cache_size: self.cache_size.to_owned(),
+            bt_max_connections: self.bt_max_connections,
+            bt_handshake_timeout: self.bt_handshake_timeout,
+            bt_request_timeout: self.bt_request_timeout,
+            bt_download_speed_soft_limit: self.bt_download_speed_soft_limit,
+            bt_download_speed_hard_limit: self.bt_download_speed_hard_limit,
+            bt_min_peers_for_stable: self.bt_min_peers_for_stable,
+        }
     }
 }
 

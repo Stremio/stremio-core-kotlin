@@ -1,0 +1,39 @@
+syntax = "proto2";
+
+package stremio.core.runtime;
+
+option java_package = "com.stremio.core.runtime.msg";
+
+import "stremio/core/models/catalogs_with_extra.proto";
+import "stremio/core/models/catalog_with_filters.proto";
+import "stremio/core/models/library_with_filters.proto";
+import "stremio/core/models/meta_details.proto";
+
+message ActionLoad {
+  oneof args {
+    CatalogsWithExtra catalogs_with_extra = 1;
+    CatalogWithFilters catalog_with_filters = 2;
+    LibraryWithFilters library_with_filters = 3;
+    MetaDetails meta_details = 4;
+    Link link = 5;
+    //    Player player = 1;
+  }
+
+  message CatalogsWithExtra {
+    required stremio.core.models.CatalogsWithExtra.Selected args = 1;
+  }
+  message CatalogWithFilters {
+    required stremio.core.models.CatalogWithFilters.Selected args = 1;
+  }
+  message LibraryWithFilters {
+    required stremio.core.models.LibraryWithFilters.Selected args = 1;
+  }
+  message MetaDetails {
+    required stremio.core.models.MetaDetails.Selected args = 1;
+  }
+  message Link {
+  }
+  //  message Player {
+  //    Player.Selected args = 1;
+  //  }
+}

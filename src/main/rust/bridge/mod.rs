@@ -72,3 +72,6 @@ pub use try_into_kotlin::*;
 
 mod to_protobuf;
 pub use to_protobuf::*;
+
+mod from_protobuf;
+pub use from_protobuf::*;

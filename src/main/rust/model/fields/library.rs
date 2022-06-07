@@ -9,7 +9,7 @@ use stremio_core::models::library_with_filters::{
     SelectableSort, SelectableType, Selected, Sort,
 };
 
-use crate::bridge::{ToProtobuf, TryFromKotlin};
+use crate::bridge::{FromProtobuf, ToProtobuf, TryFromKotlin};
 use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::model::LibraryByType;
@@ -71,6 +71,38 @@ impl TryFromKotlin for Selected {
             .auto_local(env);
         let request = LibraryRequest::try_from_kotlin(request.as_obj(), env)?;
         Ok(Selected { request })
+    }
+}
+
+impl FromProtobuf<Sort> for models::library_with_filters::Sort {
+    fn from_protobuf(&self) -> Sort {
+        match self {
+            models::library_with_filters::Sort::LastWatched => Sort::LastWatched,
+            models::library_with_filters::Sort::Name => Sort::Name,
+            models::library_with_filters::Sort::TimesWatched => Sort::TimesWatched,
+        }
+    }
+}
+
+impl FromProtobuf<LibraryRequest> for models::library_with_filters::LibraryRequest {
+    fn from_protobuf(&self) -> LibraryRequest {
+        let page = usize::try_from(cmp::max(self.page, 1)).unwrap_or(usize::MAX);
+        let page = LibraryRequestPage(NonZeroUsize::new(page).unwrap());
+        LibraryRequest {
+            r#type: self.r#type.to_owned(),
+            sort: models::library_with_filters::Sort::from_i32(self.sort)
+                .from_protobuf()
+                .unwrap_or(Sort::LastWatched),
+            page,
+        }
+    }
+}
+
+impl FromProtobuf<Selected> for models::library_with_filters::Selected {
+    fn from_protobuf(&self) -> Selected {
+        Selected {
+            request: self.request.from_protobuf(),
+        }
     }
 }
 

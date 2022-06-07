@@ -1,13 +1,13 @@
 use boolinator::Boolinator;
-use jni::JNIEnv;
 use jni::objects::JObject;
+use jni::JNIEnv;
 use stremio_core::deep_links::MetaItemDeepLinks;
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::meta_details::{MetaDetails, Selected};
 use stremio_core::types::addon::{ResourcePath, ResourceRequest};
 use stremio_core::types::resource::{MetaItem, SeriesInfo, Video};
 
-use crate::bridge::{ToProtobuf, TryFromKotlin};
+use crate::bridge::{FromProtobuf, ToProtobuf, TryFromKotlin};
 use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::{models, types};
@@ -38,6 +38,15 @@ impl TryFromKotlin for Selected {
             meta_path,
             stream_path,
         })
+    }
+}
+
+impl FromProtobuf<Selected> for models::meta_details::Selected {
+    fn from_protobuf(&self) -> Selected {
+        Selected {
+            meta_path: self.meta_path.from_protobuf(),
+            stream_path: self.stream_path.from_protobuf(),
+        }
     }
 }
 

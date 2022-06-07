@@ -1,0 +1,53 @@
+syntax = "proto2";
+
+package stremio.core.runtime;
+
+option java_package = "com.stremio.core.runtime.msg";
+
+import "stremio/core/types/meta_item_preview.proto";
+import "stremio/core/types/profile.proto";
+import "stremio/core/types/auth_request.proto";
+
+message ActionCtx {
+  oneof args {
+    Authenticate authenticate = 1;
+    Logout logout = 2;
+    UpdateSettings update_settings = 3;
+    AddToLibrary add_to_library = 4;
+    RemoveFromLibrary remove_from_library = 5;
+    RewindLibraryItem rewind_library_item = 6;
+    PushUserToAPI push_user_to_api = 7;
+    PullUserFromAPI pull_user_from_api = 8;
+    PushAddonsToAPI push_addons_to_api = 9;
+    PullAddonsFromAPI pull_addons_from_api = 10;
+    SyncLibraryWithAPI sync_library_with_api = 11;
+  }
+
+  message Authenticate {
+    required stremio.core.types.AuthRequest arg = 1;
+  }
+  message Logout {
+  }
+  message UpdateSettings {
+    required stremio.core.types.Profile.Settings args = 1;
+  }
+  message AddToLibrary {
+    required stremio.core.types.MetaItemPreview args = 1;
+  }
+  message RemoveFromLibrary {
+    required string args = 1;
+  }
+  message RewindLibraryItem {
+    required string args = 1;
+  }
+  message PushUserToAPI {
+  }
+  message PullUserFromAPI {
+  }
+  message PushAddonsToAPI {
+  }
+  message PullAddonsFromAPI {
+  }
+  message SyncLibraryWithAPI {
+  }
+}

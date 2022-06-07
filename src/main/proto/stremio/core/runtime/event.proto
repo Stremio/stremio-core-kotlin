@@ -1,0 +1,103 @@
+syntax = "proto2";
+
+package stremio.core.runtime;
+
+option java_package = "com.stremio.core.runtime.msg";
+
+import "stremio/core/types/profile.proto";
+import "stremio/core/types/auth_request.proto";
+
+message Event {
+  oneof event {
+    ProfilePushedToStorage profile_pushed_to_storage = 1;
+    LibraryItemsPushedToStorage library_items_pushed_to_storage = 2;
+    UserPulledFromAPI user_pulled_from_api = 3;
+    UserPushedToAPI user_pushed_to_api = 4;
+    AddonsPulledFromAPI addons_pulled_from_api = 5;
+    AddonsPushedToAPI addons_pushed_to_api = 6;
+    LibrarySyncWithAPIPlanned library_sync_with_api_planned = 7;
+    LibraryItemsPushedToAPI library_items_pushed_to_api = 8;
+    LibraryItemsPulledFromAPI library_items_pulled_from_api = 9;
+    UserAuthenticated user_authenticated = 10;
+    UserLoggedOut user_logged_out = 11;
+    SessionDeleted session_deleted = 12;
+    AddonInstalled addon_installed = 13;
+    AddonUpgraded addon_upgraded = 14;
+    AddonUninstalled addon_uninstalled = 15;
+    SettingsUpdated settings_updated = 16;
+    LibraryItemAdded library_item_added = 17;
+    LibraryItemRemoved library_item_removed = 18;
+    LibraryItemRewinded library_item_rewinded = 19;
+    Error error = 20;
+  }
+
+  message ProfilePushedToStorage {
+    required string uid = 1;
+  }
+  message LibraryItemsPushedToStorage {
+    repeated string ids = 1;
+  }
+  message UserPulledFromAPI {
+    required string uid = 1;
+  }
+  message UserPushedToAPI {
+    required string uid = 1;
+  }
+  message AddonsPulledFromAPI {
+    repeated string transport_urls = 1;
+  }
+  message AddonsPushedToAPI {
+    repeated string transport_urls = 1;
+  }
+  message LibrarySyncWithAPIPlanned {
+    required PlanPair plan = 1;
+  }
+  message LibraryItemsPushedToAPI {
+    repeated string ids = 1;
+  }
+  message LibraryItemsPulledFromAPI {
+    repeated string ids = 1;
+  }
+  message UserAuthenticated {
+    required stremio.core.types.AuthRequest auth_request = 1;
+  }
+  message UserLoggedOut {
+    required string uid = 1;
+  }
+  message SessionDeleted {
+    required string auth_key = 1;
+  }
+  message AddonInstalled {
+    required string transport_url = 1;
+    required string id = 2;
+  }
+  message AddonUpgraded {
+    required string transport_url = 1;
+    required string id = 2;
+  }
+  message AddonUninstalled {
+    required string transport_url = 1;
+    required string id = 2;
+  }
+  message SettingsUpdated {
+    required stremio.core.types.Profile.Settings settings = 1;
+  }
+  message LibraryItemAdded {
+    required string id = 1;
+  }
+  message LibraryItemRemoved {
+    required string id = 1;
+  }
+  message LibraryItemRewinded {
+    required string id = 1;
+  }
+  message Error {
+    required string error = 1;
+    required Event source = 2;
+  }
+}
+
+message PlanPair {
+  repeated string first = 1;
+  repeated string second = 2;
+}

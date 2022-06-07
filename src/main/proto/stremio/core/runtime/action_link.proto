@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package stremio.core.runtime;
+
+option java_package = "com.stremio.core.runtime.msg";
+
+message ActionLink {
+  oneof args {
+    ReadData read_data = 1;
+  }
+
+  message ReadData {
+  }
+}

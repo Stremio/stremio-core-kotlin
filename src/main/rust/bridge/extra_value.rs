@@ -2,7 +2,7 @@ use jni::objects::JObject;
 use jni::JNIEnv;
 use stremio_core::types::addon::ExtraValue;
 
-use crate::bridge::{ToProtobuf, TryFromKotlin};
+use crate::bridge::{FromProtobuf, ToProtobuf, TryFromKotlin};
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::types;
 
@@ -22,11 +22,20 @@ impl TryFromKotlin for ExtraValue {
     }
 }
 
+impl FromProtobuf<ExtraValue> for types::ExtraValue {
+    fn from_protobuf(&self) -> ExtraValue {
+        ExtraValue {
+            name: self.name.to_owned(),
+            value: self.value.to_owned(),
+        }
+    }
+}
+
 impl ToProtobuf<types::ExtraValue, ()> for ExtraValue {
     fn to_protobuf(&self, _args: &()) -> types::ExtraValue {
         types::ExtraValue {
-            name: self.name.to_string(),
-            value: self.value.to_string(),
+            name: self.name.to_owned(),
+            value: self.value.to_owned(),
         }
     }
 }

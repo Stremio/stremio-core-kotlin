@@ -3,7 +3,7 @@ use jni::JNIEnv;
 use stremio_core::types::addon::{ResourcePath, ResourceRequest};
 use url::Url;
 
-use crate::bridge::{ToProtobuf, TryFromKotlin};
+use crate::bridge::{FromProtobuf, ToProtobuf, TryFromKotlin};
 use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::types;
@@ -27,6 +27,15 @@ impl TryFromKotlin for ResourceRequest {
             .auto_local(env);
         let path = ResourcePath::try_from_kotlin(path.as_obj(), env)?;
         Ok(ResourceRequest { base, path })
+    }
+}
+
+impl FromProtobuf<ResourceRequest> for types::ResourceRequest {
+    fn from_protobuf(&self) -> ResourceRequest {
+        ResourceRequest {
+            base: Url::parse(&self.base).expect("ResourceRequest.base parse failed"),
+            path: self.path.from_protobuf(),
+        }
     }
 }
 

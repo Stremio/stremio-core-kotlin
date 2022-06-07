@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package stremio.core.runtime;
+
+option java_package = "com.stremio.core";
+
+enum Field {
+  Ctx = 0;
+  AuthLink = 1;
+  ContinueWatchingPreview = 2;
+  Discover = 3;
+  Library = 4;
+  LibraryByType = 5;
+  Board = 6;
+  Search = 7;
+  MetaDetails = 8;
+  StreamingServer = 9;
+}

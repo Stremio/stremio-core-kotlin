@@ -1,28 +1,29 @@
+use std::io::Cursor;
 use std::os::raw::c_void;
 use std::panic;
 use std::sync::RwLock;
 
-use boolinator::Boolinator;
 use futures::{future, StreamExt};
-use jni::{JavaVM, JNIEnv};
 use jni::objects::{JClass, JObject};
-use jni::sys::{jint, JNI_VERSION_1_6, jobject};
+use jni::sys::{jbyteArray, jint, jobject, JNI_VERSION_1_6};
+use jni::{JNIEnv, JavaVM};
 use lazy_static::lazy_static;
 use prost::Message;
 use stremio_core::constants::{
     LIBRARY_RECENT_STORAGE_KEY, LIBRARY_STORAGE_KEY, PROFILE_STORAGE_KEY,
 };
 use stremio_core::models::common::Loadable;
-use stremio_core::runtime::{Env, EnvError, Runtime, RuntimeAction};
-use stremio_core::runtime::msg::Action;
+use stremio_core::runtime::{Env, EnvError, Runtime};
 use stremio_core::types::library::LibraryBucket;
 use stremio_core::types::profile::Profile;
 use stremio_core::types::resource::Stream;
 
-use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
+use crate::bridge::{FromProtobuf, ToProtobuf, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
-use crate::jni_ext::{ExceptionDescribeExt, JObjectExt};
-use crate::model::{AndroidModel, AndroidModelField};
+use crate::jni_ext::ExceptionDescribeExt;
+use crate::model::AndroidModel;
+use crate::protobuf::stremio::core::runtime;
+use crate::protobuf::stremio::core::runtime::Field;
 
 lazy_static! {
     static ref RUNTIME: RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, EnvError>>> =
@@ -75,17 +76,17 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initialize(
                         let env = java_vm
                             .attach_current_thread_as_daemon()
                             .expect("JavaVM attach to current thread as deamon failed");
-                        let event = event
-                            .try_into_kotlin(&(), &env)
+                        let event_buf = event.to_protobuf(&()).encode_to_vec();
+                        let event = env
+                            .byte_array_from_slice(&event_buf)
                             .exception_describe(&env)
-                            .expect("RuntimeEvent convert failed")
-                            .auto_local(&env);
+                            .expect("RuntimeEvent convert failed");
                         let _ = env
                             .call_static_method(
                                 classes.get(&KotlinClassName::Core).unwrap(),
                                 "onRuntimeEvent",
-                                format!("(L{};)V", KotlinClassName::RuntimeEvent.value()),
-                                &[event.as_obj().into()],
+                                "([B)V",
+                                &[event.into()],
                             )
                             .expect("onRuntimeEvent call failed");
                         future::ready(())
@@ -120,24 +121,22 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initialize(
 pub unsafe extern "C" fn Java_com_stremio_core_Core_dispatch(
     env: JNIEnv,
     _class: JClass,
-    action: JObject,
-    field: JObject,
+    action_protobuf: jbyteArray,
 ) {
-    let action = Action::try_from_kotlin(action, &env)
-        .exception_describe(&env)
+    let runtime_action = env
+        .convert_byte_array(action_protobuf)
+        .ok()
+        .map(|data| Cursor::new(data))
+        .and_then(|buf| runtime::RuntimeAction::decode(buf).ok())
+        .map(|action| action.from_protobuf())
         .expect("Action convert failed");
-    let field = (!field.is_null()).as_option().map(|_| {
-        AndroidModelField::try_from_kotlin(field, &env)
-            .exception_describe(&env)
-            .expect("AndroidModelField convert failed")
-    });
     let runtime = RUNTIME.read().expect("RUNTIME read failed");
     let runtime = runtime
         .as_ref()
         .expect("RUNTIME not initialized")
         .as_ref()
         .expect("RUNTIME not initialized");
-    runtime.dispatch(RuntimeAction { action, field });
+    runtime.dispatch(runtime_action);
 }
 
 #[no_mangle]
@@ -146,8 +145,11 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateBinary(
     _class: JClass,
     field: JObject,
 ) -> jobject {
-    let field = AndroidModelField::try_from_kotlin(field, &env)
-        .exception_describe(&env)
+    let field = env
+        .call_method(field, "getValue", "()I", &[])
+        .and_then(|result| result.i())
+        .ok()
+        .and_then(|result| Field::from_i32(result).from_protobuf())
         .expect("AndroidModelField convert failed");
     let runtime = RUNTIME.read().expect("RUNTIME read failed");
     let runtime = runtime
@@ -168,9 +170,12 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataBinary(
     _class: JClass,
     field: JObject,
 ) -> jobject {
-    let stream_data = String::try_from_kotlin(field, &env)
+    let stream_data = env
+        .get_string(field.into())
         .exception_describe(&env)
-        .expect("stream data convert failed");
+        .expect("stream data convert failed")
+        .to_string_lossy()
+        .into_owned();
     let stream_buf = Stream::decode(stream_data)
         .map(|stream| stream.to_protobuf(&(None, None, None)))
         .map(|protobuf| protobuf.encode_to_vec())

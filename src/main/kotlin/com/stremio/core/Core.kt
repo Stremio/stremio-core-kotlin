@@ -4,9 +4,11 @@ import android.util.Log
 import com.stremio.core.runtime.EnvError
 import com.stremio.core.runtime.RuntimeEvent
 import com.stremio.core.runtime.msg.Action
+import com.stremio.core.runtime.msg.RuntimeAction
 import com.stremio.core.types.resource.Stream
 import pbandk.Message
 import pbandk.decodeFromByteArray
+import pbandk.encodeToByteArray
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.full.companionObjectInstance
@@ -32,11 +34,16 @@ object Core {
 
     external fun initialize(storage: Storage): EnvError?
 
-    external fun dispatch(action: Action, field: Field?)
+    private external fun dispatch(actionProtobuf: ByteArray)
 
     external fun getStateBinary(field: Field): ByteArray
 
     private external fun decodeStreamDataBinary(streamData: String): ByteArray
+
+    fun dispatch(action: Action, field: Field?) {
+        val actionProtobuf = RuntimeAction(field, action).encodeToByteArray()
+        dispatch(actionProtobuf)
+    }
 
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T : Message> getState(field: Field): T {
@@ -51,9 +58,10 @@ object Core {
     }
 
     @JvmStatic
-    private fun onRuntimeEvent(event: RuntimeEvent) {
+    private fun onRuntimeEvent(eventProtobuf: ByteArray) {
         listeners.forEach {
             try {
+                val event = RuntimeEvent.decodeFromByteArray(eventProtobuf)
                 it.onEvent(event)
             } catch (e: Exception) {
                 Log.e("Stremio", "Failed passing event: ", e)
