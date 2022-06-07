@@ -1,11 +1,11 @@
 use chrono::{DateTime, Utc};
-use jni::JNIEnv;
 use jni::objects::JObject;
+use jni::JNIEnv;
 use stremio_core::deep_links::MetaItemDeepLinks;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{MetaItemBehaviorHints, MetaItemPreview, PosterShape};
 
-use crate::bridge::{ToProtobuf, TryFromKotlin};
+use crate::bridge::{FromProtobuf, ToProtobuf, TryFromKotlin};
 use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::types;
@@ -71,7 +71,7 @@ impl TryFromKotlin for MetaItemDeepLinks {
         Ok(MetaItemDeepLinks {
             meta_details_videos,
             meta_details_streams,
-            player: None
+            player: None,
         })
     }
 }
@@ -217,6 +217,40 @@ impl TryFromKotlin for MetaItemPreview {
     }
 }
 
+impl FromProtobuf<MetaItemBehaviorHints> for types::MetaItemBehaviorHints {
+    fn from_protobuf(&self) -> MetaItemBehaviorHints {
+        MetaItemBehaviorHints {
+            default_video_id: self.default_video_id.to_owned(),
+            featured_video_id: self.featured_video_id.to_owned(),
+            has_scheduled_videos: self.has_scheduled_videos,
+            other: Default::default(),
+        }
+    }
+}
+
+impl FromProtobuf<MetaItemPreview> for types::MetaItemPreview {
+    fn from_protobuf(&self) -> MetaItemPreview {
+        MetaItemPreview {
+            id: self.id.to_owned(),
+            r#type: self.r#type.to_owned(),
+            name: self.name.to_owned(),
+            poster_shape: types::PosterShape::from_i32(self.poster_shape)
+                .from_protobuf()
+                .unwrap_or(PosterShape::Poster),
+            poster: self.poster.to_owned(),
+            background: self.background.to_owned(),
+            logo: self.logo.to_owned(),
+            description: self.description.to_owned(),
+            release_info: self.release_info.to_owned(),
+            runtime: self.runtime.to_owned(),
+            released: self.released.from_protobuf(),
+            links: Default::default(),
+            trailer_streams: Default::default(),
+            behavior_hints: self.behavior_hints.from_protobuf(),
+        }
+    }
+}
+
 impl ToProtobuf<types::MetaItemBehaviorHints, ()> for MetaItemBehaviorHints {
     fn to_protobuf(&self, _args: &()) -> types::MetaItemBehaviorHints {
         types::MetaItemBehaviorHints {
@@ -232,7 +266,7 @@ impl ToProtobuf<types::MetaItemDeepLinks, ()> for MetaItemDeepLinks {
         types::MetaItemDeepLinks {
             meta_details_videos: self.meta_details_videos.clone(),
             meta_details_streams: self.meta_details_streams.clone(),
-            player: self.player.clone()
+            player: self.player.clone(),
         }
     }
 }

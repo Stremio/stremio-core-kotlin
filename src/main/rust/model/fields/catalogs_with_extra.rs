@@ -4,7 +4,7 @@ use stremio_core::models::catalogs_with_extra::{CatalogsWithExtra, Selected};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::ExtraValue;
 
-use crate::bridge::{ToProtobuf, TryFromKotlin};
+use crate::bridge::{FromProtobuf, ToProtobuf, TryFromKotlin};
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::models;
 
@@ -21,6 +21,15 @@ impl TryFromKotlin for Selected {
             .auto_local(env);
         let extra = Vec::<ExtraValue>::try_from_kotlin(extra.as_obj(), env)?;
         Ok(Selected { r#type, extra })
+    }
+}
+
+impl FromProtobuf<Selected> for models::catalogs_with_extra::Selected {
+    fn from_protobuf(&self) -> Selected {
+        Selected {
+            r#type: self.r#type.clone(),
+            extra: self.extra.from_protobuf(),
+        }
     }
 }
 

@@ -1,13 +1,13 @@
 use std::cmp;
 use std::convert::TryFrom;
 
-use jni::JNIEnv;
 use jni::objects::JObject;
+use jni::JNIEnv;
 use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
 use stremio_core::types::profile::{Auth, GDPRConsent, Profile, Settings, User};
 use url::Url;
 
-use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
+use crate::bridge::{FromProtobuf, ToProtobuf, TryFromKotlin, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::types;
@@ -201,11 +201,9 @@ impl<'a> TryIntoKotlin<'a, ()> for Settings {
             .try_into_kotlin(&(), env)?
             .auto_local(env);
         let seek_time_duration = (self.seek_time_duration as i64).into();
-        let unknown_fields = env.new_object(
-            classes.get(&KotlinClassName::HashMap).unwrap(),
-            "()V",
-            &[],
-        )?.auto_local(env);
+        let unknown_fields = env
+            .new_object(classes.get(&KotlinClassName::HashMap).unwrap(), "()V", &[])?
+            .auto_local(env);
         env.new_object(
             classes.get(&KotlinClassName::Profile_Settings).unwrap(),
             format!(
@@ -238,6 +236,43 @@ impl<'a> TryIntoKotlin<'a, ()> for Settings {
                 unknown_fields.as_obj().into(),
             ],
         )
+    }
+}
+
+impl FromProtobuf<GDPRConsent> for types::GdprConsent {
+    fn from_protobuf(&self) -> GDPRConsent {
+        GDPRConsent {
+            tos: self.tos,
+            privacy: self.privacy,
+            marketing: self.marketing,
+        }
+    }
+}
+
+impl FromProtobuf<Settings> for types::profile::Settings {
+    fn from_protobuf(&self) -> Settings {
+        Settings {
+            interface_language: self.interface_language.to_string(),
+            streaming_server_url: Url::parse(&self.streaming_server_url)
+                .expect("Settings.streaming_server_url parse failed"),
+            binge_watching: self.binge_watching,
+            play_in_background: self.play_in_background,
+            play_in_external_player: self.play_in_external_player,
+            hardware_decoding: self.hardware_decoding,
+            audio_passthrough: self.hardware_decoding,
+            audio_language: self.hardware_decoding.to_string(),
+            subtitles_language: self.subtitles_language.to_string(),
+            subtitles_size: u8::try_from(cmp::max(self.subtitles_size, 0)).unwrap_or(u8::MAX),
+            subtitles_font: self.subtitles_font.to_string(),
+            subtitles_bold: self.subtitles_bold,
+            subtitles_offset: u8::try_from(cmp::max(self.subtitles_offset, 0)).unwrap_or(u8::MAX),
+            subtitles_text_color: self.subtitles_text_color.to_string(),
+            subtitles_background_color: self.subtitles_background_color.to_string(),
+            subtitles_outline_color: self.subtitles_outline_color.to_string(),
+            seek_time_duration: u32::try_from(cmp::max(self.seek_time_duration, 0))
+                .unwrap_or(u32::MAX),
+            streaming_server_warning_dismissed: None,
+        }
     }
 }
 

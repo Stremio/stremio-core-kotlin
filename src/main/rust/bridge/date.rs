@@ -2,7 +2,7 @@ use chrono::{DateTime, TimeZone, Utc};
 use jni::objects::JObject;
 use jni::JNIEnv;
 
-use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
+use crate::bridge::{FromProtobuf, ToProtobuf, TryFromKotlin, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::protobuf::google::protobuf::Timestamp;
 
@@ -23,6 +23,12 @@ impl TryFromKotlin for DateTime<Utc> {
         let time = env.call_method(value, "getTime", "()J", &[])?.j()?;
         let (secs, nsecs) = (time / 1000, time % 1000 * 1_000_000);
         Ok(Utc.timestamp(secs, nsecs as u32))
+    }
+}
+
+impl FromProtobuf<DateTime<Utc>> for Timestamp {
+    fn from_protobuf(&self) -> DateTime<Utc> {
+        Utc.timestamp(self.seconds, self.nanos as u32)
     }
 }
 
