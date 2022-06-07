@@ -15,18 +15,18 @@ impl FromProtobuf<GDPRConsentRequest> for types::GdprConsentRequest {
 
 impl FromProtobuf<AuthRequest> for types::AuthRequest {
     fn from_protobuf(&self) -> AuthRequest {
-        match &self.request {
-            Some(types::auth_request::Request::Login(login)) => AuthRequest::Login {
+        match &self.r#type {
+            Some(types::auth_request::Type::Login(login)) => AuthRequest::Login {
                 email: login.email.to_owned(),
                 password: login.password.to_owned(),
                 facebook: login.facebook.to_owned(),
             },
-            Some(types::auth_request::Request::LoginWithToken(login_with_token)) => {
+            Some(types::auth_request::Type::LoginWithToken(login_with_token)) => {
                 AuthRequest::LoginWithToken {
                     token: login_with_token.token.to_owned(),
                 }
             }
-            Some(types::auth_request::Request::Register(register)) => AuthRequest::Register {
+            Some(types::auth_request::Type::Register(register)) => AuthRequest::Register {
                 email: register.email.to_owned(),
                 password: register.password.to_owned(),
                 gdpr_consent: register.gdpr_consent_request.from_protobuf(),
@@ -53,13 +53,13 @@ impl ToProtobuf<types::AuthRequest, ()> for AuthRequest {
                 email,
                 password,
                 facebook,
-            } => types::auth_request::Request::Login(types::auth_request::Login {
+            } => types::auth_request::Type::Login(types::auth_request::Login {
                 email: email.to_owned(),
                 password: password.to_owned(),
                 facebook: facebook.to_owned(),
             }),
             AuthRequest::LoginWithToken { token } => {
-                types::auth_request::Request::LoginWithToken(types::auth_request::LoginWithToken {
+                types::auth_request::Type::LoginWithToken(types::auth_request::LoginWithToken {
                     token: token.to_owned(),
                 })
             }
@@ -67,14 +67,14 @@ impl ToProtobuf<types::AuthRequest, ()> for AuthRequest {
                 email,
                 password,
                 gdpr_consent,
-            } => types::auth_request::Request::Register(types::auth_request::Register {
+            } => types::auth_request::Type::Register(types::auth_request::Register {
                 email: email.to_owned(),
                 password: password.to_owned(),
                 gdpr_consent_request: gdpr_consent.to_protobuf(&()),
             }),
         };
         types::AuthRequest {
-            request: Some(request),
+            r#type: Some(request),
         }
     }
 }

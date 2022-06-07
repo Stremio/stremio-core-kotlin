@@ -16,7 +16,7 @@ message RuntimeAction {
 }
 
 message Action {
-  oneof action {
+  oneof type {
     ActionCtx ctx = 1;
     ActionLink link = 2;
     ActionStreamingServer streaming_server = 3;

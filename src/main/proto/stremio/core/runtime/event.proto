@@ -8,7 +8,7 @@ import "stremio/core/types/profile.proto";
 import "stremio/core/types/auth_request.proto";
 
 message Event {
-  oneof event {
+  oneof type {
     ProfilePushedToStorage profile_pushed_to_storage = 1;
     LibraryItemsPushedToStorage library_items_pushed_to_storage = 2;
     UserPulledFromAPI user_pulled_from_api = 3;

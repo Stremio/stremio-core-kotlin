@@ -8,7 +8,7 @@ import "google/protobuf/timestamp.proto";
 import "stremio/core/types/profile.proto";
 
 message AuthRequest {
-  oneof request {
+  oneof type {
     Login login = 1;
     LoginWithToken login_with_token = 2;
     Register register = 3;
