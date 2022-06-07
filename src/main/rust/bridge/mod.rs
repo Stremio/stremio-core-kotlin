@@ -19,9 +19,6 @@ pub use event::*;
 mod extra_value;
 pub use extra_value::*;
 
-mod jobject;
-pub use jobject::*;
-
 mod library_item;
 pub use library_item::*;
 
@@ -63,9 +60,6 @@ pub use stream::*;
 
 mod string;
 pub use string::*;
-
-mod try_from_kotlin;
-pub use try_from_kotlin::*;
 
 mod try_into_kotlin;
 pub use try_into_kotlin::*;
