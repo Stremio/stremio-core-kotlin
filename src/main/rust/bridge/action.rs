@@ -46,11 +46,11 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_ctx::Args::SyncLibraryWithApi(_args)) => {
                     Action::Ctx(ActionCtx::SyncLibraryWithAPI)
                 }
-                None => unimplemented!("ActionCtx"),
+                None => unimplemented!("ActionCtx missing"),
             },
             Some(runtime::action::Type::Link(action_link)) => match &action_link.args {
                 Some(action_link::Args::ReadData(_args)) => Action::Link(ActionLink::ReadData),
-                None => unimplemented!("ActionLink"),
+                None => unimplemented!("ActionLink missing"),
             },
             Some(runtime::action::Type::StreamingServer(action_streaming_server)) => {
                 match &action_streaming_server.args {
@@ -62,7 +62,7 @@ impl FromProtobuf<Action> for runtime::Action {
                             settings.from_protobuf(),
                         ))
                     }
-                    None => unimplemented!("ActionLink"),
+                    None => unimplemented!("ActionStreamingServer missing"),
                 }
             }
             Some(runtime::action::Type::Load(action_load)) => match &action_load.args {
@@ -79,10 +79,10 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Load(ActionLoad::MetaDetails(selected.from_protobuf()))
                 }
                 Some(action_load::Args::Link(_args)) => Action::Load(ActionLoad::Link),
-                None => unimplemented!("ActionLink"),
+                None => unimplemented!("ActionLoad missing"),
             },
             Some(runtime::action::Type::Unload(_args)) => Action::Unload,
-            None => unimplemented!("Action"),
+            None => unimplemented!("Action missing"),
         }
     }
 }
