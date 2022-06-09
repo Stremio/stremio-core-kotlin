@@ -18,7 +18,7 @@ use stremio_core::types::library::LibraryBucket;
 use stremio_core::types::profile::Profile;
 use stremio_core::types::resource::Stream;
 
-use crate::bridge::{FromProtobuf, ToProtobuf, TryIntoKotlin};
+use crate::bridge::{FromProtobuf, ToJNIByteArray, ToProtobuf};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::ExceptionDescribeExt;
 use crate::model::AndroidModel;
@@ -41,7 +41,7 @@ pub unsafe extern "C" fn JNI_OnLoad(_: JavaVM, _: *mut c_void) -> jint {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_stremio_core_Core_initialize(
+pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
     env: JNIEnv,
     _class: JClass,
     storage: JObject,
@@ -99,26 +99,24 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initialize(
                     *RUNTIME.write().expect("RUNTIME write failed") =
                         Some(Loadable::Err(error.to_owned()));
                     error
-                        .try_into_kotlin(&(), &env)
-                        .exception_describe(&env)
-                        .expect("AndroidEnvError convert failed")
-                        .into_inner()
+                        .to_protobuf(&())
+                        .encode_to_vec()
+                        .to_jni_byte_array(&env)
                 }
             }
         }
         Err(error) => {
             *RUNTIME.write().expect("RUNTIME write failed") = Some(Loadable::Err(error.to_owned()));
             error
-                .try_into_kotlin(&(), &env)
-                .exception_describe(&env)
-                .expect("AndroidEnvError convert failed")
-                .into_inner()
+                .to_protobuf(&())
+                .encode_to_vec()
+                .to_jni_byte_array(&env)
         }
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_stremio_core_Core_dispatch(
+pub unsafe extern "C" fn Java_com_stremio_core_Core_dispatchNative(
     env: JNIEnv,
     _class: JClass,
     action_protobuf: jbyteArray,
@@ -140,7 +138,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_dispatch(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateBinary(
+pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateNative(
     env: JNIEnv,
     _class: JClass,
     field: JObject,
@@ -158,14 +156,11 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateBinary(
         .as_ref()
         .expect("RUNTIME not initialized");
     let model = runtime.model().expect("model read failed");
-    let message_buf = model.get_state_binary(&field);
-    env.byte_array_from_slice(&message_buf)
-        .exception_describe(&env)
-        .expect("state convert failed")
+    model.get_state_binary(&field).to_jni_byte_array(&env)
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataBinary(
+pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
     env: JNIEnv,
     _class: JClass,
     field: JObject,
@@ -176,11 +171,12 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataBinary(
         .expect("stream data convert failed")
         .to_string_lossy()
         .into_owned();
-    let stream_buf = Stream::decode(stream_data)
-        .map(|stream| stream.to_protobuf(&(None, None, None)))
-        .map(|protobuf| protobuf.encode_to_vec())
-        .expect("stream decoding failed");
-    env.byte_array_from_slice(&stream_buf)
-        .exception_describe(&env)
-        .expect("stream decoding failed")
+    let stream = match Stream::decode(stream_data) {
+        Ok(stream) => stream,
+        Err(_) => return JObject::null().into_inner(),
+    };
+    stream
+        .to_protobuf(&(None, None, None))
+        .encode_to_vec()
+        .to_jni_byte_array(&env)
 }

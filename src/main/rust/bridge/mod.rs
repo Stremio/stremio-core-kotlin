@@ -61,11 +61,11 @@ pub use stream::*;
 mod string;
 pub use string::*;
 
-mod try_into_kotlin;
-pub use try_into_kotlin::*;
-
 mod to_protobuf;
 pub use to_protobuf::*;
 
 mod from_protobuf;
 pub use from_protobuf::*;
+
+mod to_jni_byte_array;
+pub use to_jni_byte_array::*;

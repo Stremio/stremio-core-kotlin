@@ -32,29 +32,34 @@ object Core {
         listeners.remove(listener)
     }
 
-    external fun initialize(storage: Storage): EnvError?
+    private external fun initializeNative(storage: Storage): ByteArray?
 
-    private external fun dispatch(actionProtobuf: ByteArray)
+    private external fun dispatchNative(actionProtobuf: ByteArray)
 
-    external fun getStateBinary(field: Field): ByteArray
+    private external fun decodeStreamDataNative(streamData: String): ByteArray?
 
-    private external fun decodeStreamDataBinary(streamData: String): ByteArray
+    external fun getStateNative(field: Field): ByteArray
+
+    fun initialize(storage: Storage): EnvError? {
+        return initializeNative(storage)
+            ?.let { EnvError.decodeFromByteArray(it) }
+    }
 
     fun dispatch(action: Action, field: Field?) {
         val actionProtobuf = RuntimeAction(field, action).encodeToByteArray()
-        dispatch(actionProtobuf)
+        dispatchNative(actionProtobuf)
     }
 
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T : Message> getState(field: Field): T {
-        val protobuf = getStateBinary(field)
+        val protobuf = getStateNative(field)
         val companion = T::class.companionObjectInstance as Message.Companion<T>
         return companion.decodeFromByteArray(protobuf)
     }
 
-    fun decodeStreamData(streamData: String): Stream {
-        val decodedStreamProtobuf = decodeStreamDataBinary(streamData)
-        return Stream.decodeFromByteArray(decodedStreamProtobuf)
+    fun decodeStreamData(streamData: String): Stream? {
+        return decodeStreamDataNative(streamData)
+            ?.let { Stream.decodeFromByteArray(it) }
     }
 
     @JvmStatic
