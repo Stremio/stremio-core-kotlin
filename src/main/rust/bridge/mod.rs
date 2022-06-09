@@ -61,6 +61,9 @@ pub use stream::*;
 mod string;
 pub use string::*;
 
+mod subtitle;
+pub use subtitle::*;
+
 mod to_protobuf;
 pub use to_protobuf::*;
 

@@ -4,9 +4,12 @@ package stremio.core.runtime;
 
 option java_package = "com.stremio.core.runtime.msg";
 
+import "stremio/core/runtime/action_catalogs_with_extra.proto";
 import "stremio/core/runtime/action_ctx.proto";
 import "stremio/core/runtime/action_link.proto";
 import "stremio/core/runtime/action_load.proto";
+import "stremio/core/runtime/action_meta_details.proto";
+import "stremio/core/runtime/action_player.proto";
 import "stremio/core/runtime/action_streaming_server.proto";
 import "stremio/core/runtime/field.proto";
 
@@ -19,10 +22,12 @@ message Action {
   oneof type {
     ActionCtx ctx = 1;
     ActionLink link = 2;
-    ActionStreamingServer streaming_server = 3;
-    //    Player player = 4;
-    ActionLoad load = 5;
-    ActionUnload unload = 6;
+    ActionCatalogsWithExtra catalogs_with_extra = 3;
+    ActionMetaDetails meta_details = 4;
+    ActionStreamingServer streaming_server = 5;
+    ActionPlayer player = 6;
+    ActionLoad load = 7;
+    ActionUnload unload = 8;
   }
 
   message ActionUnload {

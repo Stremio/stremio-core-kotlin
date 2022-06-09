@@ -19,5 +19,8 @@ pub use link::*;
 mod meta_details;
 pub use meta_details::*;
 
+mod player;
+pub use player::*;
+
 mod streaming_server;
 pub use streaming_server::*;

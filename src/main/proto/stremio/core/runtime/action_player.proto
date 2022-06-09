@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package stremio.core.runtime;
+
+option java_package = "com.stremio.core.runtime.msg";
+
+import "google/protobuf/empty.proto";
+
+message ActionPlayer {
+  oneof args {
+    PlayerItemState update_library_item_state = 1;
+    google.protobuf.Empty push_to_library = 2;
+  }
+
+  message PlayerItemState {
+    required uint64 time = 1;
+    required uint64 duration = 2;
+  }
+}
