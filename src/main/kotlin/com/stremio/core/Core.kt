@@ -36,7 +36,7 @@ object Core {
 
     private external fun dispatchNative(actionProtobuf: ByteArray)
 
-    private external fun decodeStreamDataNative(streamData: String): ByteArray
+    private external fun decodeStreamDataNative(streamData: String): ByteArray?
 
     external fun getStateNative(field: Field): ByteArray
 
@@ -57,9 +57,9 @@ object Core {
         return companion.decodeFromByteArray(protobuf)
     }
 
-    fun decodeStreamData(streamData: String): Stream {
-        val decodedStreamProtobuf = decodeStreamDataNative(streamData)
-        return Stream.decodeFromByteArray(decodedStreamProtobuf)
+    fun decodeStreamData(streamData: String): Stream? {
+        return decodeStreamDataNative(streamData)
+            ?.let { Stream.decodeFromByteArray(it) }
     }
 
     @JvmStatic

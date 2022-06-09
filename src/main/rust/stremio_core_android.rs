@@ -171,9 +171,12 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
         .expect("stream data convert failed")
         .to_string_lossy()
         .into_owned();
-    Stream::decode(stream_data)
-        .map(|stream| stream.to_protobuf(&(None, None, None)))
-        .map(|protobuf| protobuf.encode_to_vec())
-        .expect("stream decoding failed")
+    let stream = match Stream::decode(stream_data) {
+        Ok(stream) => stream,
+        Err(_) => return JObject::null().into_inner(),
+    };
+    stream
+        .to_protobuf(&(None, None, None))
+        .encode_to_vec()
         .to_jni_byte_array(&env)
 }
