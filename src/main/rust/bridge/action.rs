@@ -1,5 +1,8 @@
+use std::ops::Range;
+
 use stremio_core::runtime::msg::{
-    Action, ActionCtx, ActionLink, ActionLoad, ActionStreamingServer,
+    Action, ActionCatalogsWithExtra, ActionCtx, ActionLink, ActionLoad, ActionMetaDetails,
+    ActionPlayer, ActionStreamingServer,
 };
 use stremio_core::runtime::RuntimeAction;
 
@@ -8,7 +11,8 @@ use crate::env::AndroidEnv;
 use crate::model::AndroidModel;
 use crate::protobuf::stremio::core::runtime;
 use crate::protobuf::stremio::core::runtime::{
-    action_ctx, action_link, action_load, action_streaming_server, Field,
+    action_catalogs_with_extra, action_ctx, action_link, action_load, action_meta_details,
+    action_player, action_streaming_server, Field,
 };
 
 impl FromProtobuf<Action> for runtime::Action {
@@ -52,6 +56,28 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_link::Args::ReadData(_args)) => Action::Link(ActionLink::ReadData),
                 None => unimplemented!("ActionLink missing"),
             },
+            Some(runtime::action::Type::CatalogsWithExtra(action_catalog)) => {
+                match &action_catalog.args {
+                    Some(action_catalogs_with_extra::Args::LoadRange(range)) => {
+                        Action::CatalogsWithExtra(ActionCatalogsWithExtra::LoadRange(Range {
+                            start: range.start as usize,
+                            end: range.end as usize,
+                        }))
+                    }
+                    None => unimplemented!("ActionCatalogsWithExtra missing"),
+                }
+            }
+            Some(runtime::action::Type::MetaDetails(action_meta_details)) => {
+                match &action_meta_details.args {
+                    Some(action_meta_details::Args::MarkAsWatched(video_state)) => {
+                        Action::MetaDetails(ActionMetaDetails::MarkAsWatched(
+                            video_state.video_id.to_owned(),
+                            video_state.is_watched,
+                        ))
+                    }
+                    None => unimplemented!("ActionMetaDetails missing"),
+                }
+            }
             Some(runtime::action::Type::StreamingServer(action_streaming_server)) => {
                 match &action_streaming_server.args {
                     Some(action_streaming_server::Args::Reload(_args)) => {
@@ -65,6 +91,18 @@ impl FromProtobuf<Action> for runtime::Action {
                     None => unimplemented!("ActionStreamingServer missing"),
                 }
             }
+            Some(runtime::action::Type::Player(action_player)) => match &action_player.args {
+                Some(action_player::Args::UpdateLibraryItemState(item_state)) => {
+                    Action::Player(ActionPlayer::UpdateLibraryItemState {
+                        time: item_state.time,
+                        duration: item_state.duration,
+                    })
+                }
+                Some(action_player::Args::PushToLibrary(_args)) => {
+                    Action::Player(ActionPlayer::PushToLibrary)
+                }
+                None => unimplemented!("ActionLink missing"),
+            },
             Some(runtime::action::Type::Load(action_load)) => match &action_load.args {
                 Some(action_load::Args::CatalogsWithExtra(selected)) => {
                     Action::Load(ActionLoad::CatalogsWithExtra(selected.from_protobuf()))
@@ -77,6 +115,9 @@ impl FromProtobuf<Action> for runtime::Action {
                 }
                 Some(action_load::Args::MetaDetails(selected)) => {
                     Action::Load(ActionLoad::MetaDetails(selected.from_protobuf()))
+                }
+                Some(action_load::Args::Player(selected)) => {
+                    Action::Load(ActionLoad::Player(selected.from_protobuf()))
                 }
                 Some(action_load::Args::Link(_args)) => Action::Load(ActionLoad::Link),
                 None => unimplemented!("ActionLoad missing"),

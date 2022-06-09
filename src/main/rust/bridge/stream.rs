@@ -1,9 +1,60 @@
+use std::convert::TryInto;
 use stremio_core::deep_links::StreamDeepLinks;
 use stremio_core::types::addon::ResourceRequest;
-use stremio_core::types::resource::{Stream, StreamSource};
+use stremio_core::types::resource::{Stream, StreamBehaviorHints, StreamSource};
+use url::Url;
 
-use crate::bridge::ToProtobuf;
+use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::types;
+
+impl FromProtobuf<StreamSource> for types::stream::Source {
+    fn from_protobuf(&self) -> StreamSource {
+        match self {
+            types::stream::Source::Url(source) => StreamSource::Url {
+                url: Url::parse(source.url.as_str()).expect("Stream.url parse failed"),
+            },
+            types::stream::Source::YouTube(source) => StreamSource::YouTube {
+                yt_id: source.yt_id.to_owned(),
+            },
+            types::stream::Source::Torrent(source) => StreamSource::Torrent {
+                info_hash: source
+                    .info_hash
+                    .as_bytes()
+                    .try_into()
+                    .expect("Stream.info_hash parse failed"),
+                file_idx: source.file_idx.map(|idx| idx as u16),
+                announce: source.announce.clone(),
+            },
+            types::stream::Source::External(source) => StreamSource::External {
+                external_url: Url::parse(source.external_url.as_str())
+                    .expect("Stream.external_url parse failed"),
+            },
+            types::stream::Source::PlayerFrame(source) => StreamSource::PlayerFrame {
+                player_frame_url: Url::parse(source.player_frame_url.as_str())
+                    .expect("Stream.player_frame_url parse failed"),
+            },
+        }
+    }
+}
+
+impl FromProtobuf<Stream> for types::Stream {
+    fn from_protobuf(&self) -> Stream {
+        Stream {
+            source: self.source.from_protobuf().unwrap(),
+            name: self.name.to_owned(),
+            description: self.name.to_owned(),
+            thumbnail: self.name.to_owned(),
+            subtitles: self.subtitles.from_protobuf(),
+            behavior_hints: StreamBehaviorHints {
+                not_web_ready: self.behavior_hints.not_web_ready,
+                binge_group: self.behavior_hints.binge_group.to_owned(),
+                country_whitelist: Some(self.behavior_hints.country_whitelist.to_owned()),
+                headers: self.behavior_hints.headers.to_owned(),
+                other: Default::default(),
+            },
+        }
+    }
+}
 
 impl ToProtobuf<types::stream::Source, ()> for StreamSource {
     fn to_protobuf(&self, _args: &()) -> types::stream::Source {
@@ -66,6 +117,7 @@ impl
             name: self.name.to_owned().or(addon_name.to_owned()),
             description: self.description.clone(),
             thumbnail: self.thumbnail.clone(),
+            subtitles: self.subtitles.to_protobuf(&()),
             behavior_hints: types::StreamBehaviorHints {
                 not_web_ready: self.behavior_hints.not_web_ready,
                 binge_group: self.behavior_hints.binge_group.to_owned(),

@@ -1,7 +1,7 @@
 use stremio_core::models::common::ResourceLoadable;
 use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::ResourceRequest;
-use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream};
+use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
 
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
@@ -61,7 +61,7 @@ impl ToProtobuf<models::LoadableMetaItem, Ctx> for &ResourceLoadable<MetaItem> {
 }
 
 impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
-for ResourceLoadable<Vec<Stream>>
+    for ResourceLoadable<Vec<Stream>>
 {
     fn to_protobuf(
         &self,
@@ -81,6 +81,24 @@ for ResourceLoadable<Vec<Stream>>
                         self.request.to_owned(),
                         meta_request.to_owned(),
                     )),
+                }
+            })
+            .unwrap()
+    }
+}
+
+impl ToProtobuf<models::LoadableSubtitles, Ctx> for ResourceLoadable<Vec<Subtitles>> {
+    fn to_protobuf(&self, ctx: &Ctx) -> models::LoadableSubtitles {
+        ctx.profile
+            .addons
+            .iter()
+            .find(|addon| addon.transport_url == self.request.base)
+            .map(|addon| {
+                let addon_name = addon.manifest.name.to_owned();
+                models::LoadableSubtitles {
+                    title: addon_name.to_owned(),
+                    request: self.request.to_protobuf(&()),
+                    content: self.content.to_protobuf(&()),
                 }
             })
             .unwrap()

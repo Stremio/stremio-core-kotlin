@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package stremio.core.runtime;
+
+option java_package = "com.stremio.core.runtime.msg";
+
+import "google/protobuf/empty.proto";
+
+message ActionCatalogsWithExtra {
+  oneof args {
+    Range load_range = 1;
+  }
+}
+
+message Range {
+  required uint32 start = 1;
+  required uint32 end = 2;
+}

@@ -6,7 +6,7 @@ use stremio_core::models::streaming_server::Settings;
 use stremio_core::runtime::EnvError;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
-use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream};
+use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
 use url::Url;
 
 use crate::bridge::ToProtobuf;
@@ -73,6 +73,24 @@ impl
                 message: error.to_string(),
             }),
             Loadable::Loading => models::loadable_streams::Content::Loading(models::Loading {}),
+        }
+    }
+}
+
+impl ToProtobuf<models::loadable_subtitles::Content, ()>
+    for Loadable<Vec<Subtitles>, ResourceError>
+{
+    fn to_protobuf(&self, _args: &()) -> models::loadable_subtitles::Content {
+        match &self {
+            Loadable::Ready(ready) => {
+                models::loadable_subtitles::Content::Ready(models::Subtitles {
+                    subtitles: ready.to_protobuf(&()),
+                })
+            }
+            Loadable::Err(error) => models::loadable_subtitles::Content::Error(models::Error {
+                message: error.to_string(),
+            }),
+            Loadable::Loading => models::loadable_subtitles::Content::Loading(models::Loading {}),
         }
     }
 }
