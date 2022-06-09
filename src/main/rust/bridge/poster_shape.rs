@@ -1,28 +1,14 @@
-use jni::JNIEnv;
-use jni::objects::JObject;
 use stremio_core::types::resource::PosterShape;
 
-use crate::bridge::{ToProtobuf, TryFromKotlin};
-use crate::env::KotlinClassName;
-use crate::jni_ext::JObjectExt;
+use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::types;
 
-impl TryFromKotlin for PosterShape {
-    fn try_from_kotlin<'a>(value: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
-        let name = env
-            .call_method(
-                value,
-                "name",
-                format!("()L{};", KotlinClassName::String.value()),
-                &[],
-            )?
-            .l()?
-            .auto_local(env);
-        let name = String::try_from_kotlin(name.as_obj(), env)?;
-        match name.as_ref() {
-            "Poster" => Ok(PosterShape::Poster),
-            "Landscape" => Ok(PosterShape::Landscape),
-            _ => Ok(PosterShape::Square),
+impl FromProtobuf<PosterShape> for types::PosterShape {
+    fn from_protobuf(&self) -> PosterShape {
+        match self {
+            types::PosterShape::Poster => PosterShape::Poster,
+            types::PosterShape::Landscape => PosterShape::Landscape,
+            types::PosterShape::Square => PosterShape::Square,
         }
     }
 }

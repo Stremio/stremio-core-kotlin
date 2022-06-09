@@ -1,31 +1,18 @@
-use jni::objects::JObject;
-use jni::JNIEnv;
 use stremio_core::models::catalog_with_filters::{
     CatalogWithFilters, Selectable, SelectableCatalog, SelectableExtra, SelectableExtraOption,
     SelectablePage, SelectableType, Selected,
 };
 use stremio_core::models::ctx::Ctx;
-use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::MetaItemPreview;
 
-use crate::bridge::{ToProtobuf, TryFromKotlin};
-use crate::env::KotlinClassName;
-use crate::jni_ext::JObjectExt;
+use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::models;
 
-impl TryFromKotlin for Selected {
-    fn try_from_kotlin<'a>(selected: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
-        let request = env
-            .call_method(
-                selected,
-                "getRequest",
-                format!("()L{};", KotlinClassName::ResourceRequest.value()),
-                &[],
-            )?
-            .l()?
-            .auto_local(env);
-        let request = ResourceRequest::try_from_kotlin(request.as_obj(), env)?;
-        Ok(Selected { request })
+impl FromProtobuf<Selected> for models::catalog_with_filters::Selected {
+    fn from_protobuf(&self) -> Selected {
+        Selected {
+            request: self.request.from_protobuf(),
+        }
     }
 }
 

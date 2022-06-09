@@ -1,43 +1,19 @@
 use boolinator::Boolinator;
-use jni::JNIEnv;
-use jni::objects::JObject;
 use stremio_core::deep_links::MetaItemDeepLinks;
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::meta_details::{MetaDetails, Selected};
-use stremio_core::types::addon::{ResourcePath, ResourceRequest};
+use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{MetaItem, SeriesInfo, Video};
 
-use crate::bridge::{ToProtobuf, TryFromKotlin};
-use crate::env::KotlinClassName;
-use crate::jni_ext::JObjectExt;
+use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::{models, types};
 
-impl TryFromKotlin for Selected {
-    fn try_from_kotlin<'a>(selected: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
-        let meta_path = env
-            .call_method(
-                selected,
-                "getMetaPath",
-                format!("()L{};", KotlinClassName::ResourcePath.value()),
-                &[],
-            )?
-            .l()?
-            .auto_local(env);
-        let meta_path = ResourcePath::try_from_kotlin(meta_path.as_obj(), env)?;
-        let stream_path = env
-            .call_method(
-                selected,
-                "getStreamPath",
-                format!("()L{};", KotlinClassName::ResourcePath.value()),
-                &[],
-            )?
-            .l()?
-            .auto_local(env);
-        let stream_path = Option::<ResourcePath>::try_from_kotlin(stream_path.as_obj(), env)?;
-        Ok(Selected {
-            meta_path,
-            stream_path,
-        })
+impl FromProtobuf<Selected> for models::meta_details::Selected {
+    fn from_protobuf(&self) -> Selected {
+        Selected {
+            meta_path: self.meta_path.from_protobuf(),
+            stream_path: self.stream_path.from_protobuf(),
+        }
     }
 }
 

@@ -2,75 +2,44 @@ use std::cmp;
 use std::convert::TryFrom;
 use std::num::NonZeroUsize;
 
-use jni::objects::JObject;
-use jni::JNIEnv;
 use stremio_core::models::library_with_filters::{
     LibraryRequest, LibraryRequestPage, LibraryWithFilters, Selectable, SelectablePage,
     SelectableSort, SelectableType, Selected, Sort,
 };
 
-use crate::bridge::{ToProtobuf, TryFromKotlin};
-use crate::env::KotlinClassName;
-use crate::jni_ext::JObjectExt;
+use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::model::LibraryByType;
 use crate::protobuf::stremio::core::models;
 
-impl TryFromKotlin for Sort {
-    fn try_from_kotlin<'a>(value: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
-        let value = env
-            .call_method(value, "getName", "()Ljava/lang/String;", &[])?
-            .l()?
-            .auto_local(env);
-        let value = String::try_from_kotlin(value.as_obj(), env)?;
-        match value.as_ref() {
-            "LastWatched" => Ok(Sort::LastWatched),
-            "Name" => Ok(Sort::Name),
-            "TimesWatched" => Ok(Sort::TimesWatched),
-            value => panic!("Invalid sort: {}", value),
+impl FromProtobuf<Sort> for models::library_with_filters::Sort {
+    fn from_protobuf(&self) -> Sort {
+        match self {
+            models::library_with_filters::Sort::LastWatched => Sort::LastWatched,
+            models::library_with_filters::Sort::Name => Sort::Name,
+            models::library_with_filters::Sort::TimesWatched => Sort::TimesWatched,
         }
     }
 }
 
-impl TryFromKotlin for LibraryRequest {
-    fn try_from_kotlin<'a>(request: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
-        let r#type = env
-            .call_method(request, "getType", "()Ljava/lang/String;", &[])?
-            .l()?
-            .auto_local(env);
-        let r#type = Option::<String>::try_from_kotlin(r#type.as_obj(), env)?;
-        let sort = env
-            .call_method(
-                request,
-                "getSort",
-                format!("()L{};", KotlinClassName::LibraryWithFilters_Sort.value()),
-                &[],
-            )?
-            .l()?
-            .auto_local(env);
-        let sort = Sort::try_from_kotlin(sort.as_obj(), env)?;
-        let page = env.call_method(request, "getPage", "()J", &[])?.j()?;
-        let page = usize::try_from(cmp::max(page, 1)).unwrap_or(usize::MAX);
+impl FromProtobuf<LibraryRequest> for models::library_with_filters::LibraryRequest {
+    fn from_protobuf(&self) -> LibraryRequest {
+        let page = usize::try_from(cmp::max(self.page, 1)).unwrap_or(usize::MAX);
         let page = LibraryRequestPage(NonZeroUsize::new(page).unwrap());
-        Ok(LibraryRequest { r#type, sort, page })
+        LibraryRequest {
+            r#type: self.r#type.to_owned(),
+            sort: models::library_with_filters::Sort::from_i32(self.sort)
+                .from_protobuf()
+                .unwrap_or(Sort::LastWatched),
+            page,
+        }
     }
 }
 
-impl TryFromKotlin for Selected {
-    fn try_from_kotlin<'a>(selected: JObject<'a>, env: &JNIEnv<'a>) -> jni::errors::Result<Self> {
-        let request = env
-            .call_method(
-                selected,
-                "getRequest",
-                format!(
-                    "()L{};",
-                    KotlinClassName::LibraryWithFilters_LibraryRequest.value()
-                ),
-                &[],
-            )?
-            .l()?
-            .auto_local(env);
-        let request = LibraryRequest::try_from_kotlin(request.as_obj(), env)?;
-        Ok(Selected { request })
+impl FromProtobuf<Selected> for models::library_with_filters::Selected {
+    fn from_protobuf(&self) -> Selected {
+        Selected {
+            request: self.request.from_protobuf(),
+        }
     }
 }
 
