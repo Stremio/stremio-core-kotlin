@@ -13,7 +13,8 @@ message CatalogsWithExtra {
   repeated LoadableCatalog catalogs = 2;
 
   message Selected {
-    repeated stremio.core.types.ExtraValue extra = 1;
+    optional string type = 1;
+    repeated stremio.core.types.ExtraValue extra = 2;
   }
 }
 

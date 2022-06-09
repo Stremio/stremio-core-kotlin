@@ -1,13 +1,13 @@
 use boolinator::Boolinator;
-use jni::objects::JObject;
 use jni::JNIEnv;
+use jni::objects::JObject;
+use stremio_core::deep_links::MetaItemDeepLinks;
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::meta_details::{MetaDetails, Selected};
-use stremio_core::types::addon::ResourcePath;
+use stremio_core::types::addon::{ResourcePath, ResourceRequest};
 use stremio_core::types::resource::{MetaItem, SeriesInfo, Video};
-use stremio_deeplinks::MetaItemDeepLinks;
 
-use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin};
+use crate::bridge::{ToProtobuf, TryFromKotlin};
 use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::{models, types};
@@ -75,25 +75,31 @@ impl ToProtobuf<types::Video, Option<String>> for Video {
     }
 }
 
-impl ToProtobuf<types::MetaItem, Option<String>> for MetaItem {
-    fn to_protobuf(&self, addon_name: &Option<String>) -> types::MetaItem {
+impl ToProtobuf<types::MetaItem, (Option<String>, ResourceRequest)> for MetaItem {
+    fn to_protobuf(
+        &self,
+        (addon_name, meta_request): &(Option<String>, ResourceRequest),
+    ) -> types::MetaItem {
         types::MetaItem {
-            id: self.id.to_string(),
-            r#type: self.r#type.to_string(),
-            name: self.name.to_string(),
-            poster_shape: self.poster_shape.to_protobuf(&()) as i32,
-            poster: self.poster.clone(),
-            background: self.background.clone(),
-            logo: self.logo.clone(),
-            description: self.description.clone(),
-            release_info: self.release_info.clone(),
-            runtime: self.runtime.clone(),
-            released: self.released.to_protobuf(&()),
-            links: self.links.to_protobuf(&()),
-            trailer_streams: self.trailer_streams.to_protobuf(&(None, None, None)),
+            id: self.preview.id.to_string(),
+            r#type: self.preview.r#type.to_string(),
+            name: self.preview.name.to_string(),
+            poster_shape: self.preview.poster_shape.to_protobuf(&()) as i32,
+            poster: self.preview.poster.clone(),
+            background: self.preview.background.clone(),
+            logo: self.preview.logo.clone(),
+            description: self.preview.description.clone(),
+            release_info: self.preview.release_info.clone(),
+            runtime: self.preview.runtime.clone(),
+            released: self.preview.released.to_protobuf(&()),
+            links: self.preview.links.to_protobuf(&()),
+            trailer_streams: self
+                .preview
+                .trailer_streams
+                .to_protobuf(&(None, None, None)),
             videos: self.videos.to_protobuf(&(addon_name)),
-            behavior_hints: self.behavior_hints.to_protobuf(&()),
-            deep_links: MetaItemDeepLinks::from(self).to_protobuf(&()),
+            behavior_hints: self.preview.behavior_hints.to_protobuf(&()),
+            deep_links: MetaItemDeepLinks::from((self, meta_request)).to_protobuf(&()),
         }
     }
 }
@@ -103,25 +109,27 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
         let meta_item = self
             .meta_items
             .iter()
-            .find(|meta_item| meta_item.content.is_ready())
+            .find(|meta_item| meta_item.content.as_ref().map_or(false, |x| x.is_ready()))
             .or_else(|| {
                 if self
                     .meta_items
                     .iter()
-                    .all(|meta_item| meta_item.content.is_err())
+                    .all(|meta_item| meta_item.content.as_ref().map_or(false, |x| x.is_err()))
                 {
                     self.meta_items.first()
                 } else {
                     self.meta_items
                         .iter()
-                        .find(|catalog| catalog.content.is_loading())
+                        .find(|catalog| catalog.content.as_ref().map_or(false, |x| x.is_loading()))
                 }
             });
         let meta_request = meta_item.map(|item| &item.request);
         let title = meta_item
-            .and_then(|meta_item| meta_item.content.as_ref().ready())
+            .and_then(|meta_item| meta_item.content.to_owned())
+            .and_then(|meta_item| meta_item.ready())
             .map(|meta_item| {
                 meta_item
+                    .preview
                     .behavior_hints
                     .default_video_id
                     .is_none()
@@ -137,14 +145,14 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
                     .map(|video| match &video.series_info {
                         Some(series_info) => format!(
                             "{} - {} ({}x{})",
-                            &meta_item.name,
+                            &meta_item.preview.name,
                             &video.title,
                             &series_info.season,
                             &series_info.episode
                         ),
-                        _ => format!("{} - {}", &meta_item.name, &video.title),
+                        _ => format!("{} - {}", &meta_item.preview.name, &video.title),
                     })
-                    .unwrap_or_else(|| meta_item.name.to_owned())
+                    .unwrap_or_else(|| meta_item.preview.name.to_owned())
             });
         models::MetaDetails {
             selected: self.selected.to_protobuf(&()),

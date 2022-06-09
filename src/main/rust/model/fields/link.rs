@@ -1,7 +1,7 @@
 use stremio_core::models::link::Link;
 use stremio_core::types::api::LinkAuthKey;
 
-use crate::bridge::{ToProtobuf, ToProtobufAny};
+use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
 
 impl ToProtobuf<models::AuthLink, ()> for Link<LinkAuthKey> {

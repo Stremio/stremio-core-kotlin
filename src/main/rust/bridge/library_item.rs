@@ -1,7 +1,7 @@
+use stremio_core::deep_links::LibraryItemDeepLinks;
 use stremio_core::types::library::LibraryItem;
-use stremio_deeplinks::LibraryItemDeepLinks;
 
-use crate::bridge::{ToProtobuf, ToProtobufAny};
+use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::types;
 
 impl ToProtobuf<types::LibraryItem, ()> for LibraryItem {
@@ -17,11 +17,7 @@ impl ToProtobuf<types::LibraryItem, ()> for LibraryItem {
                 time_offset: self.state.time_offset,
                 duration: self.state.duration,
             },
-            behavior_hints: types::MetaItemBehaviorHints {
-                default_video_id: self.behavior_hints.default_video_id.clone(),
-                featured_video_id: None,
-                has_scheduled_videos: false,
-            },
+            behavior_hints: self.behavior_hints.to_protobuf(&()),
             deep_links: types::MetaItemDeepLinks {
                 meta_details_videos: deep_links.meta_details_videos,
                 meta_details_streams: deep_links.meta_details_streams,

@@ -1,9 +1,9 @@
-use stremio_core::models::common::{Loadable, ResourceLoadable};
+use stremio_core::models::common::ResourceLoadable;
 use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream};
 
-use crate::bridge::{ToProtobuf, ToProtobufAny};
+use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
 
 impl ToProtobuf<models::LoadableCatalog, Ctx> for ResourceLoadable<Vec<MetaItemPreview>> {
@@ -33,21 +33,7 @@ impl ToProtobuf<models::LoadableCatalog, Ctx> for ResourceLoadable<Vec<MetaItemP
                 models::LoadableCatalog {
                     title,
                     request: self.request.to_protobuf(&()),
-                    content: Some(match &self.content {
-                        Loadable::Ready(ready) => {
-                            models::loadable_catalog::Content::Ready(models::Catalog {
-                                meta_items: ready.to_protobuf(&()),
-                            })
-                        }
-                        Loadable::Err(error) => {
-                            models::loadable_catalog::Content::Error(models::Error {
-                                message: error.to_string(),
-                            })
-                        }
-                        Loadable::Loading => {
-                            models::loadable_catalog::Content::Loading(models::Loading {})
-                        }
-                    }),
+                    content: self.content.to_protobuf(&self.request),
                 }
             })
             .unwrap()
@@ -65,19 +51,9 @@ impl ToProtobuf<models::LoadableMetaItem, Ctx> for &ResourceLoadable<MetaItem> {
                 models::LoadableMetaItem {
                     title: addon_name.clone(),
                     request: self.request.to_protobuf(&()),
-                    content: Some(match &self.content {
-                        Loadable::Ready(ready) => models::loadable_meta_item::Content::Ready(
-                            ready.to_protobuf(&(Some(addon_name.clone()))),
-                        ),
-                        Loadable::Err(error) => {
-                            models::loadable_meta_item::Content::Error(models::Error {
-                                message: error.to_string(),
-                            })
-                        }
-                        Loadable::Loading => {
-                            models::loadable_meta_item::Content::Loading(models::Loading {})
-                        }
-                    }),
+                    content: self
+                        .content
+                        .to_protobuf(&(Some(addon_name.to_owned()), self.request.to_owned())),
                 }
             })
             .unwrap()
@@ -85,7 +61,7 @@ impl ToProtobuf<models::LoadableMetaItem, Ctx> for &ResourceLoadable<MetaItem> {
 }
 
 impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
-    for ResourceLoadable<Vec<Stream>>
+for ResourceLoadable<Vec<Stream>>
 {
     fn to_protobuf(
         &self,
@@ -100,25 +76,11 @@ impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
                 models::LoadableStreams {
                     title: addon_name.to_owned(),
                     request: self.request.to_protobuf(&()),
-                    content: Some(match &self.content {
-                        Loadable::Ready(ready) => {
-                            models::loadable_streams::Content::Ready(models::Streams {
-                                streams: ready.to_protobuf(&(
-                                    Some(addon_name.to_owned()),
-                                    Some(&self.request),
-                                    meta_request.to_owned(),
-                                )),
-                            })
-                        }
-                        Loadable::Err(error) => {
-                            models::loadable_streams::Content::Error(models::Error {
-                                message: error.to_string(),
-                            })
-                        }
-                        Loadable::Loading => {
-                            models::loadable_streams::Content::Loading(models::Loading {})
-                        }
-                    }),
+                    content: self.content.to_protobuf(&(
+                        addon_name,
+                        self.request.to_owned(),
+                        meta_request.to_owned(),
+                    )),
                 }
             })
             .unwrap()

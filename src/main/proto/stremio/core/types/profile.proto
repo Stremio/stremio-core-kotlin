@@ -16,15 +16,17 @@ message Profile {
     required bool play_in_background = 4;
     required bool play_in_external_player = 5;
     required bool hardware_decoding = 6;
-    required string subtitles_language = 7;
-    required int32 subtitles_size = 8;
-    required string subtitles_font = 9;
-    required bool subtitles_bold = 10;
-    required int32 subtitles_offset = 11;
-    required string subtitles_text_color = 12;
-    required string subtitles_background_color = 13;
-    required string subtitles_outline_color = 14;
-    required int64 seek_time_duration = 15;
+    required bool audio_passthrough = 7;
+    required string audio_language = 8;
+    required string subtitles_language = 9;
+    required int32 subtitles_size = 10;
+    required string subtitles_font = 11;
+    required bool subtitles_bold = 12;
+    required int32 subtitles_offset = 13;
+    required string subtitles_text_color = 14;
+    required string subtitles_background_color = 15;
+    required string subtitles_outline_color = 16;
+    required int64 seek_time_duration = 17;
   }
 }
 

@@ -9,7 +9,7 @@ use stremio_core::models::library_with_filters::{
     SelectableSort, SelectableType, Selected, Sort,
 };
 
-use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin};
+use crate::bridge::{ToProtobuf, TryFromKotlin};
 use crate::env::KotlinClassName;
 use crate::jni_ext::JObjectExt;
 use crate::model::LibraryByType;
@@ -74,7 +74,7 @@ impl TryFromKotlin for Selected {
     }
 }
 
-impl ToProtobufAny<models::library_with_filters::Sort, ()> for Sort {
+impl ToProtobuf<models::library_with_filters::Sort, ()> for Sort {
     fn to_protobuf(&self, _args: &()) -> models::library_with_filters::Sort {
         match self {
             Sort::LastWatched => models::library_with_filters::Sort::LastWatched,

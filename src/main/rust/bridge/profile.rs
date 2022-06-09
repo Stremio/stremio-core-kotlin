@@ -7,7 +7,7 @@ use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
 use stremio_core::types::profile::{Auth, GDPRConsent, Profile, Settings, User};
 use url::Url;
 
-use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin, TryIntoKotlin};
+use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
 use crate::env::{AndroidEnv, KotlinClassName};
 use crate::jni_ext::JObjectExt;
 use crate::protobuf::stremio::core::types;
@@ -299,6 +299,8 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             play_in_background: self.play_in_background,
             play_in_external_player: self.play_in_external_player,
             hardware_decoding: self.hardware_decoding,
+            audio_passthrough: self.hardware_decoding,
+            audio_language: self.hardware_decoding.to_string(),
             subtitles_language: self.subtitles_language.to_string(),
             subtitles_size: self.subtitles_size as i32,
             subtitles_font: self.subtitles_font.to_string(),

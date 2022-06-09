@@ -1,11 +1,11 @@
+use stremio_core::deep_links::StreamDeepLinks;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{Stream, StreamSource};
-use stremio_deeplinks::StreamDeepLinks;
 
-use crate::bridge::{ToProtobuf, ToProtobufAny};
+use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::types;
 
-impl ToProtobufAny<types::stream::Source, ()> for StreamSource {
+impl ToProtobuf<types::stream::Source, ()> for StreamSource {
     fn to_protobuf(&self, _args: &()) -> types::stream::Source {
         match self {
             StreamSource::Url { url } => types::stream::Source::Url(types::stream::Url {

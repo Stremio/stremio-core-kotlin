@@ -1,8 +1,7 @@
 use jni::objects::JObject;
 use jni::JNIEnv;
-use prost::Message;
 
-use crate::bridge::{ToProtobuf, ToProtobufAny, TryFromKotlin, TryIntoKotlin};
+use crate::bridge::{ToProtobuf, TryFromKotlin, TryIntoKotlin};
 
 impl<'a, T: TryIntoKotlin<'a, U>, U> TryIntoKotlin<'a, U> for Option<T> {
     #[inline]
@@ -24,7 +23,7 @@ impl<T: TryFromKotlin> TryFromKotlin for Option<T> {
     }
 }
 
-impl<T: ToProtobuf<U, A>, U: Message, A> ToProtobufAny<Option<U>, A> for Option<T> {
+impl<T: ToProtobuf<U, A>, U, A> ToProtobuf<Option<U>, A> for Option<T> {
     fn to_protobuf(&self, args: &A) -> Option<U> {
         self.as_ref().map(|item| item.to_protobuf(args))
     }
