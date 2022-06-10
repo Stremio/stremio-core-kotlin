@@ -1,13 +1,21 @@
+use std::convert::TryFrom;
+use std::env;
+
 use futures::future::Either;
 use futures::{future, TryFutureExt};
 use http::{Method, Request};
+use http_cache_reqwest::{CACacheManager, Cache, CacheMode, HttpCache};
+use once_cell::sync::OnceCell;
 use reqwest::{Body, Client};
+use reqwest_middleware::{ClientBuilder, ClientWithMiddleware};
 use serde::{Deserialize, Serialize};
 use serde_json::Deserializer;
-use std::convert::TryFrom;
 use stremio_core::runtime::{EnvError, EnvFutureExt, TryEnvFuture};
 
-pub fn fetch<IN: Serialize, OUT: for<'de> Deserialize<'de> + Send + 'static>(
+static CLIENT_WITH_CACHE: OnceCell<ClientWithMiddleware> = OnceCell::new();
+static CLIENT_WITHOUT_CACHE: OnceCell<ClientWithMiddleware> = OnceCell::new();
+
+pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Send + 'static>(
     request: Request<IN>,
 ) -> TryEnvFuture<OUT> {
     let (parts, body) = request.into_parts();
@@ -21,7 +29,22 @@ pub fn fetch<IN: Serialize, OUT: for<'de> Deserialize<'de> + Send + 'static>(
         Ok(request) => request,
         Err(error) => return future::err(EnvError::Fetch(error.to_string())).boxed_env(),
     };
-    Client::new()
+    let client = if env::var("TMPDIR").is_ok() {
+        CLIENT_WITH_CACHE.get_or_init(|| {
+            ClientBuilder::new(Client::new())
+                .with(Cache(HttpCache::<CACacheManager> {
+                    mode: CacheMode::Default,
+                    manager: CACacheManager {
+                        path: env::temp_dir().display().to_string() + "/http-cacache".into(),
+                    },
+                    options: None,
+                }))
+                .build()
+        })
+    } else {
+        CLIENT_WITHOUT_CACHE.get_or_init(|| ClientBuilder::new(Client::new()).build())
+    };
+    client
         .execute(request)
         .map_err(|error| EnvError::Fetch(error.to_string()))
         .and_then(|resp| {
