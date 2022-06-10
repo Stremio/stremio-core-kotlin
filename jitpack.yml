@@ -3,8 +3,8 @@ jdk:
 before_install:
   - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
   - source $HOME/.cargo/env
-  - rustup toolchain install 1.47.0
-  - rustup default 1.47.0
+  - rustup toolchain install 1.60.0
+  - rustup default 1.60.0
   - rustup target add armv7-linux-androideabi
   - rustup target add aarch64-linux-android
   - rustup target add i686-linux-android
