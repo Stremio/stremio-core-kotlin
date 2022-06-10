@@ -15,6 +15,8 @@ message LibraryItem {
   required LibraryItemState state = 6;
   required MetaItemBehaviorHints behavior_hints = 7;
   required MetaItemDeepLinks deep_links = 8;
+  optional double progress = 9;
+  required bool watched = 10;
 }
 
 message LibraryItemState {

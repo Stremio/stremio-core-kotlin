@@ -1,7 +1,9 @@
 use std::ops::Deref;
 
 use stremio_core::models::common::{Loadable, ResourceError};
+use stremio_core::models::ctx::Ctx;
 use stremio_core::models::link::LinkError;
+use stremio_core::models::meta_details::MetaDetails;
 use stremio_core::models::streaming_server::Settings;
 use stremio_core::runtime::EnvError;
 use stremio_core::types::addon::ResourceRequest;
@@ -12,13 +14,16 @@ use url::Url;
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
 
-impl ToProtobuf<models::loadable_catalog::Content, ResourceRequest>
+impl ToProtobuf<models::loadable_catalog::Content, (&Ctx, ResourceRequest)>
     for Loadable<Vec<MetaItemPreview>, ResourceError>
 {
-    fn to_protobuf(&self, request: &ResourceRequest) -> models::loadable_catalog::Content {
+    fn to_protobuf(
+        &self,
+        (ctx, request): &(&Ctx, ResourceRequest),
+    ) -> models::loadable_catalog::Content {
         match &self {
             Loadable::Ready(ready) => models::loadable_catalog::Content::Ready(models::Catalog {
-                meta_items: ready.to_protobuf(request),
+                meta_items: ready.to_protobuf(&(*ctx, request.to_owned())),
             }),
             Loadable::Err(error) => models::loadable_catalog::Content::Error(models::Error {
                 message: error.to_string(),
@@ -28,16 +33,23 @@ impl ToProtobuf<models::loadable_catalog::Content, ResourceRequest>
     }
 }
 
-impl ToProtobuf<models::loadable_meta_item::Content, (Option<String>, ResourceRequest)>
-    for Loadable<MetaItem, ResourceError>
+impl
+    ToProtobuf<
+        models::loadable_meta_item::Content,
+        (Option<&MetaDetails>, Option<String>, ResourceRequest),
+    > for Loadable<MetaItem, ResourceError>
 {
     fn to_protobuf(
         &self,
-        (addon_name, meta_request): &(Option<String>, ResourceRequest),
+        (details, addon_name, meta_request): &(
+            Option<&MetaDetails>,
+            Option<String>,
+            ResourceRequest,
+        ),
     ) -> models::loadable_meta_item::Content {
         match &self {
             Loadable::Ready(ready) => models::loadable_meta_item::Content::Ready(
-                ready.to_protobuf(&(addon_name.to_owned(), meta_request.to_owned())),
+                ready.to_protobuf(&(*details, addon_name.to_owned(), meta_request.to_owned())),
             ),
             Loadable::Err(error) => models::loadable_meta_item::Content::Error(models::Error {
                 message: error.to_string(),
