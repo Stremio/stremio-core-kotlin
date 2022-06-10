@@ -1,5 +1,3 @@
-use std::ops::Deref;
-
 use stremio_core::models::common::{Loadable, ResourceError};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::link::LinkError;
@@ -14,16 +12,16 @@ use url::Url;
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
 
-impl ToProtobuf<models::loadable_catalog::Content, (&Ctx, ResourceRequest)>
+impl ToProtobuf<models::loadable_catalog::Content, (&Ctx, &ResourceRequest)>
     for Loadable<Vec<MetaItemPreview>, ResourceError>
 {
     fn to_protobuf(
         &self,
-        (ctx, request): &(&Ctx, ResourceRequest),
+        (ctx, request): &(&Ctx, &ResourceRequest),
     ) -> models::loadable_catalog::Content {
         match &self {
             Loadable::Ready(ready) => models::loadable_catalog::Content::Ready(models::Catalog {
-                meta_items: ready.to_protobuf(&(*ctx, request.to_owned())),
+                meta_items: ready.to_protobuf(&(*ctx, *request)),
             }),
             Loadable::Err(error) => models::loadable_catalog::Content::Error(models::Error {
                 message: error.to_string(),
@@ -36,20 +34,20 @@ impl ToProtobuf<models::loadable_catalog::Content, (&Ctx, ResourceRequest)>
 impl
     ToProtobuf<
         models::loadable_meta_item::Content,
-        (Option<&MetaDetails>, Option<String>, ResourceRequest),
+        (Option<&MetaDetails>, Option<&String>, &ResourceRequest),
     > for Loadable<MetaItem, ResourceError>
 {
     fn to_protobuf(
         &self,
         (details, addon_name, meta_request): &(
             Option<&MetaDetails>,
-            Option<String>,
-            ResourceRequest,
+            Option<&String>,
+            &ResourceRequest,
         ),
     ) -> models::loadable_meta_item::Content {
         match &self {
             Loadable::Ready(ready) => models::loadable_meta_item::Content::Ready(
-                ready.to_protobuf(&(*details, addon_name.to_owned(), meta_request.to_owned())),
+                ready.to_protobuf(&(*details, *addon_name, *meta_request)),
             ),
             Loadable::Err(error) => models::loadable_meta_item::Content::Error(models::Error {
                 message: error.to_string(),
@@ -62,23 +60,23 @@ impl
 impl
     ToProtobuf<
         models::loadable_streams::Content,
-        (String, ResourceRequest, Option<&ResourceRequest>),
+        (&String, &ResourceRequest, Option<&ResourceRequest>),
     > for Loadable<Vec<Stream>, ResourceError>
 {
     fn to_protobuf(
         &self,
         (addon_name, stream_request, meta_request): &(
-            String,
-            ResourceRequest,
+            &String,
+            &ResourceRequest,
             Option<&ResourceRequest>,
         ),
     ) -> models::loadable_streams::Content {
         match &self {
             Loadable::Ready(ready) => models::loadable_streams::Content::Ready(models::Streams {
                 streams: ready.to_protobuf(&(
-                    Some(addon_name.to_owned()),
-                    Some(stream_request.deref()),
-                    meta_request.to_owned(),
+                    Some(*addon_name),
+                    Some(*stream_request),
+                    *meta_request,
                 )),
             }),
             Loadable::Err(error) => models::loadable_streams::Content::Error(models::Error {

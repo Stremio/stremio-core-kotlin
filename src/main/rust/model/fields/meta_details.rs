@@ -37,10 +37,10 @@ impl ToProtobuf<types::video::SeriesInfo, ()> for SeriesInfo {
     }
 }
 
-impl ToProtobuf<types::Video, (Option<&MetaDetails>, Option<String>)> for Video {
+impl ToProtobuf<types::Video, (Option<&MetaDetails>, Option<&String>)> for Video {
     fn to_protobuf(
         &self,
-        (details, addon_name): &(Option<&MetaDetails>, Option<String>),
+        (details, addon_name): &(Option<&MetaDetails>, Option<&String>),
     ) -> types::Video {
         types::Video {
             id: self.id.to_string(),
@@ -48,9 +48,7 @@ impl ToProtobuf<types::Video, (Option<&MetaDetails>, Option<String>)> for Video 
             released: self.released.to_protobuf(&()),
             overview: self.overview.clone(),
             thumbnail: self.thumbnail.clone(),
-            streams: self
-                .streams
-                .to_protobuf(&(addon_name.to_owned(), None, None)),
+            streams: self.streams.to_protobuf(&(*addon_name, None, None)),
             series_info: self.series_info.to_protobuf(&()),
             upcoming: self
                 .released
@@ -69,15 +67,15 @@ impl ToProtobuf<types::Video, (Option<&MetaDetails>, Option<String>)> for Video 
     }
 }
 
-impl ToProtobuf<types::MetaItem, (Option<&MetaDetails>, Option<String>, ResourceRequest)>
+impl ToProtobuf<types::MetaItem, (Option<&MetaDetails>, Option<&String>, &ResourceRequest)>
     for MetaItem
 {
     fn to_protobuf(
         &self,
         (details, addon_name, meta_request): &(
             Option<&MetaDetails>,
-            Option<String>,
-            ResourceRequest,
+            Option<&String>,
+            &ResourceRequest,
         ),
     ) -> types::MetaItem {
         types::MetaItem {
@@ -97,9 +95,9 @@ impl ToProtobuf<types::MetaItem, (Option<&MetaDetails>, Option<String>, Resource
                 .preview
                 .trailer_streams
                 .to_protobuf(&(None, None, None)),
-            videos: self.videos.to_protobuf(&(*details, addon_name.to_owned())),
+            videos: self.videos.to_protobuf(&(*details, *addon_name)),
             behavior_hints: self.preview.behavior_hints.to_protobuf(&()),
-            deep_links: MetaItemDeepLinks::from((self, meta_request)).to_protobuf(&()),
+            deep_links: MetaItemDeepLinks::from((self, *meta_request)).to_protobuf(&()),
             progress: details
                 .and_then(|details| details.library_item.to_owned())
                 .and_then(|item| {
