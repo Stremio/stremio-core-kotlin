@@ -1,4 +1,5 @@
 use stremio_core::deep_links::MetaItemDeepLinks;
+use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{MetaItemBehaviorHints, MetaItemPreview, PosterShape};
 
@@ -59,8 +60,11 @@ impl ToProtobuf<types::MetaItemDeepLinks, ()> for MetaItemDeepLinks {
     }
 }
 
-impl ToProtobuf<types::MetaItemPreview, ResourceRequest> for MetaItemPreview {
-    fn to_protobuf(&self, meta_request: &ResourceRequest) -> types::MetaItemPreview {
+impl ToProtobuf<types::MetaItemPreview, (&Ctx, &ResourceRequest)> for MetaItemPreview {
+    fn to_protobuf(
+        &self,
+        (ctx, meta_request): &(&Ctx, &ResourceRequest),
+    ) -> types::MetaItemPreview {
         types::MetaItemPreview {
             id: self.id.to_string(),
             r#type: self.r#type.to_string(),
@@ -75,7 +79,13 @@ impl ToProtobuf<types::MetaItemPreview, ResourceRequest> for MetaItemPreview {
             released: self.released.to_protobuf(&()),
             links: self.links.to_protobuf(&()),
             behavior_hints: self.behavior_hints.to_protobuf(&()),
-            deep_links: MetaItemDeepLinks::from((self, meta_request)).to_protobuf(&()),
+            deep_links: MetaItemDeepLinks::from((self, *meta_request)).to_protobuf(&()),
+            in_library: ctx
+                .library
+                .items
+                .get(&self.id)
+                .map(|library_item| !library_item.removed)
+                .unwrap_or_default(),
         }
     }
 }

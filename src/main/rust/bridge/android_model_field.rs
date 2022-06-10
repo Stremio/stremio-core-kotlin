@@ -15,6 +15,7 @@ impl FromProtobuf<AndroidModelField> for Field {
             Field::Search => AndroidModelField::Search,
             Field::MetaDetails => AndroidModelField::MetaDetails,
             Field::StreamingServer => AndroidModelField::StreamingServer,
+            Field::Player => AndroidModelField::Player,
         }
     }
 }

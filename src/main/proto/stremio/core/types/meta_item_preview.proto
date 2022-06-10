@@ -22,6 +22,7 @@ message MetaItemPreview {
   repeated LinkPreview links = 12;
   required MetaItemBehaviorHints behavior_hints = 15;
   required MetaItemDeepLinks deep_links = 16;
+  required bool in_library = 17;
 }
 
 message LinkPreview {

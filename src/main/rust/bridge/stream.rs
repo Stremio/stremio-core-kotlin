@@ -94,7 +94,7 @@ impl
     ToProtobuf<
         types::Stream,
         (
-            Option<String>,
+            Option<&String>,
             Option<&ResourceRequest>,
             Option<&ResourceRequest>,
         ),
@@ -103,7 +103,7 @@ impl
     fn to_protobuf(
         &self,
         (addon_name, stream_request, meta_request): &(
-            Option<String>,
+            Option<&String>,
             Option<&ResourceRequest>,
             Option<&ResourceRequest>,
         ),
@@ -114,7 +114,7 @@ impl
             StreamDeepLinks::from(self)
         };
         types::Stream {
-            name: self.name.to_owned().or(addon_name.to_owned()),
+            name: self.name.to_owned().or(addon_name.cloned()),
             description: self.description.clone(),
             thumbnail: self.thumbnail.clone(),
             subtitles: self.subtitles.to_protobuf(&()),

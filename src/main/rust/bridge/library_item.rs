@@ -23,6 +23,12 @@ impl ToProtobuf<types::LibraryItem, ()> for LibraryItem {
                 meta_details_streams: deep_links.meta_details_streams,
                 player: deep_links.player,
             },
+            progress: if self.state.time_offset > 0 && self.state.duration > 0 {
+                Some(self.state.time_offset as f64 / self.state.duration as f64)
+            } else {
+                None
+            },
+            watched: false, // TODO allow WatchedBitField construction just from string
         }
     }
 }

@@ -30,9 +30,9 @@ impl ToProtobuf<models::Player, Ctx> for Player {
     fn to_protobuf(&self, ctx: &Ctx) -> models::Player {
         models::Player {
             selected: self.selected.to_protobuf(&()),
-            meta_item: self.meta_item.as_ref().to_protobuf(ctx),
+            meta_item: self.meta_item.as_ref().to_protobuf(&(ctx, None)),
             subtitles: self.subtitles.to_protobuf(ctx),
-            next_video: self.next_video.to_protobuf(&(None)),
+            next_video: self.next_video.to_protobuf(&(None, None)),
             series_info: self.series_info.to_protobuf(&()),
             library_item: self.library_item.to_protobuf(&()),
         }

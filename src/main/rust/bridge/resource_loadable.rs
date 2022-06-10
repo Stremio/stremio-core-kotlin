@@ -1,5 +1,6 @@
 use stremio_core::models::common::ResourceLoadable;
 use stremio_core::models::ctx::Ctx;
+use stremio_core::models::meta_details::MetaDetails;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
 
@@ -33,27 +34,32 @@ impl ToProtobuf<models::LoadableCatalog, Ctx> for ResourceLoadable<Vec<MetaItemP
                 models::LoadableCatalog {
                     title,
                     request: self.request.to_protobuf(&()),
-                    content: self.content.to_protobuf(&self.request),
+                    content: self.content.to_protobuf(&(ctx, &self.request)),
                 }
             })
             .unwrap()
     }
 }
 
-impl ToProtobuf<models::LoadableMetaItem, Ctx> for &ResourceLoadable<MetaItem> {
-    fn to_protobuf(&self, ctx: &Ctx) -> models::LoadableMetaItem {
+impl ToProtobuf<models::LoadableMetaItem, (&Ctx, Option<&MetaDetails>)>
+    for &ResourceLoadable<MetaItem>
+{
+    fn to_protobuf(
+        &self,
+        (ctx, details): &(&Ctx, Option<&MetaDetails>),
+    ) -> models::LoadableMetaItem {
         ctx.profile
             .addons
             .iter()
             .find(|addon| addon.transport_url == self.request.base)
             .map(|addon| {
-                let addon_name = addon.manifest.name.to_owned();
+                let addon_name = &addon.manifest.name;
                 models::LoadableMetaItem {
-                    title: addon_name.clone(),
+                    title: addon_name.to_string(),
                     request: self.request.to_protobuf(&()),
                     content: self
                         .content
-                        .to_protobuf(&(Some(addon_name.to_owned()), self.request.to_owned())),
+                        .to_protobuf(&(*details, Some(addon_name), &self.request)),
                 }
             })
             .unwrap()
@@ -72,15 +78,13 @@ impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
             .iter()
             .find(|addon| addon.transport_url == self.request.base)
             .map(|addon| {
-                let addon_name = addon.manifest.name.to_owned();
+                let addon_name = &addon.manifest.name;
                 models::LoadableStreams {
-                    title: addon_name.to_owned(),
+                    title: addon_name.to_string(),
                     request: self.request.to_protobuf(&()),
-                    content: self.content.to_protobuf(&(
-                        addon_name,
-                        self.request.to_owned(),
-                        meta_request.to_owned(),
-                    )),
+                    content: self
+                        .content
+                        .to_protobuf(&(addon_name, &self.request, *meta_request)),
                 }
             })
             .unwrap()

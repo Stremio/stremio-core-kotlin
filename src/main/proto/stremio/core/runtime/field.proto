@@ -15,4 +15,5 @@ enum Field {
   Search = 7;
   MetaDetails = 8;
   StreamingServer = 9;
+  Player = 10;
 }

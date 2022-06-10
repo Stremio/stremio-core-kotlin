@@ -6,6 +6,7 @@ use stremio_core::models::ctx::Ctx;
 use stremio_core::models::library_with_filters::{LibraryWithFilters, NotRemovedFilter};
 use stremio_core::models::link::Link;
 use stremio_core::models::meta_details::MetaDetails;
+use stremio_core::models::player::Player;
 use stremio_core::models::streaming_server::StreamingServer;
 use stremio_core::runtime::Effects;
 use stremio_core::types::api::LinkAuthKey;
@@ -31,7 +32,7 @@ pub struct AndroidModel {
     pub search: CatalogsWithExtra,
     pub meta_details: MetaDetails,
     pub streaming_server: StreamingServer,
-    // pub player: Player,
+    pub player: Player,
 }
 
 impl AndroidModel {
@@ -55,6 +56,7 @@ impl AndroidModel {
             search: Default::default(),
             meta_details: Default::default(),
             streaming_server,
+            player: Default::default(),
         };
         (
             model,
@@ -87,6 +89,7 @@ impl AndroidModel {
             AndroidModelField::StreamingServer => {
                 self.streaming_server.to_protobuf(&()).encode_to_vec()
             }
+            AndroidModelField::Player => self.player.to_protobuf(&self.ctx).encode_to_vec(),
         }
     }
 }
