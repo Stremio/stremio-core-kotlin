@@ -84,7 +84,7 @@ impl AndroidEnv {
 }
 
 impl Env for AndroidEnv {
-    fn fetch<IN: Serialize, OUT: for<'de> Deserialize<'de> + Send + 'static>(
+    fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Send + 'static>(
         request: Request<IN>,
     ) -> TryEnvFuture<OUT> {
         fetch(request)

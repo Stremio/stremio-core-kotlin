@@ -1,8 +1,8 @@
 use std::convert::TryFrom;
 use std::env;
 
-use futures::{future, TryFutureExt};
 use futures::future::Either;
+use futures::{future, TryFutureExt};
 use http::{Method, Request};
 use http_cache_reqwest::{CACacheManager, Cache, CacheMode, HttpCache};
 use once_cell::sync::OnceCell;
@@ -15,7 +15,7 @@ use stremio_core::runtime::{EnvError, EnvFutureExt, TryEnvFuture};
 static CLIENT_WITH_CACHE: OnceCell<ClientWithMiddleware> = OnceCell::new();
 static CLIENT_WITHOUT_CACHE: OnceCell<ClientWithMiddleware> = OnceCell::new();
 
-pub fn fetch<IN: Serialize, OUT: for<'de> Deserialize<'de> + Send + 'static>(
+pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Send + 'static>(
     request: Request<IN>,
 ) -> TryEnvFuture<OUT> {
     let (parts, body) = request.into_parts();
@@ -30,15 +30,17 @@ pub fn fetch<IN: Serialize, OUT: for<'de> Deserialize<'de> + Send + 'static>(
         Err(error) => return future::err(EnvError::Fetch(error.to_string())).boxed_env(),
     };
     let client = if env::var("TMPDIR").is_ok() {
-        CLIENT_WITH_CACHE.get_or_init(|| ClientBuilder::new(Client::new())
-            .with(Cache(HttpCache::<CACacheManager> {
-                mode: CacheMode::Default,
-                manager: CACacheManager {
-                    path: env::temp_dir().display().to_string() + "/http-cacache".into()
-                },
-                options: None,
-            }))
-            .build())
+        CLIENT_WITH_CACHE.get_or_init(|| {
+            ClientBuilder::new(Client::new())
+                .with(Cache(HttpCache::<CACacheManager> {
+                    mode: CacheMode::Default,
+                    manager: CACacheManager {
+                        path: env::temp_dir().display().to_string() + "/http-cacache".into(),
+                    },
+                    options: None,
+                }))
+                .build()
+        })
     } else {
         CLIENT_WITHOUT_CACHE.get_or_init(|| ClientBuilder::new(Client::new()).build())
     };
