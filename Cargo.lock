@@ -1951,7 +1951,7 @@ dependencies = [
 
 [[package]]
 name = "stremio-core-android"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
  "auto_impl",
  "base64 0.13.0",
