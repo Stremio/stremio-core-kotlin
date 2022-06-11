@@ -6,13 +6,13 @@
 
 ## Gradle
 
-### Add the JitPack repository to your root build.gradle
+### Add the Maven Central repository to your root build.gradle
 
 ```gradle
 allprojects {
     repositories {
         ...
-        maven { url 'https://jitpack.io' }
+        mavenCentral()
     }
 }
 ```
@@ -27,4 +27,4 @@ dependencies {
 
 ## Manual
 
-[Download](https://jitpack.io/com/github/stremio/stremio-core-kotlin/1.0.4/stremio-core-kotlin-1.0.4.aar) aar and link it manually
+[Download](https://repo1.maven.org/maven2/com/github/stremio/stremio-core-kotlin/1.0.4/) aar and link it manually
