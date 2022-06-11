@@ -1,16 +1,13 @@
 name: Release Workflow
 
 on:
-  push:
-    branches:
-      - '**'
-#  release:
-#    types: [created]
+  release:
+    types: [published]
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v3
@@ -33,7 +30,37 @@ jobs:
           rust-version: 1.60.0
           targets: armv7-linux-androideabi,aarch64-linux-android,i686-linux-android,x86_64-linux-android
 
+      - name: Set version
+        run: |
+          export RELEASE_TAG=${GITHUB_REF##*/}
+          sed -i "s/^version = \"[0-9.]*\"/version = \"$RELEASE_TAG\"/" Cargo.toml
+          sed -i "s/versionName \"[0-9.]*\"/versionName \"$RELEASE_TAG\"/" build.gradle
+
       - name: Build Library
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build
+          arguments: publish
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+
+      - name: Clean release changes
+        run: git add . && git stash && git stash drop
+
+      - name: Bump current version
+        run: |
+          export RELEASE_TAG=${GITHUB_REF##*/}
+          export NEXT_VERSION=${GITHUB_TAG%%${GITHUB_TAG##*[!0-9]}}$((${GITHUB_TAG##*[!0-9]} + 1))
+          export NEXT_VERSION_CODE=$(($(grep -oP "versionCode \K[0-9]+" build.gradle) + 1))
+          sed -i "s/^version = \"[0-9.]*\"/version = \"$NEXT_VERSION\"/" Cargo.toml
+          sed -i "s/versionName \"[0-9.]*\"/versionName \"$NEXT_VERSION\"/" build.gradle
+          sed -i "s/versionCode [0-9.]/versionCode $NEXT_VERSION_CODE/" build.gradle
+          sed -i "s/[0-9.]\.[0-9.]\.[0-9.]/$RELEASE_TAG/" README.md
+
+      - name: Commit current version bump
+        uses: EndBug/add-and-commit@v7
+        with:
+          branch: 'master'
+          message: 'bump current version'
+          author_name: github-actions
+          author_email: 41898282+github-actions[bot]@users.noreply.github.com

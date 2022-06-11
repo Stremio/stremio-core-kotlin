@@ -31,6 +31,7 @@ apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 apply plugin: "org.mozilla.rust-android-gradle.rust-android"
 apply plugin: "com.google.protobuf"
+apply plugin: "maven-publish"
 
 android {
     compileSdkVersion 31
@@ -57,7 +58,7 @@ cargo {
 }
 
 dependencies {
-    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "androidx.core:core-ktx:1.8.0"
     implementation "pro.streem.pbandk:pbandk-runtime:$pbandkVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 }
@@ -79,6 +80,30 @@ protobuf {
             }
             task.plugins {
                 pbandk {}
+            }
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId 'com.github.Stremio'
+                artifactId 'stremio-core-kotlin'
+                version = android.defaultConfig.versionName
+            }
+        }
+
+        repositories {
+            maven {
+                name = "OSSRH"
+                url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                credentials {
+                    username = System.getenv("MAVEN_USERNAME")
+                    password = System.getenv("MAVEN_PASSWORD")
+                }
             }
         }
     }
