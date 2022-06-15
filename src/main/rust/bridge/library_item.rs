@@ -28,7 +28,7 @@ impl ToProtobuf<types::LibraryItem, ()> for LibraryItem {
             } else {
                 None
             },
-            watched: false, // TODO allow WatchedBitField construction just from string
+            watched: self.state.times_watched > 0
         }
     }
 }
