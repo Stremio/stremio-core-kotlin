@@ -26,8 +26,7 @@ message MetaItem {
   required MetaItemBehaviorHints behavior_hints = 15;
   required MetaItemDeepLinks deep_links = 16;
   optional double progress = 17;
-  required bool watched = 18;
-  required bool in_library = 19;
+  required bool in_library = 18;
 }
 
 enum PosterShape {

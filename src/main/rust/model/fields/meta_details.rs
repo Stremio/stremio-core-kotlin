@@ -107,19 +107,6 @@ impl ToProtobuf<types::MetaItem, (Option<&MetaDetails>, Option<&String>, &Resour
                         None
                     }
                 }),
-            watched: details
-                .and_then(|details| details.watched.to_owned())
-                .map(|watched| {
-                    watched.get_video(
-                        &self
-                            .preview
-                            .behavior_hints
-                            .default_video_id
-                            .to_owned()
-                            .unwrap_or(self.preview.id.to_owned()),
-                    )
-                })
-                .unwrap_or_default(),
             in_library: details
                 .and_then(|details| details.library_item.to_owned())
                 .map(|item| !item.removed)

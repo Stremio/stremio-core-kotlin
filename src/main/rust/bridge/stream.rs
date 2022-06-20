@@ -1,4 +1,4 @@
-use std::convert::TryInto;
+use hex::FromHex;
 use stremio_core::deep_links::StreamDeepLinks;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{Stream, StreamBehaviorHints, StreamSource};
@@ -17,10 +17,7 @@ impl FromProtobuf<StreamSource> for types::stream::Source {
                 yt_id: source.yt_id.to_owned(),
             },
             types::stream::Source::Torrent(source) => StreamSource::Torrent {
-                info_hash: source
-                    .info_hash
-                    .as_bytes()
-                    .try_into()
+                info_hash: <[u8; 20]>::from_hex(source.info_hash.as_str())
                     .expect("Stream.info_hash parse failed"),
                 file_idx: source.file_idx.map(|idx| idx as u16),
                 announce: source.announce.clone(),
@@ -91,14 +88,14 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
 }
 
 impl
-    ToProtobuf<
-        types::Stream,
-        (
-            Option<&String>,
-            Option<&ResourceRequest>,
-            Option<&ResourceRequest>,
-        ),
-    > for Stream
+ToProtobuf<
+    types::Stream,
+    (
+        Option<&String>,
+        Option<&ResourceRequest>,
+        Option<&ResourceRequest>,
+    ),
+> for Stream
 {
     fn to_protobuf(
         &self,
