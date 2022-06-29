@@ -41,3 +41,9 @@ jobs:
       # TODO: fix clippy
       # - name: Lint code
       #   run: cargo clippy --all -- -D warnings
+      - name: Upload build artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./build/releases/**/*.aar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
