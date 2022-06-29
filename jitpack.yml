@@ -1,14 +1,4 @@
-jdk:
-  - openjdk8
-before_install:
-  - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-  - source $HOME/.cargo/env
-  - rustup toolchain install 1.60.0
-  - rustup default 1.60.0
-  - rustup target add armv7-linux-androideabi
-  - rustup target add aarch64-linux-android
-  - rustup target add i686-linux-android
-  - rustup target add x86_64-linux-android
-  - yes | sdkmanager "ndk;21.0.6113669" >/dev/null
-  - yes | sdkmanager "cmake;3.10.2.4988404" >/dev/null
-  - export PATH=$PATH:$ANDROID_HOME/cmake/3.10.2.4988404/bin
+install:
+  - wget https://github.com/Stremio/stremio-core-kotlin/releases/download/1.0.5-rc1/stremio-core-kotlin.aar
+  - FILE="-Dfile=stremio-core-kotlin.aar"
+  - mvn install:install-file $FILE -DgroupId=com.stremio.core -DartifactId=stremio-core-kotlin -Dversion=1.0.5 -Dpackaging=aar -DgeneratePom=true
