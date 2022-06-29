@@ -39,8 +39,8 @@ impl FromProtobuf<Stream> for types::Stream {
         Stream {
             source: self.source.from_protobuf().unwrap(),
             name: self.name.to_owned(),
-            description: self.name.to_owned(),
-            thumbnail: self.name.to_owned(),
+            description: self.description.to_owned(),
+            thumbnail: self.thumbnail.to_owned(),
             subtitles: self.subtitles.from_protobuf(),
             behavior_hints: StreamBehaviorHints {
                 not_web_ready: self.behavior_hints.not_web_ready,
