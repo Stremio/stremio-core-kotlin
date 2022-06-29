@@ -48,7 +48,7 @@ jobs:
       - name: Upload build artifacts
         uses: svenstaro/upload-release-action@v2
         with:
-          file: ./build/outputs/aar/core-kotlin-release.aar
+          file: build/outputs/aar/core-kotlin-release.aar
           asset_name: core-kotlin.aar
           tag: ${{ github.ref }}
           overwrite: true
