@@ -1,6 +1,8 @@
-name: Build
+name: Release
 
-on: [push]
+on:
+  release:
+    types: [published]
 
 jobs:
   build:
