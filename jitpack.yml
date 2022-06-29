@@ -1,5 +1,5 @@
 install:
-  - export VERSION=1.0.5-rc1
+  # - export VERSION=1.0.5-rc1
   - wget https://github.com/Stremio/stremio-core-kotlin/releases/download/$VERSION/stremio-core-kotlin.aar
   - FILE="-Dfile=stremio-core-kotlin.aar"
   - mvn install:install-file $FILE -DgroupId=com.stremio.core -DartifactId=stremio-core-kotlin -Dversion=$VERSION -Dpackaging=aar -DgeneratePom=true
