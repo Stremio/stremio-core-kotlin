@@ -44,6 +44,13 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
+      - name: Upload build artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./build/releases/**/*.aar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Clean release changes
         run: git add . && git stash && git stash drop
 
@@ -55,7 +62,7 @@ jobs:
           sed -i "s/^version = \"[0-9.]*\"/version = \"$NEXT_VERSION\"/" Cargo.toml
           sed -i "s/versionName \"[0-9.]*\"/versionName \"$NEXT_VERSION\"/" build.gradle
           sed -i "s/versionCode [0-9.]/versionCode $NEXT_VERSION_CODE/" build.gradle
-          sed -i "s/[0-9.]\.[0-9.]\.[0-9.]/$RELEASE_TAG/" README.md
+          sed -i "s/[0-9.]\.[0-9.]\.[0-9.]/$RELEASE_TAG/g" README.md
 
       - name: Commit current version bump
         uses: EndBug/add-and-commit@v7
