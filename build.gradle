@@ -51,7 +51,7 @@ android {
 cargo {
     module = "./"
     libname = "stremio_core_android"
-    targets = ["arm64"]
+    targets = ["arm", "arm64", "x86", "x86_64"]
     verbose = true
     profile = rootProject.ext.has("stremio_core_android_profile") ? rootProject.ext.get("stremio_core_android_profile") : "debug"
 }
