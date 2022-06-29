@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: "11"
+          distribution: "adopt"
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+      - name: Setup Android NDK
+        run: yes | sdkmanager "ndk;21.0.6113669" >/dev/null
+      - name: Set default rust toolchain
+        run: rustup default 1.61.0
+      - name: Install rustfmt
+        run: rustup component add rustfmt
+      - name: Install clippy
+        run: rustup component add clippy
+      - name: Add armv7 target
+        run: rustup target add armv7-linux-androideabi
+      - name: Add aarch64 target
+        run: rustup target add aarch64-linux-android
+      - name: Add i686 target
+        run: rustup target add i686-linux-android
+      - name: Add x86_64 target
+        run: rustup target add x86_64-linux-android
+      - name: Build aar
+        run: ./gradlew assembleRelease
+      - name: Lint code format
+        run: cargo fmt --all -- --check
+      # TODO: fix clippy
+      # - name: Lint code
+      #   run: cargo clippy --all -- -D warnings
+      - name: Upload build artifacts
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/outputs/aar/stremio-core-kotlin-release.aar
+          asset_name: stremio-core-kotlin.aar
+          tag: ${{ github.ref }}
+          overwrite: true

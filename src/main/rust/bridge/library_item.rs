@@ -28,7 +28,7 @@ impl ToProtobuf<types::LibraryItem, ()> for LibraryItem {
             } else {
                 None
             },
-            watched: self.state.times_watched > 0
+            watched: self.state.times_watched > 0,
         }
     }
 }

@@ -88,14 +88,14 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
 }
 
 impl
-ToProtobuf<
-    types::Stream,
-    (
-        Option<&String>,
-        Option<&ResourceRequest>,
-        Option<&ResourceRequest>,
-    ),
-> for Stream
+    ToProtobuf<
+        types::Stream,
+        (
+            Option<&String>,
+            Option<&ResourceRequest>,
+            Option<&ResourceRequest>,
+        ),
+    > for Stream
 {
     fn to_protobuf(
         &self,
