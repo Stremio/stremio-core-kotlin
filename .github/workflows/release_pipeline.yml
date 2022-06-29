@@ -40,9 +40,6 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: publish
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
       - name: Upload build artifacts
         uses: softprops/action-gh-release@v1
