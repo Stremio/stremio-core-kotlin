@@ -41,6 +41,18 @@ jobs:
       # TODO: fix clippy
       # - name: Lint code
       #   run: cargo clippy --all -- -D warnings
+      - name: Tree
+        run: tree > tree
+      - name: Print tree
+        run: cat tree
+      - name: Upload tree
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: tree
+          asset_name: tree
+          tag: ${{ github.ref }}
+          overwrite: true
       - name: Upload build artifacts
         uses: svenstaro/upload-release-action@v2
         with:
