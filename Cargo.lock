@@ -1977,6 +1977,7 @@ dependencies = [
  "stremio-analytics",
  "stremio-core",
  "stremio-derive",
+ "stremio-watched-bitfield",
  "strum",
  "strum_macros",
  "tokio",

@@ -1,8 +1,9 @@
 use stremio_core::models::common::ResourceLoadable;
 use stremio_core::models::ctx::Ctx;
-use stremio_core::models::meta_details::MetaDetails;
 use stremio_core::types::addon::ResourceRequest;
+use stremio_core::types::library::LibraryItem;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
+use stremio_watched_bitfield::WatchedBitField;
 
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
@@ -41,12 +42,12 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
     }
 }
 
-impl ToProtobuf<models::LoadableMetaItem, (&Ctx, Option<&MetaDetails>)>
+impl ToProtobuf<models::LoadableMetaItem, (&Ctx, Option<&LibraryItem>, Option<&WatchedBitField>)>
     for &ResourceLoadable<MetaItem>
 {
     fn to_protobuf(
         &self,
-        (ctx, details): &(&Ctx, Option<&MetaDetails>),
+        (ctx, library_item, watched): &(&Ctx, Option<&LibraryItem>, Option<&WatchedBitField>),
     ) -> models::LoadableMetaItem {
         ctx.profile
             .addons
@@ -57,9 +58,12 @@ impl ToProtobuf<models::LoadableMetaItem, (&Ctx, Option<&MetaDetails>)>
                 models::LoadableMetaItem {
                     title: addon_name.to_string(),
                     request: self.request.to_protobuf(&()),
-                    content: self
-                        .content
-                        .to_protobuf(&(*details, Some(addon_name), &self.request)),
+                    content: self.content.to_protobuf(&(
+                        *library_item,
+                        *watched,
+                        Some(addon_name),
+                        &self.request,
+                    )),
                 }
             })
             .unwrap()

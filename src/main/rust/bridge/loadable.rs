@@ -1,12 +1,13 @@
 use stremio_core::models::common::{Loadable, ResourceError};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::link::LinkError;
-use stremio_core::models::meta_details::MetaDetails;
 use stremio_core::models::streaming_server::Settings;
 use stremio_core::runtime::EnvError;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
+use stremio_core::types::library::LibraryItem;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
+use stremio_watched_bitfield::WatchedBitField;
 use url::Url;
 
 use crate::bridge::ToProtobuf;
@@ -34,20 +35,26 @@ impl ToProtobuf<models::loadable_page::Content, (&Ctx, &ResourceRequest)>
 impl
     ToProtobuf<
         models::loadable_meta_item::Content,
-        (Option<&MetaDetails>, Option<&String>, &ResourceRequest),
+        (
+            Option<&LibraryItem>,
+            Option<&WatchedBitField>,
+            Option<&String>,
+            &ResourceRequest,
+        ),
     > for Loadable<MetaItem, ResourceError>
 {
     fn to_protobuf(
         &self,
-        (details, addon_name, meta_request): &(
-            Option<&MetaDetails>,
+        (library_item, watched, addon_name, meta_request): &(
+            Option<&LibraryItem>,
+            Option<&WatchedBitField>,
             Option<&String>,
             &ResourceRequest,
         ),
     ) -> models::loadable_meta_item::Content {
         match &self {
             Loadable::Ready(ready) => models::loadable_meta_item::Content::Ready(
-                ready.to_protobuf(&(*details, *addon_name, *meta_request)),
+                ready.to_protobuf(&(*library_item, *watched, *addon_name, *meta_request)),
             ),
             Loadable::Err(error) => models::loadable_meta_item::Content::Error(models::Error {
                 message: error.to_string(),
