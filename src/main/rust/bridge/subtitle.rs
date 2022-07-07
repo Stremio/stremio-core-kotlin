@@ -1,5 +1,4 @@
 use stremio_core::types::resource::Subtitles;
-use url::Url;
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::types;
@@ -8,7 +7,7 @@ impl FromProtobuf<Subtitles> for types::Subtitle {
     fn from_protobuf(&self) -> Subtitles {
         Subtitles {
             lang: self.lang.to_string(),
-            url: Url::parse(self.url.as_str()).expect("Subtitle.url parse failed"),
+            url: self.url.from_protobuf(),
         }
     }
 }

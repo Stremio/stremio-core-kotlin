@@ -13,7 +13,7 @@ lto = true
 opt-level = 3
 
 [dependencies]
-stremio-core = { git = "https://github.com/Stremio/stremio-core", branch = "development" }
+stremio-core = { git = "https://github.com/Stremio/stremio-core", branch = "development", features = ["env-future-send"] }
 stremio-derive = { git = "https://github.com/Stremio/stremio-core", branch = "development" }
 stremio-analytics = { git = "https://github.com/Stremio/stremio-core", branch = "development" }
 serde = "1.0.*"

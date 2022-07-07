@@ -11,7 +11,7 @@ impl FromProtobuf<StreamSource> for types::stream::Source {
     fn from_protobuf(&self) -> StreamSource {
         match self {
             types::stream::Source::Url(source) => StreamSource::Url {
-                url: Url::parse(source.url.as_str()).expect("Stream.url parse failed"),
+                url: source.url.from_protobuf(),
             },
             types::stream::Source::YouTube(source) => StreamSource::YouTube {
                 yt_id: source.yt_id.to_owned(),
@@ -27,8 +27,7 @@ impl FromProtobuf<StreamSource> for types::stream::Source {
                     .expect("Stream.external_url parse failed"),
             },
             types::stream::Source::PlayerFrame(source) => StreamSource::PlayerFrame {
-                player_frame_url: Url::parse(source.player_frame_url.as_str())
-                    .expect("Stream.player_frame_url parse failed"),
+                player_frame_url: source.player_frame_url.from_protobuf(),
             },
         }
     }

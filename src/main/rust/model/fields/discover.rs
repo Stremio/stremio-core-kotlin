@@ -78,7 +78,6 @@ impl ToProtobuf<models::catalog_with_filters::Selectable, ()> for Selectable {
             types: self.types.to_protobuf(&()),
             catalogs: self.catalogs.to_protobuf(&()),
             extra: self.extra.to_protobuf(&()),
-            prev_page: self.prev_page.to_protobuf(&()),
             next_page: self.next_page.to_protobuf(&()),
         }
     }

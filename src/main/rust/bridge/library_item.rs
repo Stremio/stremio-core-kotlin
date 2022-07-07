@@ -11,7 +11,7 @@ impl ToProtobuf<types::LibraryItem, ()> for LibraryItem {
             id: self.id.to_string(),
             r#type: self.r#type.to_string(),
             name: self.name.to_string(),
-            poster: self.poster.clone(),
+            poster: self.poster.to_protobuf(&()),
             poster_shape: self.poster_shape.to_protobuf(&()) as i32,
             state: types::LibraryItemState {
                 time_offset: self.state.time_offset,

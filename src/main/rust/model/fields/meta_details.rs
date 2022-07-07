@@ -1,5 +1,6 @@
 use boolinator::Boolinator;
 use stremio_core::deep_links::MetaItemDeepLinks;
+use stremio_core::models::common::{Loadable, ResourceLoadable};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::meta_details::{MetaDetails, Selected};
 use stremio_core::runtime::Env;
@@ -83,9 +84,9 @@ impl ToProtobuf<types::MetaItem, (Option<&MetaDetails>, Option<&String>, &Resour
             r#type: self.preview.r#type.to_string(),
             name: self.preview.name.to_string(),
             poster_shape: self.preview.poster_shape.to_protobuf(&()) as i32,
-            poster: self.preview.poster.clone(),
-            background: self.preview.background.clone(),
-            logo: self.preview.logo.clone(),
+            poster: self.preview.poster.to_protobuf(&()),
+            background: self.preview.background.to_protobuf(&()),
+            logo: self.preview.logo.to_protobuf(&()),
             description: self.preview.description.clone(),
             release_info: self.preview.release_info.clone(),
             runtime: self.preview.runtime.clone(),
@@ -136,8 +137,13 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
             });
         let meta_request = meta_item.map(|item| &item.request);
         let title = meta_item
-            .and_then(|meta_item| meta_item.content.to_owned())
-            .and_then(|meta_item| meta_item.ready())
+            .and_then(|meta_item| match meta_item {
+                ResourceLoadable {
+                    content: Some(Loadable::Ready(meta_item)),
+                    ..
+                } => Some(meta_item),
+                _ => None,
+            })
             .map(|meta_item| {
                 meta_item
                     .preview

@@ -5,6 +5,7 @@ package stremio.core.runtime;
 option java_package = "com.stremio.core.runtime.msg";
 
 import "stremio/core/runtime/action_catalogs_with_extra.proto";
+import "stremio/core/runtime/action_catalog_with_filters.proto";
 import "stremio/core/runtime/action_ctx.proto";
 import "stremio/core/runtime/action_link.proto";
 import "stremio/core/runtime/action_load.proto";
@@ -22,12 +23,13 @@ message Action {
   oneof type {
     ActionCtx ctx = 1;
     ActionLink link = 2;
-    ActionCatalogsWithExtra catalogs_with_extra = 3;
-    ActionMetaDetails meta_details = 4;
-    ActionStreamingServer streaming_server = 5;
-    ActionPlayer player = 6;
-    ActionLoad load = 7;
-    ActionUnload unload = 8;
+    ActionCatalogWithFilters catalog_with_filters = 3;
+    ActionCatalogsWithExtra catalogs_with_extra = 4;
+    ActionMetaDetails meta_details = 5;
+    ActionStreamingServer streaming_server = 6;
+    ActionPlayer player = 7;
+    ActionLoad load = 8;
+    ActionUnload unload = 9;
   }
 
   message ActionUnload {

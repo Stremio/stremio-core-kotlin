@@ -10,7 +10,7 @@ import "stremio/core/types/addon.proto";
 message CatalogWithFilters {
   optional Selected selected = 1;
   required Selectable selectable = 2;
-  optional LoadableCatalog catalog = 3;
+  required Catalog catalog = 3;
 
   message Selected {
     required stremio.core.types.ResourceRequest request = 1;
@@ -19,8 +19,7 @@ message CatalogWithFilters {
     repeated SelectableType types = 1;
     repeated SelectableCatalog catalogs = 2;
     repeated SelectableExtra extra = 3;
-    optional SelectablePage prev_page = 4;
-    optional SelectablePage next_page = 5;
+    optional SelectablePage next_page = 4;
   }
 
   message SelectableType {
