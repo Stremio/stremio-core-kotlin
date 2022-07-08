@@ -137,13 +137,8 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
             });
         let meta_request = meta_item.map(|item| &item.request);
         let title = meta_item
-            .and_then(|meta_item| match meta_item {
-                ResourceLoadable {
-                    content: Some(Loadable::Ready(meta_item)),
-                    ..
-                } => Some(meta_item),
-                _ => None,
-            })
+            .and_then(|meta_item| meta_item.content.as_ref())
+            .and_then(|meta_item| meta_item.ready())
             .map(|meta_item| {
                 meta_item
                     .preview
