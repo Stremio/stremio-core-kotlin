@@ -7,8 +7,8 @@ use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
 
-impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPreview>> {
-    fn to_protobuf(&self, ctx: &Ctx) -> models::LoadablePage {
+impl ToProtobuf<models::LoadableCatalog, Ctx> for ResourceLoadable<Vec<MetaItemPreview>> {
+    fn to_protobuf(&self, ctx: &Ctx) -> models::LoadableCatalog {
         ctx.profile
             .addons
             .iter()
@@ -31,7 +31,7 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
                         .unwrap_or(&manifest_catalog.id),
                     &self.request.path.r#type
                 );
-                models::LoadablePage {
+                models::LoadableCatalog {
                     title,
                     request: self.request.to_protobuf(&()),
                     content: self.content.to_protobuf(&(ctx, &self.request)),

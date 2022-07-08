@@ -12,21 +12,21 @@ use url::Url;
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
 
-impl ToProtobuf<models::loadable_page::Content, (&Ctx, &ResourceRequest)>
+impl ToProtobuf<models::loadable_catalog::Content, (&Ctx, &ResourceRequest)>
     for Loadable<Vec<MetaItemPreview>, ResourceError>
 {
     fn to_protobuf(
         &self,
         (ctx, request): &(&Ctx, &ResourceRequest),
-    ) -> models::loadable_page::Content {
+    ) -> models::loadable_catalog::Content {
         match &self {
-            Loadable::Ready(ready) => models::loadable_page::Content::Ready(models::Page {
+            Loadable::Ready(ready) => models::loadable_catalog::Content::Ready(models::Catalog {
                 meta_items: ready.to_protobuf(&(*ctx, *request)),
             }),
-            Loadable::Err(error) => models::loadable_page::Content::Error(models::Error {
+            Loadable::Err(error) => models::loadable_catalog::Content::Error(models::Error {
                 message: error.to_string(),
             }),
-            Loadable::Loading => models::loadable_page::Content::Loading(models::Loading {}),
+            Loadable::Loading => models::loadable_catalog::Content::Loading(models::Loading {}),
         }
     }
 }
