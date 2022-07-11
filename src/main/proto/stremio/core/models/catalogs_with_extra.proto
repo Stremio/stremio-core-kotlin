@@ -10,7 +10,7 @@ import "stremio/core/types/meta_item_preview.proto";
 
 message CatalogsWithExtra {
   optional Selected selected = 1;
-  repeated LoadableCatalog catalogs = 2;
+  repeated Catalog catalogs = 2;
 
   message Selected {
     optional string type = 1;
@@ -18,16 +18,20 @@ message CatalogsWithExtra {
   }
 }
 
-message LoadableCatalog {
+message Catalog {
+  repeated LoadablePage pages = 2;
+}
+
+message LoadablePage {
   required string title = 1;
   required stremio.core.types.ResourceRequest request = 2;
   oneof content {
     Loading loading = 3;
     Error error = 4;
-    Catalog ready = 5;
+    Page ready = 5;
   }
 }
 
-message Catalog {
+message Page {
   repeated stremio.core.types.MetaItemPreview meta_items = 1;
 }
