@@ -24,7 +24,7 @@ message ExtraValue{
 enum ResourceType {
   meta = 0;
   stream = 1;
-  subtitle = 2;
+  subtitles = 2;
   catalog = 3;
 }
 
