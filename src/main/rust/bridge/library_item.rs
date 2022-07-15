@@ -16,6 +16,7 @@ impl ToProtobuf<types::LibraryItem, ()> for LibraryItem {
             state: types::LibraryItemState {
                 time_offset: self.state.time_offset,
                 duration: self.state.duration,
+                video_id: self.state.video_id.clone(),
             },
             behavior_hints: self.behavior_hints.to_protobuf(&()),
             deep_links: types::MetaItemDeepLinks {
