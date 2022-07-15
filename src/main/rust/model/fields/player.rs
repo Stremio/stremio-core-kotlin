@@ -33,12 +33,14 @@ impl ToProtobuf<models::Player, Ctx> for Player {
             meta_item: self.meta_item.as_ref().to_protobuf(&(
                 ctx,
                 self.library_item.as_ref(),
-                None,
+                self.watched.as_ref(),
             )),
             subtitles: self.subtitles.to_protobuf(ctx),
-            next_video: self
-                .next_video
-                .to_protobuf(&(self.library_item.as_ref(), None, None)),
+            next_video: self.next_video.to_protobuf(&(
+                self.library_item.as_ref(),
+                self.watched.as_ref(),
+                None,
+            )),
             series_info: self.series_info.to_protobuf(&()),
             library_item: self.library_item.to_protobuf(&()),
         }
