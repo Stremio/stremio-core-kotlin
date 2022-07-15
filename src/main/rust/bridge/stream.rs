@@ -2,7 +2,6 @@ use hex::FromHex;
 use stremio_core::deep_links::StreamDeepLinks;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{Stream, StreamBehaviorHints, StreamSource};
-use url::Url;
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::types;
@@ -23,8 +22,10 @@ impl FromProtobuf<StreamSource> for types::stream::Source {
                 announce: source.announce.clone(),
             },
             types::stream::Source::External(source) => StreamSource::External {
-                external_url: Url::parse(source.external_url.as_str())
-                    .expect("Stream.external_url parse failed"),
+                external_url: source.external_url.from_protobuf(),
+                android_url: source.external_url.from_protobuf(),
+                tizen_url: None,
+                webos_url: None,
             },
             types::stream::Source::PlayerFrame(source) => StreamSource::PlayerFrame {
                 player_frame_url: source.player_frame_url.from_protobuf(),
@@ -72,11 +73,14 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
                 file_idx: file_idx.map(|idx| idx as i32),
                 announce: announce.clone(),
             }),
-            StreamSource::External { external_url } => {
-                types::stream::Source::External(types::stream::External {
-                    external_url: external_url.to_string(),
-                })
-            }
+            StreamSource::External {
+                external_url,
+                android_url,
+                ..
+            } => types::stream::Source::External(types::stream::External {
+                external_url: external_url.to_protobuf(&()),
+                android_url: android_url.to_protobuf(&()),
+            }),
             StreamSource::PlayerFrame { player_frame_url } => {
                 types::stream::Source::PlayerFrame(types::stream::PlayerFrame {
                     player_frame_url: player_frame_url.to_string(),

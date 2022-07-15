@@ -130,7 +130,7 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Load(ActionLoad::MetaDetails(selected.from_protobuf()))
                 }
                 Some(action_load::Args::Player(selected)) => {
-                    Action::Load(ActionLoad::Player(selected.from_protobuf()))
+                    Action::Load(ActionLoad::Player(Box::new(selected.from_protobuf())))
                 }
                 Some(action_load::Args::Link(_args)) => Action::Load(ActionLoad::Link),
                 None => unimplemented!("ActionLoad missing"),

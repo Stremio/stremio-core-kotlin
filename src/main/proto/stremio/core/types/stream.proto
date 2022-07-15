@@ -36,7 +36,8 @@ message Stream {
   }
 
   message External {
-    required string external_url = 1;
+    optional string external_url = 1;
+    optional string android_url = 2;
   }
 
   message PlayerFrame {
@@ -56,7 +57,7 @@ message StreamDeepLinks {
   required ExternalPlayerLink external_player = 2;
 
   message ExternalPlayerLink {
-    required string href = 1;
+    optional string href = 1;
     optional string download = 2;
   }
 }

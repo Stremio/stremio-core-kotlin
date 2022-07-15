@@ -1,6 +1,5 @@
 use boolinator::Boolinator;
 use stremio_core::deep_links::MetaItemDeepLinks;
-use stremio_core::models::common::{Loadable, ResourceLoadable};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::meta_details::{MetaDetails, Selected};
 use stremio_core::runtime::Env;
