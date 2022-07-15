@@ -70,7 +70,11 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                         library.merge_bucket(other_bucket);
                     };
                     let (model, effects) = AndroidModel::new(profile, library);
-                    let (runtime, rx) = Runtime::<AndroidEnv, _>::new(model, effects, 1000);
+                    let (runtime, rx) = Runtime::<AndroidEnv, _>::new(
+                        model,
+                        effects.into_iter().collect::<Vec<_>>(),
+                        1000,
+                    );
                     let java_vm = env.get_java_vm().expect("JavaVM get failed");
                     AndroidEnv::exec_concurrent(rx.for_each(move |event| {
                         let classes = AndroidEnv::kotlin_classes().unwrap();

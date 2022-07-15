@@ -6,6 +6,7 @@ option java_package = "com.stremio.core.runtime";
 
 import "google/protobuf/empty.proto";
 import "stremio/core/runtime/event.proto";
+import "stremio/core/runtime/field.proto";
 
 message EnvError{
   required int32 code = 1;
@@ -19,5 +20,6 @@ message RuntimeEvent {
   }
 
   message NewState {
+    repeated Field fields = 1;
   }
 }

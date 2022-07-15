@@ -1,4 +1,4 @@
-use crate::bridge::FromProtobuf;
+use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::model::AndroidModelField;
 use crate::protobuf::stremio::core::runtime::Field;
 
@@ -16,6 +16,24 @@ impl FromProtobuf<AndroidModelField> for Field {
             Field::MetaDetails => AndroidModelField::MetaDetails,
             Field::StreamingServer => AndroidModelField::StreamingServer,
             Field::Player => AndroidModelField::Player,
+        }
+    }
+}
+
+impl ToProtobuf<Field, ()> for AndroidModelField {
+    fn to_protobuf(&self, _args: &()) -> Field {
+        match self {
+            AndroidModelField::Ctx => Field::Ctx,
+            AndroidModelField::AuthLink => Field::AuthLink,
+            AndroidModelField::ContinueWatchingPreview => Field::ContinueWatchingPreview,
+            AndroidModelField::Discover => Field::Discover,
+            AndroidModelField::Library => Field::Library,
+            AndroidModelField::LibraryByType => Field::LibraryByType,
+            AndroidModelField::Board => Field::Board,
+            AndroidModelField::Search => Field::Search,
+            AndroidModelField::MetaDetails => Field::MetaDetails,
+            AndroidModelField::StreamingServer => Field::StreamingServer,
+            AndroidModelField::Player => Field::Player,
         }
     }
 }
