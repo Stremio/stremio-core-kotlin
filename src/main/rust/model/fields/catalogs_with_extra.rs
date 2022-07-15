@@ -1,5 +1,7 @@
+use stremio_core::models::catalog_with_filters::Catalog;
 use stremio_core::models::catalogs_with_extra::{CatalogsWithExtra, Selected};
 use stremio_core::models::ctx::Ctx;
+use stremio_core::types::resource::MetaItemPreview;
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::models;
@@ -18,6 +20,14 @@ impl ToProtobuf<models::catalogs_with_extra::Selected, ()> for Selected {
         models::catalogs_with_extra::Selected {
             r#type: self.r#type.clone(),
             extra: self.extra.to_protobuf(&()),
+        }
+    }
+}
+
+impl ToProtobuf<models::Catalog, Ctx> for Catalog<MetaItemPreview> {
+    fn to_protobuf(&self, ctx: &Ctx) -> models::Catalog {
+        models::Catalog {
+            pages: self.iter().map(|page| page.to_protobuf(ctx)).collect(),
         }
     }
 }

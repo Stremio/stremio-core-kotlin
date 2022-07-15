@@ -3,7 +3,6 @@ use std::convert::TryFrom;
 
 use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
 use stremio_core::types::profile::{Auth, GDPRConsent, Profile, Settings, User};
-use url::Url;
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::types;
@@ -22,14 +21,13 @@ impl FromProtobuf<Settings> for types::profile::Settings {
     fn from_protobuf(&self) -> Settings {
         Settings {
             interface_language: self.interface_language.to_string(),
-            streaming_server_url: Url::parse(&self.streaming_server_url)
-                .expect("Settings.streaming_server_url parse failed"),
+            streaming_server_url: self.streaming_server_url.from_protobuf(),
             binge_watching: self.binge_watching,
             play_in_background: self.play_in_background,
             play_in_external_player: self.play_in_external_player,
             hardware_decoding: self.hardware_decoding,
-            audio_passthrough: self.hardware_decoding,
-            audio_language: self.hardware_decoding.to_string(),
+            audio_passthrough: self.audio_passthrough,
+            audio_language: self.audio_language.to_string(),
             subtitles_language: self.subtitles_language.to_string(),
             subtitles_size: u8::try_from(cmp::max(self.subtitles_size, 0)).unwrap_or(u8::MAX),
             subtitles_font: self.subtitles_font.to_string(),

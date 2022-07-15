@@ -1,32 +1,33 @@
 use stremio_core::models::common::{Loadable, ResourceError};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::link::LinkError;
-use stremio_core::models::meta_details::MetaDetails;
 use stremio_core::models::streaming_server::Settings;
 use stremio_core::runtime::EnvError;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
+use stremio_core::types::library::LibraryItem;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
+use stremio_watched_bitfield::WatchedBitField;
 use url::Url;
 
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
 
-impl ToProtobuf<models::loadable_catalog::Content, (&Ctx, &ResourceRequest)>
+impl ToProtobuf<models::loadable_page::Content, (&Ctx, &ResourceRequest)>
     for Loadable<Vec<MetaItemPreview>, ResourceError>
 {
     fn to_protobuf(
         &self,
         (ctx, request): &(&Ctx, &ResourceRequest),
-    ) -> models::loadable_catalog::Content {
+    ) -> models::loadable_page::Content {
         match &self {
-            Loadable::Ready(ready) => models::loadable_catalog::Content::Ready(models::Catalog {
+            Loadable::Ready(ready) => models::loadable_page::Content::Ready(models::Page {
                 meta_items: ready.to_protobuf(&(*ctx, *request)),
             }),
-            Loadable::Err(error) => models::loadable_catalog::Content::Error(models::Error {
+            Loadable::Err(error) => models::loadable_page::Content::Error(models::Error {
                 message: error.to_string(),
             }),
-            Loadable::Loading => models::loadable_catalog::Content::Loading(models::Loading {}),
+            Loadable::Loading => models::loadable_page::Content::Loading(models::Loading {}),
         }
     }
 }
@@ -34,20 +35,26 @@ impl ToProtobuf<models::loadable_catalog::Content, (&Ctx, &ResourceRequest)>
 impl
     ToProtobuf<
         models::loadable_meta_item::Content,
-        (Option<&MetaDetails>, Option<&String>, &ResourceRequest),
+        (
+            Option<&LibraryItem>,
+            Option<&WatchedBitField>,
+            Option<&String>,
+            &ResourceRequest,
+        ),
     > for Loadable<MetaItem, ResourceError>
 {
     fn to_protobuf(
         &self,
-        (details, addon_name, meta_request): &(
-            Option<&MetaDetails>,
+        (library_item, watched, addon_name, meta_request): &(
+            Option<&LibraryItem>,
+            Option<&WatchedBitField>,
             Option<&String>,
             &ResourceRequest,
         ),
     ) -> models::loadable_meta_item::Content {
         match &self {
             Loadable::Ready(ready) => models::loadable_meta_item::Content::Ready(
-                ready.to_protobuf(&(*details, *addon_name, *meta_request)),
+                ready.to_protobuf(&(*library_item, *watched, *addon_name, *meta_request)),
             ),
             Loadable::Err(error) => models::loadable_meta_item::Content::Error(models::Error {
                 message: error.to_string(),

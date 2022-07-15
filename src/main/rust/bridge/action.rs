@@ -1,8 +1,8 @@
 use std::ops::Range;
 
 use stremio_core::runtime::msg::{
-    Action, ActionCatalogsWithExtra, ActionCtx, ActionLink, ActionLoad, ActionMetaDetails,
-    ActionPlayer, ActionStreamingServer,
+    Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx, ActionLink, ActionLoad,
+    ActionMetaDetails, ActionPlayer, ActionStreamingServer,
 };
 use stremio_core::runtime::RuntimeAction;
 
@@ -11,8 +11,8 @@ use crate::env::AndroidEnv;
 use crate::model::AndroidModel;
 use crate::protobuf::stremio::core::runtime;
 use crate::protobuf::stremio::core::runtime::{
-    action_catalogs_with_extra, action_ctx, action_link, action_load, action_meta_details,
-    action_player, action_streaming_server, Field,
+    action_catalog_with_filters, action_catalogs_with_extra, action_ctx, action_link, action_load,
+    action_meta_details, action_player, action_streaming_server, Field,
 };
 
 impl FromProtobuf<Action> for runtime::Action {
@@ -56,6 +56,14 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_link::Args::ReadData(_args)) => Action::Link(ActionLink::ReadData),
                 None => unimplemented!("ActionLink missing"),
             },
+            Some(runtime::action::Type::CatalogWithFilters(action_catalog)) => {
+                match &action_catalog.args {
+                    Some(action_catalog_with_filters::Args::LoadNextPage(_args)) => {
+                        Action::CatalogWithFilters(ActionCatalogWithFilters::LoadNextPage)
+                    }
+                    None => unimplemented!("ActionCatalogWithFilters missing"),
+                }
+            }
             Some(runtime::action::Type::CatalogsWithExtra(action_catalog)) => {
                 match &action_catalog.args {
                     Some(action_catalogs_with_extra::Args::LoadRange(range)) => {
@@ -63,6 +71,11 @@ impl FromProtobuf<Action> for runtime::Action {
                             start: range.start as usize,
                             end: range.end as usize,
                         }))
+                    }
+                    Some(action_catalogs_with_extra::Args::LoadNextPage(index)) => {
+                        Action::CatalogsWithExtra(ActionCatalogsWithExtra::LoadNextPage(
+                            *index as usize,
+                        ))
                     }
                     None => unimplemented!("ActionCatalogsWithExtra missing"),
                 }
@@ -107,9 +120,9 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_load::Args::CatalogsWithExtra(selected)) => {
                     Action::Load(ActionLoad::CatalogsWithExtra(selected.from_protobuf()))
                 }
-                Some(action_load::Args::CatalogWithFilters(selected)) => {
-                    Action::Load(ActionLoad::CatalogWithFilters(selected.from_protobuf()))
-                }
+                Some(action_load::Args::CatalogWithFilters(selected)) => Action::Load(
+                    ActionLoad::CatalogWithFilters(Some(selected.from_protobuf())),
+                ),
                 Some(action_load::Args::LibraryWithFilters(selected)) => {
                     Action::Load(ActionLoad::LibraryWithFilters(selected.from_protobuf()))
                 }
@@ -117,7 +130,7 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Load(ActionLoad::MetaDetails(selected.from_protobuf()))
                 }
                 Some(action_load::Args::Player(selected)) => {
-                    Action::Load(ActionLoad::Player(selected.from_protobuf()))
+                    Action::Load(ActionLoad::Player(Box::new(selected.from_protobuf())))
                 }
                 Some(action_load::Args::Link(_args)) => Action::Load(ActionLoad::Link),
                 None => unimplemented!("ActionLoad missing"),

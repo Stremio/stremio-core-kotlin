@@ -1,5 +1,6 @@
 use std::io::Cursor;
 use std::os::raw::c_void;
+#[cfg(debug_assertions)]
 use std::panic;
 use std::sync::RwLock;
 
