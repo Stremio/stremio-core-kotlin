@@ -1,5 +1,6 @@
 use std::convert::TryFrom;
 use std::env;
+use std::time::Duration;
 
 use futures::future::Either;
 use futures::{future, TryFutureExt};
@@ -31,18 +32,31 @@ pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Se
     };
     let client = if env::var("TMPDIR").is_ok() {
         CLIENT_WITH_CACHE.get_or_init(|| {
-            ClientBuilder::new(Client::new())
-                .with(Cache(HttpCache::<CACacheManager> {
-                    mode: CacheMode::Default,
-                    manager: CACacheManager {
-                        path: env::temp_dir().display().to_string() + "/http-cacache".into(),
-                    },
-                    options: None,
-                }))
-                .build()
+            ClientBuilder::new(
+                Client::builder()
+                    .connect_timeout(Duration::from_secs(30))
+                    .build()
+                    .unwrap_or_default(),
+            )
+            .with(Cache(HttpCache::<CACacheManager> {
+                mode: CacheMode::Default,
+                manager: CACacheManager {
+                    path: env::temp_dir().display().to_string() + "/http-cacache".into(),
+                },
+                options: None,
+            }))
+            .build()
         })
     } else {
-        CLIENT_WITHOUT_CACHE.get_or_init(|| ClientBuilder::new(Client::new()).build())
+        CLIENT_WITHOUT_CACHE.get_or_init(|| {
+            ClientBuilder::new(
+                Client::builder()
+                    .connect_timeout(Duration::from_secs(30))
+                    .build()
+                    .unwrap_or_default(),
+            )
+            .build()
+        })
     };
     client
         .execute(request)
