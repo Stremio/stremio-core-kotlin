@@ -21,10 +21,10 @@ allprojects {
 
 ```gradle
 dependencies {
-    implementation 'com.github.Stremio:stremio-core-kotlin:1.0.6'
+    implementation 'com.github.Stremio:stremio-core-kotlin:1.0.7'
 }
 ```
 
 ## Manual
 
-[Download](https://jitpack.io/com/github/stremio/stremio-core-kotlin/1.0.6/stremio-core-kotlin-1.0.6.aar) aar and link it manually
+[Download](https://jitpack.io/com/github/stremio/stremio-core-kotlin/1.0.7/stremio-core-kotlin-1.0.7.aar) aar and link it manually
