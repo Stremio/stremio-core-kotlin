@@ -27,6 +27,8 @@ message Profile {
     required string subtitles_background_color = 15;
     required string subtitles_outline_color = 16;
     required int64 seek_time_duration = 17;
+    optional string secondary_audio_language = 18;
+    optional string secondary_subtitles_language = 19;
   }
 }
 

@@ -23,7 +23,7 @@ impl FromProtobuf<StreamSource> for types::stream::Source {
             },
             types::stream::Source::External(source) => StreamSource::External {
                 external_url: source.external_url.from_protobuf(),
-                android_url: source.android_url.from_protobuf(),
+                android_tv_url: source.android_tv_url.from_protobuf(),
                 tizen_url: None,
                 webos_url: None,
             },
@@ -75,11 +75,11 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
             }),
             StreamSource::External {
                 external_url,
-                android_url,
+                android_tv_url,
                 ..
             } => types::stream::Source::External(types::stream::External {
                 external_url: external_url.to_protobuf(&()),
-                android_url: android_url.to_protobuf(&()),
+                android_tv_url: android_tv_url.to_protobuf(&()),
             }),
             StreamSource::PlayerFrame { player_frame_url } => {
                 types::stream::Source::PlayerFrame(types::stream::PlayerFrame {
