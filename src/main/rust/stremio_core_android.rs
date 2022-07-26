@@ -103,26 +103,19 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                 Err(error) => {
                     *RUNTIME.write().expect("RUNTIME write failed") =
                         Some(Loadable::Err(error.to_owned()));
-                    let jni_object = env.auto_local(
-                        error
-                            .to_protobuf(&())
-                            .encode_to_vec()
-                            .to_jni_byte_array(&env),
-                    );
-                    jni_object.as_obj().into_inner()
+                    error
+                        .to_protobuf(&())
+                        .encode_to_vec()
+                        .to_jni_byte_array(&env)
                 }
             }
         }
         Err(error) => {
             *RUNTIME.write().expect("RUNTIME write failed") = Some(Loadable::Err(error.to_owned()));
-
-            let jni_object = env.auto_local(
-                error
-                    .to_protobuf(&())
-                    .encode_to_vec()
-                    .to_jni_byte_array(&env),
-            );
-            jni_object.as_obj().into_inner()
+            error
+                .to_protobuf(&())
+                .encode_to_vec()
+                .to_jni_byte_array(&env)
         }
     }
 }
@@ -168,8 +161,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateNative(
         .as_ref()
         .expect("RUNTIME not initialized");
     let model = runtime.model().expect("model read failed");
-    let jni_object = env.auto_local(model.get_state_binary(&field).to_jni_byte_array(&env));
-    jni_object.as_obj().into_inner()
+    model.get_state_binary(&field).to_jni_byte_array(&env)
 }
 
 #[no_mangle]
@@ -188,11 +180,8 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
         Ok(stream) => stream,
         Err(_) => return JObject::null().into_inner(),
     };
-    let jni_object = env.auto_local(
-        stream
-            .to_protobuf(&(None, None, None))
-            .encode_to_vec()
-            .to_jni_byte_array(&env),
-    );
-    jni_object.as_obj().into_inner()
+    stream
+        .to_protobuf(&(None, None, None))
+        .encode_to_vec()
+        .to_jni_byte_array(&env)
 }
