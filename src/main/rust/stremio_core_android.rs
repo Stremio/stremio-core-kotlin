@@ -81,17 +81,17 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                         let env = java_vm
                             .attach_current_thread_as_daemon()
                             .expect("JavaVM attach to current thread as deamon failed");
-                        let event_buf = event.to_protobuf(&()).encode_to_vec();
-                        let event = env
-                            .byte_array_from_slice(&event_buf)
-                            .exception_describe(&env)
-                            .expect("RuntimeEvent convert failed");
+                        let event = event
+                            .to_protobuf(&())
+                            .encode_to_vec()
+                            .to_jni_byte_array(&env);
+                        let event = env.auto_local(event);
                         let _ = env
                             .call_static_method(
                                 classes.get(&KotlinClassName::Core).unwrap(),
                                 "onRuntimeEvent",
                                 "([B)V",
-                                &[event.into()],
+                                &[event.as_obj().into()],
                             )
                             .expect("onRuntimeEvent call failed");
                         future::ready(())
@@ -103,19 +103,23 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                 Err(error) => {
                     *RUNTIME.write().expect("RUNTIME write failed") =
                         Some(Loadable::Err(error.to_owned()));
-                    error
+                    let error = error
                         .to_protobuf(&())
                         .encode_to_vec()
-                        .to_jni_byte_array(&env)
+                        .to_jni_byte_array(&env);
+                    let error = env.auto_local(error);
+                    error.as_obj().into_inner()
                 }
             }
         }
         Err(error) => {
             *RUNTIME.write().expect("RUNTIME write failed") = Some(Loadable::Err(error.to_owned()));
-            error
+            let error = error
                 .to_protobuf(&())
                 .encode_to_vec()
-                .to_jni_byte_array(&env)
+                .to_jni_byte_array(&env);
+            let error = env.auto_local(error);
+            error.as_obj().into_inner()
         }
     }
 }
@@ -161,7 +165,9 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateNative(
         .as_ref()
         .expect("RUNTIME not initialized");
     let model = runtime.model().expect("model read failed");
-    model.get_state_binary(&field).to_jni_byte_array(&env)
+    let state = model.get_state_binary(&field).to_jni_byte_array(&env);
+    let state = env.auto_local(state);
+    state.as_obj().into_inner()
 }
 
 #[no_mangle]
@@ -180,8 +186,10 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
         Ok(stream) => stream,
         Err(_) => return JObject::null().into_inner(),
     };
-    stream
+    let stream = stream
         .to_protobuf(&(None, None, None))
         .encode_to_vec()
-        .to_jni_byte_array(&env)
+        .to_jni_byte_array(&env);
+    let stream = env.auto_local(stream);
+    stream.as_obj().into_inner()
 }
