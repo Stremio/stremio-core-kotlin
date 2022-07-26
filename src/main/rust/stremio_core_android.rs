@@ -103,23 +103,19 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                 Err(error) => {
                     *RUNTIME.write().expect("RUNTIME write failed") =
                         Some(Loadable::Err(error.to_owned()));
-                    let error = error
+                    error
                         .to_protobuf(&())
                         .encode_to_vec()
-                        .to_jni_byte_array(&env);
-                    let error = env.auto_local(error);
-                    error.as_obj().into_inner()
+                        .to_jni_byte_array(&env)
                 }
             }
         }
         Err(error) => {
             *RUNTIME.write().expect("RUNTIME write failed") = Some(Loadable::Err(error.to_owned()));
-            let error = error
+            error
                 .to_protobuf(&())
                 .encode_to_vec()
-                .to_jni_byte_array(&env);
-            let error = env.auto_local(error);
-            error.as_obj().into_inner()
+                .to_jni_byte_array(&env)
         }
     }
 }
@@ -165,9 +161,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateNative(
         .as_ref()
         .expect("RUNTIME not initialized");
     let model = runtime.model().expect("model read failed");
-    let state = model.get_state_binary(&field).to_jni_byte_array(&env);
-    let state = env.auto_local(state);
-    state.as_obj().into_inner()
+    model.get_state_binary(&field).to_jni_byte_array(&env)
 }
 
 #[no_mangle]
@@ -186,10 +180,8 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
         Ok(stream) => stream,
         Err(_) => return JObject::null().into_inner(),
     };
-    let stream = stream
+    stream
         .to_protobuf(&(None, None, None))
         .encode_to_vec()
-        .to_jni_byte_array(&env);
-    let stream = env.auto_local(stream);
-    stream.as_obj().into_inner()
+        .to_jni_byte_array(&env)
 }
