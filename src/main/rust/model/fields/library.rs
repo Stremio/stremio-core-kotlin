@@ -8,7 +8,6 @@ use stremio_core::models::library_with_filters::{
 };
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
-use crate::model::LibraryByType;
 use crate::protobuf::stremio::core::models;
 
 impl FromProtobuf<Sort> for models::library_with_filters::Sort {
@@ -116,14 +115,6 @@ impl<F> ToProtobuf<models::LibraryWithFilters, ()> for LibraryWithFilters<F> {
             selected: self.selected.to_protobuf(&()),
             selectable: self.selectable.to_protobuf(&()),
             catalog: self.catalog.to_protobuf(&()),
-        }
-    }
-}
-
-impl ToProtobuf<models::LibraryByType, ()> for LibraryByType {
-    fn to_protobuf(&self, _args: &()) -> models::LibraryByType {
-        models::LibraryByType {
-            catalogs: self.catalogs.to_protobuf(&()),
         }
     }
 }
