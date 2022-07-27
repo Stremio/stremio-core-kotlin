@@ -3,6 +3,7 @@ use stremio_core::models::catalog_with_filters::CatalogWithFilters;
 use stremio_core::models::catalogs_with_extra::CatalogsWithExtra;
 use stremio_core::models::continue_watching_preview::ContinueWatchingPreview;
 use stremio_core::models::ctx::Ctx;
+use stremio_core::models::library_by_type::LibraryByType;
 use stremio_core::models::library_with_filters::{LibraryWithFilters, NotRemovedFilter};
 use stremio_core::models::link::Link;
 use stremio_core::models::meta_details::MetaDetails;
@@ -17,7 +18,6 @@ use stremio_derive::Model;
 
 use crate::bridge::ToProtobuf;
 use crate::env::AndroidEnv;
-use crate::model::LibraryByType;
 
 #[derive(Model)]
 #[model(AndroidEnv)]
@@ -27,7 +27,7 @@ pub struct AndroidModel {
     pub continue_watching_preview: ContinueWatchingPreview,
     pub discover: CatalogWithFilters<MetaItemPreview>,
     pub library: LibraryWithFilters<NotRemovedFilter>,
-    pub library_by_type: LibraryByType,
+    pub library_by_type: LibraryByType<NotRemovedFilter>,
     pub board: CatalogsWithExtra,
     pub search: CatalogsWithExtra,
     pub meta_details: MetaDetails,
@@ -42,7 +42,7 @@ impl AndroidModel {
             ContinueWatchingPreview::new(&ctx.library);
         let (discover, discover_effects) = CatalogWithFilters::<MetaItemPreview>::new(&ctx.profile);
         let (library_, library_effects) = LibraryWithFilters::<NotRemovedFilter>::new(&ctx.library);
-        let (library_by_type, library_by_type_effects) = LibraryByType::new::<AndroidEnv>(&ctx);
+        let (library_by_type, library_by_type_effects) = LibraryByType::<NotRemovedFilter>::new();
         let (streaming_server, streaming_server_effects) =
             StreamingServer::new::<AndroidEnv>(&ctx.profile);
         let model = AndroidModel {

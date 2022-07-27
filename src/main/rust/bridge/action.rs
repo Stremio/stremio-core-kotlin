@@ -1,19 +1,13 @@
 use std::ops::Range;
 
-use stremio_core::runtime::msg::{
-    Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx, ActionLink, ActionLoad,
-    ActionMetaDetails, ActionPlayer, ActionStreamingServer,
-};
+use stremio_core::runtime::msg::{Action, ActionCatalogsWithExtra, ActionCatalogWithFilters, ActionCtx, ActionLibraryByType, ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer, ActionStreamingServer};
 use stremio_core::runtime::RuntimeAction;
 
 use crate::bridge::FromProtobuf;
 use crate::env::AndroidEnv;
 use crate::model::AndroidModel;
 use crate::protobuf::stremio::core::runtime;
-use crate::protobuf::stremio::core::runtime::{
-    action_catalog_with_filters, action_catalogs_with_extra, action_ctx, action_link, action_load,
-    action_meta_details, action_player, action_streaming_server, Field,
-};
+use crate::protobuf::stremio::core::runtime::{action_catalog_with_filters, action_catalogs_with_extra, action_ctx, action_library_by_type, action_link, action_load, action_meta_details, action_player, action_streaming_server, Field};
 
 impl FromProtobuf<Action> for runtime::Action {
     fn from_protobuf(&self) -> Action {
@@ -80,6 +74,14 @@ impl FromProtobuf<Action> for runtime::Action {
                     None => unimplemented!("ActionCatalogsWithExtra missing"),
                 }
             }
+            Some(runtime::action::Type::LibraryByType(action_library_by_type)) => {
+                match &action_library_by_type.args {
+                    Some(action_library_by_type::Args::LoadNextPage(index)) => {
+                        Action::LibraryByType(ActionLibraryByType::LoadNextPage(*index as usize))
+                    }
+                    None => unimplemented!("ActionLibraryByType missing"),
+                }
+            }
             Some(runtime::action::Type::MetaDetails(action_meta_details)) => {
                 match &action_meta_details.args {
                     Some(action_meta_details::Args::MarkAsWatched(video_state)) => {
@@ -125,6 +127,9 @@ impl FromProtobuf<Action> for runtime::Action {
                 ),
                 Some(action_load::Args::LibraryWithFilters(selected)) => {
                     Action::Load(ActionLoad::LibraryWithFilters(selected.from_protobuf()))
+                }
+                Some(action_load::Args::LibraryByType(selected)) => {
+                    Action::Load(ActionLoad::LibraryByType(selected.from_protobuf()))
                 }
                 Some(action_load::Args::MetaDetails(selected)) => {
                     Action::Load(ActionLoad::MetaDetails(selected.from_protobuf()))

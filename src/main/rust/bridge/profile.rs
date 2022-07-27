@@ -28,7 +28,9 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             hardware_decoding: self.hardware_decoding,
             audio_passthrough: self.audio_passthrough,
             audio_language: self.audio_language.to_string(),
+            secondary_audio_language: self.secondary_audio_language.clone(),
             subtitles_language: self.subtitles_language.to_string(),
+            secondary_subtitles_language: self.secondary_subtitles_language.clone(),
             subtitles_size: u8::try_from(cmp::max(self.subtitles_size, 0)).unwrap_or(u8::MAX),
             subtitles_font: self.subtitles_font.to_string(),
             subtitles_bold: self.subtitles_bold,
@@ -112,6 +114,8 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             subtitles_background_color: self.subtitles_background_color.to_string(),
             subtitles_outline_color: self.subtitles_outline_color.to_string(),
             seek_time_duration: self.seek_time_duration as i64,
+            secondary_audio_language: self.secondary_audio_language.clone(),
+            secondary_subtitles_language: self.secondary_subtitles_language.clone(),
         }
     }
 }

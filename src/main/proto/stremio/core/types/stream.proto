@@ -37,7 +37,7 @@ message Stream {
 
   message External {
     optional string external_url = 1;
-    optional string android_url = 2;
+    optional string android_tv_url = 2;
   }
 
   message PlayerFrame {

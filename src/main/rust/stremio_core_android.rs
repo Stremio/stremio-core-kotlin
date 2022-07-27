@@ -81,17 +81,17 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                         let env = java_vm
                             .attach_current_thread_as_daemon()
                             .expect("JavaVM attach to current thread as deamon failed");
-                        let event_buf = event.to_protobuf(&()).encode_to_vec();
-                        let event = env
-                            .byte_array_from_slice(&event_buf)
-                            .exception_describe(&env)
-                            .expect("RuntimeEvent convert failed");
+                        let event = event
+                            .to_protobuf(&())
+                            .encode_to_vec()
+                            .to_jni_byte_array(&env);
+                        let event = env.auto_local(event);
                         let _ = env
                             .call_static_method(
                                 classes.get(&KotlinClassName::Core).unwrap(),
                                 "onRuntimeEvent",
                                 "([B)V",
-                                &[event.into()],
+                                &[event.as_obj().into()],
                             )
                             .expect("onRuntimeEvent call failed");
                         future::ready(())

@@ -13,6 +13,9 @@ pub use discover::*;
 mod library;
 pub use library::*;
 
+mod library_by_type;
+pub use library_by_type::*;
+
 mod link;
 pub use link::*;
 
