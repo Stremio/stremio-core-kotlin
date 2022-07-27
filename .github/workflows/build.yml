@@ -14,6 +14,8 @@ jobs:
         run: rustup component add rustfmt
       - name: Install clippy
         run: rustup component add clippy
+      - name: Build code
+        run: cargo build
       - name: Lint code format
         run: cargo fmt --all -- --check
       - name: Lint code
