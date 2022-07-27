@@ -3,5 +3,5 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.stremio.core</groupId>
   <artifactId>stremio-core-kotlin</artifactId>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
 </project>
