@@ -1,4 +1,6 @@
-use stremio_core::models::library_by_type::{Catalog, LibraryByType, Selectable, SelectableSort, Selected};
+use stremio_core::models::library_by_type::{
+    Catalog, LibraryByType, Selectable, SelectableSort, Selected,
+};
 use stremio_core::models::library_with_filters::Sort;
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
@@ -41,12 +43,13 @@ impl ToProtobuf<models::library_by_type::Selectable, ()> for Selectable {
 
 impl ToProtobuf<models::LibraryCatalog, ()> for Catalog {
     fn to_protobuf(&self, _args: &()) -> models::LibraryCatalog {
-        let items = self.iter().flatten().map(|item| item.to_protobuf(&())).collect::<Vec<_>>();
+        let items = self
+            .iter()
+            .flatten()
+            .map(|item| item.to_protobuf(&()))
+            .collect::<Vec<_>>();
         let r#type = items.first().map(|item| item.r#type.to_owned());
-        models::LibraryCatalog {
-            r#type,
-            items,
-        }
+        models::LibraryCatalog { r#type, items }
     }
 }
 

@@ -36,7 +36,7 @@ impl ToProtobuf<models::streaming_server::Settings, ()> for StreamingServerSetti
             app_path: self.app_path.to_string(),
             cache_root: self.cache_root.to_string(),
             server_version: self.server_version.to_string(),
-            cache_size: self.cache_size.clone(),
+            cache_size: self.cache_size,
             bt_max_connections: self.bt_max_connections,
             bt_handshake_timeout: self.bt_handshake_timeout,
             bt_request_timeout: self.bt_request_timeout,

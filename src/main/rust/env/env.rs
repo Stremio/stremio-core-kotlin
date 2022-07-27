@@ -53,9 +53,9 @@ pub enum AndroidEnv {}
 impl AndroidEnv {
     pub fn init(env: &JNIEnv, storage: JObject) -> TryEnvFuture<()> {
         *KOTLIN_CLASSES.write().expect("KOTLIN_CLASSES write failed") =
-            load_kotlin_classes(&env).expect("kotlin classes load failed");
+            load_kotlin_classes(env).expect("kotlin classes load failed");
         *STORAGE.write().expect("STORAGE write failed") =
-            Some(Storage::new(&env, storage).expect("Create Storage failed"));
+            Some(Storage::new(env, storage).expect("Create Storage failed"));
         AndroidEnv::migrate_storage_schema()
             .and_then(|_| async {
                 let installation_id = get_installation_id().await?;

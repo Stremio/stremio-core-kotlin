@@ -3,6 +3,7 @@
 mod bridge;
 mod env;
 mod model;
+#[allow(clippy::all)]
 mod protobuf;
 
 mod jni_ext;

@@ -114,7 +114,7 @@ impl
             StreamDeepLinks::from(self)
         };
         types::Stream {
-            name: self.name.to_owned().or(addon_name.cloned()),
+            name: self.name.to_owned().or_else(|| addon_name.cloned()),
             description: self.description.clone(),
             thumbnail: self.thumbnail.clone(),
             subtitles: self.subtitles.to_protobuf(&()),

@@ -1,13 +1,19 @@
 use std::ops::Range;
 
-use stremio_core::runtime::msg::{Action, ActionCatalogsWithExtra, ActionCatalogWithFilters, ActionCtx, ActionLibraryByType, ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer, ActionStreamingServer};
+use stremio_core::runtime::msg::{
+    Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx, ActionLibraryByType,
+    ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer, ActionStreamingServer,
+};
 use stremio_core::runtime::RuntimeAction;
 
 use crate::bridge::FromProtobuf;
 use crate::env::AndroidEnv;
 use crate::model::AndroidModel;
 use crate::protobuf::stremio::core::runtime;
-use crate::protobuf::stremio::core::runtime::{action_catalog_with_filters, action_catalogs_with_extra, action_ctx, action_library_by_type, action_link, action_load, action_meta_details, action_player, action_streaming_server, Field};
+use crate::protobuf::stremio::core::runtime::{
+    action_catalog_with_filters, action_catalogs_with_extra, action_ctx, action_library_by_type,
+    action_link, action_load, action_meta_details, action_player, action_streaming_server, Field,
+};
 
 impl FromProtobuf<Action> for runtime::Action {
     fn from_protobuf(&self) -> Action {
@@ -149,10 +155,7 @@ impl FromProtobuf<Action> for runtime::Action {
 impl FromProtobuf<RuntimeAction<AndroidEnv, AndroidModel>> for runtime::RuntimeAction {
     fn from_protobuf(&self) -> RuntimeAction<AndroidEnv, AndroidModel> {
         RuntimeAction {
-            field: self
-                .field
-                .and_then(|field| Field::from_i32(field))
-                .from_protobuf(),
+            field: self.field.and_then(Field::from_i32).from_protobuf(),
             action: self.action.from_protobuf(),
         }
     }

@@ -164,7 +164,7 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
                     .default_video_id
                     .is_none()
                     .as_option()
-                    .and_then(|_| self.selected.as_ref())
+                    .and(self.selected.as_ref())
                     .and_then(|selected| selected.stream_path.as_ref())
                     .and_then(|stream_path| {
                         meta_item

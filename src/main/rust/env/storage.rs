@@ -54,7 +54,7 @@ impl Storage {
                 .as_obj()
                 .get_class_name(&env)
                 .map_err(|error| EnvError::StorageReadError(error.to_string()))?;
-            match storage_result_class_name.replace(".", "/").try_into() {
+            match storage_result_class_name.replace('.', "/").try_into() {
                 Ok(KotlinClassName::Storage_Result_Ok) => {
                     let value = env
                         .call_method(
@@ -156,7 +156,7 @@ impl Storage {
                 .as_obj()
                 .get_class_name(&env)
                 .map_err(|error| EnvError::StorageReadError(error.to_string()))?;
-            match storage_result_class_name.replace(".", "/").try_into() {
+            match storage_result_class_name.replace('.', "/").try_into() {
                 Ok(KotlinClassName::Storage_Result_Ok) => Ok(()),
                 Ok(KotlinClassName::Storage_Result_Err) => {
                     let message = env

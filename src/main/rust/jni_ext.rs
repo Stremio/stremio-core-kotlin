@@ -2,11 +2,11 @@ use jni::objects::{AutoLocal, JObject};
 use jni::JNIEnv;
 
 pub trait ExceptionDescribeExt<T, E> {
-    fn exception_describe<'a>(self, env: &JNIEnv<'a>) -> Result<T, E>;
+    fn exception_describe(self, env: &JNIEnv) -> Result<T, E>;
 }
 
 impl<T> ExceptionDescribeExt<T, jni::errors::Error> for jni::errors::Result<T> {
-    fn exception_describe<'a>(self, env: &JNIEnv<'a>) -> Self {
+    fn exception_describe(self, env: &JNIEnv) -> Self {
         if self.is_err() {
             let _ = env.exception_describe();
         };

@@ -129,7 +129,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_dispatchNative(
     let runtime_action = env
         .convert_byte_array(action_protobuf)
         .ok()
-        .map(|data| Cursor::new(data))
+        .map(Cursor::new)
         .and_then(|buf| runtime::RuntimeAction::decode(buf).ok())
         .map(|action| action.from_protobuf())
         .expect("Action convert failed");

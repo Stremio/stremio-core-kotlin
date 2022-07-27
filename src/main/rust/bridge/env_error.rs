@@ -6,7 +6,7 @@ impl ToProtobuf<runtime::EnvError, ()> for EnvError {
     fn to_protobuf(&self, _args: &()) -> runtime::EnvError {
         runtime::EnvError {
             code: self.code() as i32,
-            message: self.message().to_owned(),
+            message: self.message(),
         }
     }
 }

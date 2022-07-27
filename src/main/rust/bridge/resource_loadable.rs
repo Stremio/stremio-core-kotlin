@@ -104,7 +104,7 @@ impl ToProtobuf<models::LoadableSubtitles, Ctx> for ResourceLoadable<Vec<Subtitl
             .map(|addon| {
                 let addon_name = addon.manifest.name.to_owned();
                 models::LoadableSubtitles {
-                    title: addon_name.to_owned(),
+                    title: addon_name,
                     request: self.request.to_protobuf(&()),
                     content: self.content.to_protobuf(&()),
                 }

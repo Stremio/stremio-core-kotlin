@@ -9,7 +9,7 @@ pub trait ToJNIByteArray {
 impl ToJNIByteArray for Vec<u8> {
     fn to_jni_byte_array(&self, env: &JNIEnv) -> jbyteArray {
         env.byte_array_from_slice(self)
-            .exception_describe(&env)
+            .exception_describe(env)
             .expect("protobuf conversion failed")
     }
 }
