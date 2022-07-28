@@ -117,7 +117,7 @@ impl
             name: self.name.to_owned().or_else(|| addon_name.cloned()),
             description: self.description.clone(),
             thumbnail: self.thumbnail.clone(),
-            subtitles: self.subtitles.to_protobuf(&()),
+            subtitles: self.subtitles.to_protobuf(&addon_name),
             behavior_hints: types::StreamBehaviorHints {
                 not_web_ready: self.behavior_hints.not_web_ready,
                 binge_group: self.behavior_hints.binge_group.to_owned(),
