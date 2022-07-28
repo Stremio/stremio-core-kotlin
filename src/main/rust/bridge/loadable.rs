@@ -94,14 +94,14 @@ impl
     }
 }
 
-impl ToProtobuf<models::loadable_subtitles::Content, ()>
+impl ToProtobuf<models::loadable_subtitles::Content, Option<&String>>
     for Loadable<Vec<Subtitles>, ResourceError>
 {
-    fn to_protobuf(&self, _args: &()) -> models::loadable_subtitles::Content {
+    fn to_protobuf(&self, addon_name: &Option<&String>) -> models::loadable_subtitles::Content {
         match &self {
             Loadable::Ready(ready) => {
                 models::loadable_subtitles::Content::Ready(models::Subtitles {
-                    subtitles: ready.to_protobuf(&()),
+                    subtitles: ready.to_protobuf(addon_name),
                 })
             }
             Loadable::Err(error) => models::loadable_subtitles::Content::Error(models::Error {
