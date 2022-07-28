@@ -1,6 +1,5 @@
 buildscript {
     ext {
-        stremio_core_android_profile = "release"
         kotlinVersion = "1.6.10"
         pbandkVersion = "0.14.1"
         protobufVersion = "3.21.0"
@@ -53,7 +52,7 @@ cargo {
     libname = "stremio_core_android"
     targets = ["arm", "arm64", "x86", "x86_64"]
     verbose = true
-    profile = rootProject.ext.has("stremio_core_android_profile") ? rootProject.ext.get("stremio_core_android_profile") : "debug"
+    profile = "debug"
 }
 
 dependencies {

@@ -20,6 +20,7 @@ use crate::bridge::ToProtobuf;
 use crate::env::AndroidEnv;
 
 #[derive(Model)]
+#[cfg_attr(debug_assertions, derive(Debug))]
 #[model(AndroidEnv)]
 pub struct AndroidModel {
     pub ctx: Ctx,

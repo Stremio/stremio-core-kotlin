@@ -48,6 +48,7 @@ extern "C" {
     fn __android_log_write(prio: c_int, tag: *const c_char, text: *const c_char) -> c_int;
 }
 
+#[cfg_attr(debug_assertions, derive(Debug))]
 pub enum AndroidEnv {}
 
 impl AndroidEnv {

@@ -77,6 +77,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                     );
                     let java_vm = env.get_java_vm().expect("JavaVM get failed");
                     AndroidEnv::exec_concurrent(rx.for_each(move |event| {
+                        AndroidEnv::log(format!("onRuntimeEvent: {:#?}", event));
                         let classes = AndroidEnv::kotlin_classes().unwrap();
                         let env = java_vm
                             .attach_current_thread_as_daemon()
@@ -133,6 +134,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_dispatchNative(
         .and_then(|buf| runtime::RuntimeAction::decode(buf).ok())
         .map(|action| action.from_protobuf())
         .expect("Action convert failed");
+    AndroidEnv::log(format!("dispatch: {:#?}", runtime_action));
     let runtime = RUNTIME.read().expect("RUNTIME read failed");
     let runtime = runtime
         .as_ref()
@@ -154,6 +156,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateNative(
         .ok()
         .and_then(|result| Field::from_i32(result).from_protobuf())
         .expect("AndroidModelField convert failed");
+    AndroidEnv::log(format!("getState: {:#?}", field));
     let runtime = RUNTIME.read().expect("RUNTIME read failed");
     let runtime = runtime
         .as_ref()
@@ -180,6 +183,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
         Ok(stream) => stream,
         Err(_) => return JObject::null().into_inner(),
     };
+    AndroidEnv::log(format!("decodeStream: {:#?}", stream));
     stream
         .to_protobuf(&(None, None, None))
         .encode_to_vec()
