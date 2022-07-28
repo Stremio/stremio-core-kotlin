@@ -41,12 +41,12 @@ jobs:
       - name: Lint code
         run: cargo clippy --all -- -D warnings
       - name: Build aar
-        run: ./gradlew assembleRelease && ./gradlew assembleRelease
+        run: ./gradlew assembleDebug && ./gradlew assembleDebug
       - name: Upload build artifacts
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/outputs/aar/stremio-core-kotlin-release.aar
+          file: build/outputs/aar/stremio-core-kotlin-debug.aar
           asset_name: stremio-core-kotlin.aar
           tag: ${{ github.ref }}
           overwrite: true
