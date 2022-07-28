@@ -84,7 +84,7 @@ impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
             .map(|addon| {
                 let addon_name = &addon.manifest.name;
                 models::LoadableStreams {
-                    title: addon_name.to_string(),
+                    title: addon_name.to_owned(),
                     request: self.request.to_protobuf(&()),
                     content: self
                         .content
@@ -102,11 +102,11 @@ impl ToProtobuf<models::LoadableSubtitles, Ctx> for ResourceLoadable<Vec<Subtitl
             .iter()
             .find(|addon| addon.transport_url == self.request.base)
             .map(|addon| {
-                let addon_name = addon.manifest.name.to_owned();
+                let addon_name = &addon.manifest.name;
                 models::LoadableSubtitles {
-                    title: addon_name,
+                    title: addon_name.to_owned(),
                     request: self.request.to_protobuf(&()),
-                    content: self.content.to_protobuf(&()),
+                    content: self.content.to_protobuf(&(Some(addon_name))),
                 }
             })
             .unwrap()

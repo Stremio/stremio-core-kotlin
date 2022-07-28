@@ -12,11 +12,12 @@ impl FromProtobuf<Subtitles> for types::Subtitle {
     }
 }
 
-impl ToProtobuf<types::Subtitle, ()> for Subtitles {
-    fn to_protobuf(&self, _args: &()) -> types::Subtitle {
+impl ToProtobuf<types::Subtitle, Option<&String>> for Subtitles {
+    fn to_protobuf(&self, addon_name: &Option<&String>) -> types::Subtitle {
         types::Subtitle {
             lang: self.lang.to_string(),
             url: self.url.to_string(),
+            name: addon_name.cloned(),
         }
     }
 }
