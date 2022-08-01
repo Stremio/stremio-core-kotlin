@@ -11,9 +11,7 @@ impl ToProtobuf<runtime::Event, ()> for Event {
     fn to_protobuf(&self, _args: &()) -> runtime::Event {
         let event = match self {
             Event::ProfilePushedToStorage { uid } => runtime::event::Type::ProfilePushedToStorage(
-                runtime::event::ProfilePushedToStorage {
-                    uid: uid.clone().unwrap(),
-                },
+                runtime::event::ProfilePushedToStorage { uid: uid.clone() },
             ),
             Event::LibraryItemsPushedToStorage { ids } => {
                 runtime::event::Type::LibraryItemsPushedToStorage(
@@ -22,12 +20,12 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             }
             Event::UserPulledFromAPI { uid } => {
                 runtime::event::Type::UserPulledFromApi(runtime::event::UserPulledFromApi {
-                    uid: uid.clone().unwrap(),
+                    uid: uid.clone(),
                 })
             }
             Event::UserPushedToAPI { uid } => {
                 runtime::event::Type::UserPushedToApi(runtime::event::UserPushedToApi {
-                    uid: uid.clone().unwrap(),
+                    uid: uid.clone(),
                 })
             }
             Event::AddonsPulledFromAPI { transport_urls } => {
@@ -47,7 +45,7 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             }
             Event::UserLoggedOut { uid } => {
                 runtime::event::Type::UserLoggedOut(runtime::event::UserLoggedOut {
-                    uid: uid.clone().unwrap(),
+                    uid: uid.clone(),
                 })
             }
             Event::SessionDeleted { auth_key } => {

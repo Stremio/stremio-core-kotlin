@@ -32,16 +32,16 @@ message Event {
   }
 
   message ProfilePushedToStorage {
-    required string uid = 1;
+    optional string uid = 1;
   }
   message LibraryItemsPushedToStorage {
     repeated string ids = 1;
   }
   message UserPulledFromAPI {
-    required string uid = 1;
+    optional string uid = 1;
   }
   message UserPushedToAPI {
-    required string uid = 1;
+    optional string uid = 1;
   }
   message AddonsPulledFromAPI {
     repeated string transport_urls = 1;
@@ -62,7 +62,7 @@ message Event {
     required stremio.core.types.AuthRequest auth_request = 1;
   }
   message UserLoggedOut {
-    required string uid = 1;
+    optional string uid = 1;
   }
   message SessionDeleted {
     required string auth_key = 1;
