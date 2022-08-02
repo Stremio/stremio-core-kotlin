@@ -10,7 +10,8 @@ use crate::protobuf::stremio::core::models;
 
 impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPreview>> {
     fn to_protobuf(&self, ctx: &Ctx) -> models::LoadablePage {
-        ctx.profile
+        let title = ctx
+            .profile
             .addons
             .iter()
             .find(|addon| addon.transport_url == self.request.base)
@@ -23,7 +24,7 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
                     .map(|manifest_catalog| (addon, manifest_catalog))
             })
             .map(|(addon, manifest_catalog)| {
-                let title = format!(
+                format!(
                     "{} - {} {}",
                     &addon.manifest.name,
                     &manifest_catalog
@@ -31,14 +32,14 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
                         .as_ref()
                         .unwrap_or(&manifest_catalog.id),
                     &self.request.path.r#type
-                );
-                models::LoadablePage {
-                    title,
-                    request: self.request.to_protobuf(&()),
-                    content: self.content.to_protobuf(&(ctx, &self.request)),
-                }
+                )
             })
-            .unwrap()
+            .unwrap_or_default();
+        models::LoadablePage {
+            title,
+            request: self.request.to_protobuf(&()),
+            content: self.content.to_protobuf(&(ctx, &self.request)),
+        }
     }
 }
 
@@ -49,24 +50,24 @@ impl ToProtobuf<models::LoadableMetaItem, (&Ctx, Option<&LibraryItem>, Option<&W
         &self,
         (ctx, library_item, watched): &(&Ctx, Option<&LibraryItem>, Option<&WatchedBitField>),
     ) -> models::LoadableMetaItem {
-        ctx.profile
+        let addon_name = ctx
+            .profile
             .addons
             .iter()
             .find(|addon| addon.transport_url == self.request.base)
-            .map(|addon| {
-                let addon_name = &addon.manifest.name;
-                models::LoadableMetaItem {
-                    title: addon_name.to_string(),
-                    request: self.request.to_protobuf(&()),
-                    content: self.content.to_protobuf(&(
-                        *library_item,
-                        *watched,
-                        Some(addon_name),
-                        &self.request,
-                    )),
-                }
-            })
-            .unwrap()
+            .map(|addon| &addon.manifest.name)
+            .cloned()
+            .unwrap_or_default();
+        models::LoadableMetaItem {
+            title: addon_name.to_string(),
+            request: self.request.to_protobuf(&()),
+            content: self.content.to_protobuf(&(
+                *library_item,
+                *watched,
+                Some(&addon_name),
+                &self.request,
+            )),
+        }
     }
 }
 
@@ -77,38 +78,38 @@ impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
         &self,
         (ctx, meta_request): &(&Ctx, Option<&ResourceRequest>),
     ) -> models::LoadableStreams {
-        ctx.profile
+        let addon_name = ctx
+            .profile
             .addons
             .iter()
             .find(|addon| addon.transport_url == self.request.base)
-            .map(|addon| {
-                let addon_name = &addon.manifest.name;
-                models::LoadableStreams {
-                    title: addon_name.to_owned(),
-                    request: self.request.to_protobuf(&()),
-                    content: self
-                        .content
-                        .to_protobuf(&(addon_name, &self.request, *meta_request)),
-                }
-            })
-            .unwrap()
+            .map(|addon| &addon.manifest.name)
+            .cloned()
+            .unwrap_or_default();
+        models::LoadableStreams {
+            title: addon_name.to_owned(),
+            request: self.request.to_protobuf(&()),
+            content: self
+                .content
+                .to_protobuf(&(&addon_name, &self.request, *meta_request)),
+        }
     }
 }
 
 impl ToProtobuf<models::LoadableSubtitles, Ctx> for ResourceLoadable<Vec<Subtitles>> {
     fn to_protobuf(&self, ctx: &Ctx) -> models::LoadableSubtitles {
-        ctx.profile
+        let addon_name = ctx
+            .profile
             .addons
             .iter()
             .find(|addon| addon.transport_url == self.request.base)
-            .map(|addon| {
-                let addon_name = &addon.manifest.name;
-                models::LoadableSubtitles {
-                    title: addon_name.to_owned(),
-                    request: self.request.to_protobuf(&()),
-                    content: self.content.to_protobuf(&(Some(addon_name))),
-                }
-            })
-            .unwrap()
+            .map(|addon| &addon.manifest.name)
+            .cloned()
+            .unwrap_or_default();
+        models::LoadableSubtitles {
+            title: addon_name.to_owned(),
+            request: self.request.to_protobuf(&()),
+            content: self.content.to_protobuf(&(Some(&addon_name))),
+        }
     }
 }
