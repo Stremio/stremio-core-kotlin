@@ -21,11 +21,11 @@ allprojects {
 
 ```gradle
 dependencies {
-    implementation 'com.github.Stremio:stremio-core-kotlin:1.0.11-debug'
+    implementation 'com.github.Stremio:stremio-core-kotlin:1.0.12-debug'
 }
 ```
 
 ## Manual
 
-[Download](https://jitpack.io/com/github/stremio/stremio-core-kotlin/1.0.11-debug/stremio-core-kotlin-1.0.11-debug.aar) aar and link
+[Download](https://jitpack.io/com/github/stremio/stremio-core-kotlin/1.0.12-debug/stremio-core-kotlin-1.0.12-debug.aar) aar and link
 it manually
