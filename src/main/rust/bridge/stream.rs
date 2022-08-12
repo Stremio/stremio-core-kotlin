@@ -1,7 +1,9 @@
 use hex::FromHex;
 use stremio_core::deep_links::StreamDeepLinks;
 use stremio_core::types::addon::ResourceRequest;
-use stremio_core::types::resource::{Stream, StreamBehaviorHints, StreamSource};
+use stremio_core::types::resource::{
+    Stream, StreamBehaviorHints, StreamProxyHeaders, StreamSource,
+};
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::types;
@@ -34,6 +36,15 @@ impl FromProtobuf<StreamSource> for types::stream::Source {
     }
 }
 
+impl FromProtobuf<StreamProxyHeaders> for types::StreamProxyHeaders {
+    fn from_protobuf(&self) -> StreamProxyHeaders {
+        StreamProxyHeaders {
+            request: self.request.to_owned(),
+            response: self.response.to_owned(),
+        }
+    }
+}
+
 impl FromProtobuf<Stream> for types::Stream {
     fn from_protobuf(&self) -> Stream {
         Stream {
@@ -46,7 +57,7 @@ impl FromProtobuf<Stream> for types::Stream {
                 not_web_ready: self.behavior_hints.not_web_ready,
                 binge_group: self.behavior_hints.binge_group.to_owned(),
                 country_whitelist: Some(self.behavior_hints.country_whitelist.to_owned()),
-                headers: self.behavior_hints.headers.to_owned(),
+                proxy_headers: self.behavior_hints.proxy_headers.from_protobuf(),
                 other: Default::default(),
             },
         }
@@ -90,6 +101,15 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
     }
 }
 
+impl ToProtobuf<types::StreamProxyHeaders, ()> for StreamProxyHeaders {
+    fn to_protobuf(&self, _args: &()) -> types::StreamProxyHeaders {
+        types::StreamProxyHeaders {
+            request: self.request.to_owned(),
+            response: self.response.to_owned(),
+        }
+    }
+}
+
 impl
     ToProtobuf<
         types::Stream,
@@ -121,8 +141,12 @@ impl
             behavior_hints: types::StreamBehaviorHints {
                 not_web_ready: self.behavior_hints.not_web_ready,
                 binge_group: self.behavior_hints.binge_group.to_owned(),
-                country_whitelist: vec![],
-                headers: Default::default(),
+                country_whitelist: self
+                    .behavior_hints
+                    .country_whitelist
+                    .to_owned()
+                    .unwrap_or_default(),
+                proxy_headers: self.behavior_hints.proxy_headers.to_protobuf(&()),
             },
             deep_links: types::StreamDeepLinks {
                 player: deep_links.player,
