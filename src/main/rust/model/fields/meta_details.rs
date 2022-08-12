@@ -153,6 +153,11 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
                         .find(|catalog| catalog.content.as_ref().map_or(false, |x| x.is_loading()))
                 }
             });
+        let streams = if self.meta_streams.is_empty() {
+            &self.streams
+        } else {
+            &self.meta_streams
+        };
         let meta_request = meta_item.map(|item| &item.request);
         let title = meta_item
             .and_then(|meta_item| meta_item.content.as_ref())
@@ -192,7 +197,7 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
                 self.library_item.as_ref(),
                 self.watched.as_ref(),
             )),
-            streams: self.streams.to_protobuf(&(ctx, meta_request)),
+            streams: streams.to_protobuf(&(ctx, meta_request)),
         }
     }
 }
