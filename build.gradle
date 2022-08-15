@@ -33,12 +33,12 @@ apply plugin: "org.mozilla.rust-android-gradle.rust-android"
 apply plugin: "com.google.protobuf"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     ndkVersion "21.0.6113669"
 
     defaultConfig {
-        minSdkVersion 23
-        targetSdkVersion 31
+        minSdkVersion 21
+        targetSdkVersion 32
         versionCode 14
         versionName "1.0.13"
     }
