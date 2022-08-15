@@ -1944,7 +1944,7 @@ dependencies = [
 
 [[package]]
 name = "stremio-core-android"
-version = "1.0.13"
+version = "1.0.14"
 dependencies = [
  "auto_impl",
  "base64 0.13.0",
