@@ -44,7 +44,7 @@ android {
     }
 
     kotlinOptions {
-        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 }
 
@@ -57,7 +57,7 @@ cargo {
 }
 
 dependencies {
-    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "androidx.core:core-ktx:1.8.0"
     implementation "pro.streem.pbandk:pbandk-runtime:$pbandkVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 }
