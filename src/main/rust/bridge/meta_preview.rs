@@ -1,9 +1,12 @@
+use chrono::Duration;
 use stremio_core::deep_links::MetaItemDeepLinks;
 use stremio_core::models::ctx::Ctx;
+use stremio_core::runtime::Env;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{MetaItemBehaviorHints, MetaItemPreview, PosterShape};
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
+use crate::env::AndroidEnv;
 use crate::protobuf::stremio::core::types;
 
 impl FromProtobuf<MetaItemBehaviorHints> for types::MetaItemBehaviorHints {
@@ -85,6 +88,11 @@ impl ToProtobuf<types::MetaItemPreview, (&Ctx, &ResourceRequest)> for MetaItemPr
                 .items
                 .get(&self.id)
                 .map(|library_item| !library_item.removed)
+                .unwrap_or_default(),
+            in_cinema: self
+                .released
+                .filter(|_released| self.r#type == "movie")
+                .map(|released| released + Duration::days(30) > AndroidEnv::now())
                 .unwrap_or_default(),
         }
     }
