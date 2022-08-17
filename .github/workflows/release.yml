@@ -34,12 +34,6 @@ jobs:
         run: rustup target add i686-linux-android
       - name: Add x86_64 target
         run: rustup target add x86_64-linux-android
-      - name: Build code
-        run: cargo build --release
-      - name: Lint code format
-        run: cargo fmt --all -- --check
-      - name: Lint code
-        run: cargo clippy --all -- -D warnings
       - name: Build aar
         run: ./gradlew assembleRelease && ./gradlew assembleRelease
       - name: Upload build artifacts
