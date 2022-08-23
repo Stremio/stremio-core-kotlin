@@ -28,7 +28,12 @@ message Event {
     LibraryItemAdded library_item_added = 17;
     LibraryItemRemoved library_item_removed = 18;
     LibraryItemRewinded library_item_rewinded = 19;
-    Error error = 20;
+    PlayerPlaying player_playing = 20;
+    PlayerStopped player_stopped = 21;
+    PlayerEnded player_ended = 22;
+    TraktPlaying trakt_playing = 23;
+    TraktPaused trakt_paused = 24;
+    Error error = 25;
   }
 
   message ProfilePushedToStorage {
@@ -90,6 +95,21 @@ message Event {
   }
   message LibraryItemRewinded {
     required string id = 1;
+  }
+  message PlayerPlaying {
+    // Empty
+  }
+  message PlayerStopped {
+    // Empty
+  }
+  message PlayerEnded {
+    // Empty
+  }
+  message TraktPlaying {
+    // Empty
+  }
+  message TraktPaused {
+    // Empty
   }
   message Error {
     required string error = 1;

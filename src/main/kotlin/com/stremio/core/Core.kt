@@ -40,6 +40,8 @@ object Core {
 
     external fun getStateNative(field: Field): ByteArray
 
+    external fun sendNextAnalyticsBatch()
+
     fun initialize(storage: Storage): EnvError? {
         return initializeNative(storage)
             ?.let { EnvError.decodeFromByteArray(it) }

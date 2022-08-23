@@ -205,7 +205,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_stremio_core_Core_sendNextAnalyticsBatch(
-    env: JNIEnv,
+    _env: JNIEnv,
     _class: JClass,
 ) {
     AndroidEnv::exec_concurrent(AndroidEnv::send_next_analytics_batch());

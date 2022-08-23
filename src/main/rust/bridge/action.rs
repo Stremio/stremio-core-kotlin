@@ -113,12 +113,17 @@ impl FromProtobuf<Action> for runtime::Action {
                 }
             }
             Some(runtime::action::Type::Player(action_player)) => match &action_player.args {
-                Some(action_player::Args::UpdateLibraryItemState(item_state)) => {
-                    Action::Player(ActionPlayer::UpdateLibraryItemState {
+                Some(action_player::Args::TimeChanged(item_state)) => {
+                    Action::Player(ActionPlayer::TimeChanged {
                         time: item_state.time,
                         duration: item_state.duration,
+                        device: item_state.device.to_owned(),
                     })
                 }
+                Some(action_player::Args::PausedChanged(paused)) => {
+                    Action::Player(ActionPlayer::PausedChanged { paused: *paused })
+                }
+                Some(action_player::Args::Ended(_args)) => Action::Player(ActionPlayer::Ended {}),
                 Some(action_player::Args::PushToLibrary(_args)) => {
                     Action::Player(ActionPlayer::PushToLibrary)
                 }

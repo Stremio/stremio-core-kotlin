@@ -27,12 +27,6 @@ message AuthRequest {
   message Register {
     required string email = 1;
     required string password = 2;
-    required GDPRConsentRequest gdpr_consent_request = 3;
+    required stremio.core.types.GDPRConsent gdpr_consent = 3;
   }
-}
-
-message GDPRConsentRequest {
-  required stremio.core.types.GDPRConsent gdpr_consent = 1;
-  required google.protobuf.Timestamp time = 2;
-  required string from = 3;
 }
