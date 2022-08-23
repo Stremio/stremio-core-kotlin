@@ -1,4 +1,4 @@
 install:
   - wget https://github.com/Stremio/stremio-core-kotlin/releases/download/$VERSION/stremio-core-kotlin.aar
   - FILE="-Dfile=stremio-core-kotlin.aar"
-  - mvn install:install-file $FILE -DgroupId=com.stremio.core -DartifactId=stremio-core-kotlin -Dversion=1.0.15 -Dpackaging=aar -DgeneratePom=true
+  - mvn install:install-file $FILE -DgroupId=com.stremio.core -DartifactId=stremio-core-kotlin -Dversion=1.0.16 -Dpackaging=aar -DgeneratePom=true
