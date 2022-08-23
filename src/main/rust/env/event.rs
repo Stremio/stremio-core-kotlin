@@ -1,6 +1,5 @@
-use stremio_core::runtime::msg::{Action, Event};
+use stremio_core::runtime::msg::Event;
 
 pub enum AndroidEvent {
-    CoreAction(Box<Action>),
     CoreEvent(Event),
 }
