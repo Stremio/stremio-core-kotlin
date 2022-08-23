@@ -185,3 +185,11 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
         .encode_to_vec()
         .to_jni_byte_array(&env)
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_stremio_core_Core_sendNextAnalyticsBatch(
+    env: JNIEnv,
+    _class: JClass,
+) {
+    AndroidEnv::exec_concurrent(AndroidEnv::send_next_analytics_batch());
+}

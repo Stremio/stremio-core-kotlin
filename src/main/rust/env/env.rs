@@ -133,7 +133,7 @@ impl AndroidEnv {
         };
         ANALYTICS.emit(name, data, &model.ctx, &model.streaming_server, path);
     }
-    fn send_next_analytics_batch() -> impl Future<Output = ()> {
+    pub fn send_next_analytics_batch() -> impl Future<Output = ()> {
         ANALYTICS.send_next_batch()
     }
     pub fn random_buffer(len: usize) -> Vec<u8> {
