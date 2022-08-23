@@ -108,6 +108,21 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     settings: settings.to_protobuf(&()),
                 })
             }
+            Event::PlayerPlaying { .. } => {
+                runtime::event::Type::PlayerPlaying(runtime::event::PlayerPlaying {})
+            }
+            Event::PlayerStopped { .. } => {
+                runtime::event::Type::PlayerStopped(runtime::event::PlayerStopped {})
+            }
+            Event::PlayerEnded { .. } => {
+                runtime::event::Type::PlayerEnded(runtime::event::PlayerEnded {})
+            }
+            Event::TraktPlaying { .. } => {
+                runtime::event::Type::TraktPlaying(runtime::event::TraktPlaying {})
+            }
+            Event::TraktPaused { .. } => {
+                runtime::event::Type::TraktPaused(runtime::event::TraktPaused {})
+            }
             Event::Error { error, source } => {
                 let error = match error {
                     CtxError::API(error) => error.message.to_owned(),

@@ -13,6 +13,7 @@ impl FromProtobuf<GDPRConsent> for types::GdprConsent {
             tos: self.tos,
             privacy: self.privacy,
             marketing: self.marketing,
+            from: self.from.clone(),
         }
     }
 }
@@ -69,6 +70,7 @@ impl ToProtobuf<types::GdprConsent, ()> for GDPRConsent {
             tos: self.tos,
             privacy: self.privacy,
             marketing: self.marketing,
+            from: self.from.clone(),
         }
     }
 }

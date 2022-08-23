@@ -1,18 +1,22 @@
-use crate::env::{fetch, KotlinClassName, Storage};
+use crate::env::{fetch, AndroidEvent, KotlinClassName, Storage};
+use crate::model::AndroidModel;
 use chrono::{DateTime, Utc};
-use futures::{future, Future, TryFutureExt};
+use futures::{Future, TryFutureExt};
 use http::Request;
 use jni::objects::{GlobalRef, JObject};
 use jni::JNIEnv;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use std::collections::HashMap;
 #[cfg(debug_assertions)]
 use std::ffi::CString;
 use std::os::raw::{c_char, c_int};
 use std::sync::{LockResult, RwLock, RwLockReadGuard};
+use stremio_analytics::Analytics;
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::streaming_server::StreamingServer;
+use stremio_core::runtime::msg::Event;
 use stremio_core::runtime::{Env, EnvError, EnvFuture, EnvFutureExt, TryEnvFuture};
 use strum::IntoEnumIterator;
 
@@ -41,11 +45,30 @@ lazy_static! {
     );
     static ref KOTLIN_CLASSES: RwLock<HashMap<KotlinClassName, GlobalRef>> = Default::default();
     static ref STORAGE: RwLock<Option<Storage>> = Default::default();
+    static ref ANALYTICS: Analytics<AndroidEnv> = Default::default();
     static ref INSTALLATION_ID: RwLock<Option<String>> = Default::default();
+    static ref VISIT_ID: String = hex::encode(AndroidEnv::random_buffer(10));
 }
 
 extern "C" {
     fn __android_log_write(prio: c_int, tag: *const c_char, text: *const c_char) -> c_int;
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct AnalyticsContext {
+    app_type: String,
+    app_version: String,
+    server_version: Option<String>,
+    shell_version: Option<String>,
+    system_language: Option<String>,
+    app_language: String,
+    #[serde(rename = "installationID")]
+    installation_id: String,
+    #[serde(rename = "visitID")]
+    visit_id: String,
+    #[serde(rename = "url")]
+    path: String,
 }
 
 pub enum AndroidEnv {}
@@ -75,6 +98,43 @@ impl AndroidEnv {
             .read()
             .expect("SEQUENTIAL_RUNTIME read failed")
             .block_on(future)
+    }
+    pub fn emit_to_analytics(event: &AndroidEvent, model: &AndroidModel, path: &str) {
+        let (name, data) = match event {
+            AndroidEvent::CoreEvent(Event::PlayerPlaying { load_time, context }) => (
+                "playerPlaying".to_owned(),
+                json!({
+                    "loadTime": load_time,
+                    "player": context
+                }),
+            ),
+            AndroidEvent::CoreEvent(Event::PlayerStopped { context }) => {
+                ("playerStopped".to_owned(), json!({ "player": context }))
+            }
+            AndroidEvent::CoreEvent(Event::PlayerEnded {
+                context,
+                is_binge_enabled,
+                is_playing_next_video,
+            }) => (
+                "playerEnded".to_owned(),
+                json!({
+                   "player": context,
+                   "isBingeEnabled": is_binge_enabled,
+                   "isPlayingNextVideo": is_playing_next_video
+                }),
+            ),
+            AndroidEvent::CoreEvent(Event::TraktPlaying { context }) => {
+                ("traktPlaying".to_owned(), json!({ "player": context }))
+            }
+            AndroidEvent::CoreEvent(Event::TraktPaused { context }) => {
+                ("traktPaused".to_owned(), json!({ "player": context }))
+            }
+            _ => return,
+        };
+        ANALYTICS.emit(name, data, &model.ctx, &model.streaming_server, path);
+    }
+    pub fn send_next_analytics_batch() -> impl Future<Output = ()> {
+        ANALYTICS.send_next_batch()
     }
     pub fn random_buffer(len: usize) -> Vec<u8> {
         let mut buffer = vec![0u8; len];
@@ -117,14 +177,34 @@ impl Env for AndroidEnv {
         Utc::now()
     }
     fn flush_analytics() -> EnvFuture<()> {
-        future::ready(()).boxed_env()
+        ANALYTICS.flush().boxed_env()
     }
     fn analytics_context(
-        _ctx: &Ctx,
-        _streaming_server: &StreamingServer,
-        _path: &str,
+        ctx: &Ctx,
+        streaming_server: &StreamingServer,
+        path: &str,
     ) -> serde_json::Value {
-        serde_json::Value::Null
+        serde_json::to_value(AnalyticsContext {
+            app_type: "android-tv".to_owned(),
+            app_version: "TODO".to_owned(),
+            server_version: streaming_server
+                .settings
+                .as_ref()
+                .ready()
+                .map(|settings| settings.server_version.to_owned()),
+            shell_version: None,
+            system_language: Some("TODO".to_owned()),
+            app_language: ctx.profile.settings.interface_language.to_owned(),
+            installation_id: INSTALLATION_ID
+                .read()
+                .expect("installation id read failed")
+                .as_ref()
+                .expect("installation id not available")
+                .to_owned(),
+            visit_id: VISIT_ID.to_owned(),
+            path: path.to_owned(),
+        })
+        .unwrap()
     }
     #[cfg(debug_assertions)]
     fn log(message: String) {

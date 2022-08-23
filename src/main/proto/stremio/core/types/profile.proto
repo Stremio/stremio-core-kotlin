@@ -49,4 +49,5 @@ message GDPRConsent {
   required bool tos = 1;
   required bool privacy = 2;
   required bool marketing = 3;
+  optional string from = 4;
 }

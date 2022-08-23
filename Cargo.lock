@@ -1768,6 +1768,7 @@ version = "1.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "678b5a069e50bf00ecd22d0cd8ddf7c236f68581b03db652061ed5eb13a312ff"
 dependencies = [
+ "chrono",
  "serde",
  "serde_with_macros",
 ]
@@ -1896,7 +1897,7 @@ dependencies = [
 [[package]]
 name = "stremio-analytics"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#738d07ffd2e82a99f093bc81432eb6700665e898"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#15a52a91a3bb1a759fd9ecdb51428de4bd046c2a"
 dependencies = [
  "derivative",
  "enclose",
@@ -1909,7 +1910,7 @@ dependencies = [
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#738d07ffd2e82a99f093bc81432eb6700665e898"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#15a52a91a3bb1a759fd9ecdb51428de4bd046c2a"
 dependencies = [
  "anyhow",
  "base64 0.13.0",
@@ -1953,6 +1954,7 @@ dependencies = [
  "cfg-if 0.1.10",
  "chrono",
  "either",
+ "enclose",
  "flate2",
  "futures",
  "getrandom",
@@ -1987,7 +1989,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#738d07ffd2e82a99f093bc81432eb6700665e898"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#15a52a91a3bb1a759fd9ecdb51428de4bd046c2a"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2006,7 +2008,7 @@ checksum = "f85866d77a26e83d3774dfcbb3871540b3e5e4fc753e26bdd5e8e4aa3bb9f9be"
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#738d07ffd2e82a99f093bc81432eb6700665e898"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#15a52a91a3bb1a759fd9ecdb51428de4bd046c2a"
 dependencies = [
  "base64 0.13.0",
  "flate2",

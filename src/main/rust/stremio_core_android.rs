@@ -4,6 +4,7 @@ use std::os::raw::c_void;
 use std::panic;
 use std::sync::RwLock;
 
+use enclose::enclose;
 use futures::{future, StreamExt};
 use jni::objects::{JClass, JObject};
 use jni::sys::{jbyteArray, jint, jobject, JNI_VERSION_1_6};
@@ -14,13 +15,13 @@ use stremio_core::constants::{
     LIBRARY_RECENT_STORAGE_KEY, LIBRARY_STORAGE_KEY, PROFILE_STORAGE_KEY,
 };
 use stremio_core::models::common::Loadable;
-use stremio_core::runtime::{Env, EnvError, Runtime};
+use stremio_core::runtime::{Env, EnvError, Runtime, RuntimeEvent};
 use stremio_core::types::library::LibraryBucket;
 use stremio_core::types::profile::Profile;
 use stremio_core::types::resource::Stream;
 
 use crate::bridge::{FromProtobuf, ToJNIByteArray, ToProtobuf};
-use crate::env::{AndroidEnv, KotlinClassName};
+use crate::env::{AndroidEnv, AndroidEvent, KotlinClassName};
 use crate::jni_ext::ExceptionDescribeExt;
 use crate::model::AndroidModel;
 use crate::protobuf::stremio::core::runtime;
@@ -77,6 +78,22 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                     );
                     let java_vm = env.get_java_vm().expect("JavaVM get failed");
                     AndroidEnv::exec_concurrent(rx.for_each(move |event| {
+                        if let RuntimeEvent::CoreEvent(event) = &event {
+                            AndroidEnv::exec_concurrent(enclose!((event) async move {
+                                let runtime = RUNTIME.read().expect("runtime read failed");
+                                let runtime = runtime
+                                    .as_ref()
+                                    .expect("runtime is not ready")
+                                    .as_ref()
+                                    .expect("runtime is not ready");
+                                let model = runtime.model().expect("model read failed");
+                                AndroidEnv::emit_to_analytics(
+                                    &AndroidEvent::CoreEvent(event.to_owned()),
+                                    &model,
+                                    "TODO"
+                                );
+                            }));
+                        };
                         let classes = AndroidEnv::kotlin_classes().unwrap();
                         let env = java_vm
                             .attach_current_thread_as_daemon()
@@ -184,4 +201,12 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
         .to_protobuf(&(None, None, None))
         .encode_to_vec()
         .to_jni_byte_array(&env)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_stremio_core_Core_sendNextAnalyticsBatch(
+    _env: JNIEnv,
+    _class: JClass,
+) {
+    AndroidEnv::exec_concurrent(AndroidEnv::send_next_analytics_batch());
 }

@@ -8,12 +8,15 @@ import "google/protobuf/empty.proto";
 
 message ActionPlayer {
   oneof args {
-    PlayerItemState update_library_item_state = 1;
-    google.protobuf.Empty push_to_library = 2;
+    PlayerItemState time_changed = 1;
+    bool paused_changed = 2;
+    google.protobuf.Empty ended = 3;
+    google.protobuf.Empty push_to_library = 4;
   }
 
   message PlayerItemState {
     required uint64 time = 1;
     required uint64 duration = 2;
+    required string device = 3;
   }
 }
