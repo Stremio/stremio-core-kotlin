@@ -123,6 +123,16 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             Event::TraktPaused { .. } => {
                 runtime::event::Type::TraktPaused(runtime::event::TraktPaused {})
             }
+            Event::MagnetParsed { magnet } => {
+                runtime::event::Type::MagnetParsed(runtime::event::MagnetParsed {
+                    magnet: magnet.to_protobuf(&()),
+                })
+            }
+            Event::TorrentParsed { torrent } => {
+                runtime::event::Type::TorrentParsed(runtime::event::TorrentParsed {
+                    torrent: torrent.to_owned(),
+                })
+            }
             Event::Error { error, source } => {
                 let error = match error {
                     CtxError::API(error) => error.message.to_owned(),

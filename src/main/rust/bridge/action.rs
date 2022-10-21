@@ -3,6 +3,7 @@ use std::ops::Range;
 use stremio_core::runtime::msg::{
     Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx, ActionLibraryByType,
     ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer, ActionStreamingServer,
+    CreateTorrentArgs,
 };
 use stremio_core::runtime::RuntimeAction;
 
@@ -12,7 +13,8 @@ use crate::model::AndroidModel;
 use crate::protobuf::stremio::core::runtime;
 use crate::protobuf::stremio::core::runtime::{
     action_catalog_with_filters, action_catalogs_with_extra, action_ctx, action_library_by_type,
-    action_link, action_load, action_meta_details, action_player, action_streaming_server, Field,
+    action_link, action_load, action_meta_details, action_player, action_streaming_server,
+    create_torrent_args, Field,
 };
 
 impl FromProtobuf<Action> for runtime::Action {
@@ -90,8 +92,11 @@ impl FromProtobuf<Action> for runtime::Action {
             }
             Some(runtime::action::Type::MetaDetails(action_meta_details)) => {
                 match &action_meta_details.args {
-                    Some(action_meta_details::Args::MarkAsWatched(video_state)) => {
-                        Action::MetaDetails(ActionMetaDetails::MarkAsWatched(
+                    Some(action_meta_details::Args::MarkAsWatched(watched)) => {
+                        Action::MetaDetails(ActionMetaDetails::MarkAsWatched(*watched))
+                    }
+                    Some(action_meta_details::Args::MarkVideoAsWatched(video_state)) => {
+                        Action::MetaDetails(ActionMetaDetails::MarkVideoAsWatched(
                             video_state.video_id.to_owned(),
                             video_state.is_watched,
                         ))
@@ -108,6 +113,21 @@ impl FromProtobuf<Action> for runtime::Action {
                         Action::StreamingServer(ActionStreamingServer::UpdateSettings(
                             settings.from_protobuf(),
                         ))
+                    }
+                    Some(action_streaming_server::Args::CreateTorrent(create_args)) => {
+                        match &create_args.args {
+                            Some(create_torrent_args::Args::File(file)) => {
+                                Action::StreamingServer(ActionStreamingServer::CreateTorrent(
+                                    CreateTorrentArgs::File(file.to_owned()),
+                                ))
+                            }
+                            Some(create_torrent_args::Args::Magnet(magnet)) => {
+                                Action::StreamingServer(ActionStreamingServer::CreateTorrent(
+                                    CreateTorrentArgs::Magnet(magnet.from_protobuf()),
+                                ))
+                            }
+                            None => unimplemented!("CreateTorrentArgs missing"),
+                        }
                     }
                     None => unimplemented!("ActionStreamingServer missing"),
                 }

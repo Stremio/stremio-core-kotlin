@@ -53,6 +53,11 @@ impl ToProtobuf<models::StreamingServer, ()> for StreamingServer {
             selected: self.selected.to_protobuf(&()),
             settings: self.settings.to_protobuf(&()),
             base_url: self.base_url.to_protobuf(&()),
+            torrent: self
+                .torrent
+                .to_owned()
+                .map(|torrent| torrent.1)
+                .map(|path| path.to_protobuf(&())),
         }
     }
 }

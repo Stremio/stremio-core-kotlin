@@ -33,7 +33,9 @@ message Event {
     PlayerEnded player_ended = 22;
     TraktPlaying trakt_playing = 23;
     TraktPaused trakt_paused = 24;
-    Error error = 25;
+    MagnetParsed magnet_parsed = 25;
+    TorrentParsed torrent_parsed = 26;
+    Error error = 100;
   }
 
   message ProfilePushedToStorage {
@@ -110,6 +112,12 @@ message Event {
   }
   message TraktPaused {
     // Empty
+  }
+  message MagnetParsed {
+    required string magnet = 1;
+  }
+  message TorrentParsed {
+    required bytes torrent = 1;
   }
   message Error {
     required string error = 1;
