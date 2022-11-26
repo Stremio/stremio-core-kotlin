@@ -23,10 +23,12 @@ impl FromProtobuf<Settings> for types::profile::Settings {
         Settings {
             interface_language: self.interface_language.to_string(),
             streaming_server_url: self.streaming_server_url.from_protobuf(),
+            player_type: self.player_type.clone(),
             binge_watching: self.binge_watching,
             play_in_background: self.play_in_background,
-            play_in_external_player: self.play_in_external_player,
             hardware_decoding: self.hardware_decoding,
+            auto_frame_rate_matching: self.auto_frame_rate_matching,
+            next_video_notification_duration: self.next_video_notification_duration as u32,
             audio_passthrough: self.audio_passthrough,
             audio_language: self.audio_language.to_string(),
             secondary_audio_language: self.secondary_audio_language.clone(),
@@ -103,7 +105,6 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             streaming_server_url: self.streaming_server_url.to_string(),
             binge_watching: self.binge_watching,
             play_in_background: self.play_in_background,
-            play_in_external_player: self.play_in_external_player,
             hardware_decoding: self.hardware_decoding,
             audio_passthrough: self.audio_passthrough,
             audio_language: self.audio_language.to_string(),
@@ -118,6 +119,9 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             seek_time_duration: self.seek_time_duration as i64,
             secondary_audio_language: self.secondary_audio_language.clone(),
             secondary_subtitles_language: self.secondary_subtitles_language.clone(),
+            player_type: self.player_type.clone(),
+            auto_frame_rate_matching: self.auto_frame_rate_matching,
+            next_video_notification_duration: self.next_video_notification_duration as i32,
         }
     }
 }

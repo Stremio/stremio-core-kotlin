@@ -53,6 +53,11 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     auth_key: auth_key.0.to_owned(),
                 })
             }
+            Event::TraktAddonFetched { uid } => {
+                runtime::event::Type::TraktAddonFetched(runtime::event::TraktAddonFetched {
+                    uid: uid.clone(),
+                })
+            }
             Event::AddonInstalled { transport_url, id } => {
                 runtime::event::Type::AddonInstalled(runtime::event::AddonInstalled {
                     transport_url: transport_url.to_string(),
@@ -86,9 +91,10 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     id: id.to_owned(),
                 })
             }
-            Event::LibrarySyncWithAPIPlanned { plan } => {
+            Event::LibrarySyncWithAPIPlanned { uid, plan } => {
                 runtime::event::Type::LibrarySyncWithApiPlanned(
                     runtime::event::LibrarySyncWithApiPlanned {
+                        uid: uid.clone(),
                         plan: plan.to_protobuf(&()),
                     },
                 )

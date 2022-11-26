@@ -14,7 +14,6 @@ message Profile {
     required string streaming_server_url = 2;
     required bool binge_watching = 3;
     required bool play_in_background = 4;
-    required bool play_in_external_player = 5;
     required bool hardware_decoding = 6;
     required bool audio_passthrough = 7;
     required string audio_language = 8;
@@ -29,6 +28,9 @@ message Profile {
     required int64 seek_time_duration = 17;
     optional string secondary_audio_language = 18;
     optional string secondary_subtitles_language = 19;
+    optional string player_type = 20;
+    required bool auto_frame_rate_matching = 21;
+    required int32 next_video_notification_duration = 22;
   }
 }
 
