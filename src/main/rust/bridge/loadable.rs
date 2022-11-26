@@ -1,9 +1,10 @@
+use stremio_core::deep_links::MetaItemDeepLinks;
 use stremio_core::models::common::{Loadable, ResourceError};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::link::LinkError;
 use stremio_core::models::streaming_server::Settings;
 use stremio_core::runtime::EnvError;
-use stremio_core::types::addon::ResourceRequest;
+use stremio_core::types::addon::{ResourcePath, ResourceRequest};
 use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
 use stremio_core::types::library::LibraryItem;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
@@ -172,6 +173,24 @@ impl ToProtobuf<models::LoadableAuthKey, ()> for Loadable<LinkAuthKey, LinkError
         };
         models::LoadableAuthKey {
             content: Some(content),
+        }
+    }
+}
+
+impl ToProtobuf<models::LoadableTorrent, ()> for Loadable<ResourcePath, EnvError> {
+    fn to_protobuf(&self, _args: &()) -> models::LoadableTorrent {
+        let content = match &self {
+            Loadable::Ready(ready) => {
+                let deeplinks = MetaItemDeepLinks::from(ready).to_protobuf(&());
+                models::loadable_torrent::Deeplinks::Ready(deeplinks)
+            }
+            Loadable::Err(error) => models::loadable_torrent::Deeplinks::Error(models::Error {
+                message: error.to_string(),
+            }),
+            Loadable::Loading => models::loadable_torrent::Deeplinks::Loading(models::Loading {}),
+        };
+        models::LoadableTorrent {
+            deeplinks: Some(content),
         }
     }
 }

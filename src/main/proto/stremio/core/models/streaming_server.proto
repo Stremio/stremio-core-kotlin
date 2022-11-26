@@ -5,11 +5,13 @@ package stremio.core.models;
 option java_package = "com.stremio.core.models";
 
 import "stremio/core/models/loadable.proto";
+import "stremio/core/types/meta_item.proto";
 
 message StreamingServer {
   required Selected selected = 1;
   required LoadableSettings settings = 2;
   required LoadableBaseUrl base_url = 3;
+  optional LoadableTorrent torrent = 4;
 
   message Selected {
     required string transport_url = 1;
@@ -38,8 +40,16 @@ message LoadableSettings {
 
 message LoadableBaseUrl {
   oneof content {
-    Loading loading = 5;
-    Error error = 6;
-    string ready = 7;
+    Loading loading = 1;
+    Error error = 2;
+    string ready = 3;
+  }
+}
+
+message LoadableTorrent {
+  oneof deeplinks {
+    Loading loading = 1;
+    Error error = 2;
+    stremio.core.types.MetaItemDeepLinks ready = 3;
   }
 }

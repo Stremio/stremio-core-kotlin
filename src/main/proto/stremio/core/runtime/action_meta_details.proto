@@ -8,7 +8,8 @@ import "google/protobuf/empty.proto";
 
 message ActionMetaDetails {
   oneof args {
-    VideoState mark_as_watched = 1;
+    bool mark_as_watched = 1;
+    VideoState mark_video_as_watched = 2;
   }
 
   message VideoState {

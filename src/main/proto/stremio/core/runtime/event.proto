@@ -21,19 +21,22 @@ message Event {
     UserAuthenticated user_authenticated = 10;
     UserLoggedOut user_logged_out = 11;
     SessionDeleted session_deleted = 12;
-    AddonInstalled addon_installed = 13;
-    AddonUpgraded addon_upgraded = 14;
-    AddonUninstalled addon_uninstalled = 15;
-    SettingsUpdated settings_updated = 16;
-    LibraryItemAdded library_item_added = 17;
-    LibraryItemRemoved library_item_removed = 18;
-    LibraryItemRewinded library_item_rewinded = 19;
-    PlayerPlaying player_playing = 20;
-    PlayerStopped player_stopped = 21;
-    PlayerEnded player_ended = 22;
-    TraktPlaying trakt_playing = 23;
-    TraktPaused trakt_paused = 24;
-    Error error = 25;
+    TraktAddonFetched trakt_addon_fetched = 13;
+    AddonInstalled addon_installed = 14;
+    AddonUpgraded addon_upgraded = 15;
+    AddonUninstalled addon_uninstalled = 16;
+    SettingsUpdated settings_updated = 17;
+    LibraryItemAdded library_item_added = 18;
+    LibraryItemRemoved library_item_removed = 19;
+    LibraryItemRewinded library_item_rewinded = 20;
+    PlayerPlaying player_playing = 21;
+    PlayerStopped player_stopped = 22;
+    PlayerEnded player_ended = 23;
+    TraktPlaying trakt_playing = 24;
+    TraktPaused trakt_paused = 25;
+    MagnetParsed magnet_parsed = 26;
+    TorrentParsed torrent_parsed = 27;
+    Error error = 100;
   }
 
   message ProfilePushedToStorage {
@@ -55,7 +58,8 @@ message Event {
     repeated string transport_urls = 1;
   }
   message LibrarySyncWithAPIPlanned {
-    required PlanPair plan = 1;
+    optional string uid = 1;
+    required PlanPair plan = 2;
   }
   message LibraryItemsPushedToAPI {
     repeated string ids = 1;
@@ -71,6 +75,9 @@ message Event {
   }
   message SessionDeleted {
     required string auth_key = 1;
+  }
+  message TraktAddonFetched {
+    optional string uid = 1;
   }
   message AddonInstalled {
     required string transport_url = 1;
@@ -110,6 +117,12 @@ message Event {
   }
   message TraktPaused {
     // Empty
+  }
+  message MagnetParsed {
+    required string magnet = 1;
+  }
+  message TorrentParsed {
+    required bytes torrent = 1;
   }
   message Error {
     required string error = 1;

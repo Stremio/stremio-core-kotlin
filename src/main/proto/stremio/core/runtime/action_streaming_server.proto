@@ -11,5 +11,13 @@ message ActionStreamingServer {
   oneof args {
     google.protobuf.Empty reload = 1;
     stremio.core.models.StreamingServer.Settings update_settings = 2;
+    CreateTorrentArgs create_torrent = 3;
+  }
+}
+
+message CreateTorrentArgs {
+  oneof args {
+    bytes file = 1;
+    string magnet = 2;
   }
 }
