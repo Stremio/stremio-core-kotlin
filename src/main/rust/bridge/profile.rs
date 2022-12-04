@@ -28,7 +28,11 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             play_in_background: self.play_in_background,
             hardware_decoding: self.hardware_decoding,
             auto_frame_rate_matching: self.auto_frame_rate_matching,
-            next_video_notification_duration: self.next_video_notification_duration as u32,
+            next_video_notification_duration: u32::try_from(cmp::max(
+                self.next_video_notification_duration,
+                0,
+            ))
+            .unwrap_or(u32::MAX),
             audio_passthrough: self.audio_passthrough,
             audio_language: self.audio_language.to_string(),
             secondary_audio_language: self.secondary_audio_language.clone(),
@@ -85,6 +89,9 @@ impl ToProtobuf<types::User, ()> for User {
             fb_id: self.fb_id.clone(),
             avatar: self.avatar.clone(),
             gdpr_consent: self.gdpr_consent.to_protobuf(&()),
+            date_registered: self.date_registered.to_protobuf(&()),
+            last_modified: self.last_modified.to_protobuf(&()),
+            premium_expire: self.premium_expire.to_protobuf(&()),
         }
     }
 }
@@ -121,7 +128,7 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             secondary_subtitles_language: self.secondary_subtitles_language.clone(),
             player_type: self.player_type.clone(),
             auto_frame_rate_matching: self.auto_frame_rate_matching,
-            next_video_notification_duration: self.next_video_notification_duration as i32,
+            next_video_notification_duration: self.next_video_notification_duration as i64,
         }
     }
 }

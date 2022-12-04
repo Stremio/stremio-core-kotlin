@@ -4,6 +4,8 @@ package stremio.core.types;
 
 option java_package = "com.stremio.core.types.profile";
 
+import "google/protobuf/timestamp.proto";
+
 message Profile {
   optional Auth auth = 1;
   // repeated Descriptor addons = 2;
@@ -30,7 +32,7 @@ message Profile {
     optional string secondary_subtitles_language = 19;
     optional string player_type = 20;
     required bool auto_frame_rate_matching = 21;
-    required int32 next_video_notification_duration = 22;
+    required int64 next_video_notification_duration = 22;
   }
 }
 
@@ -45,6 +47,9 @@ message User{
   optional string fb_id = 3;
   optional string avatar = 4;
   required GDPRConsent gdpr_consent = 5;
+  required google.protobuf.Timestamp date_registered = 6;
+  required google.protobuf.Timestamp last_modified = 7;
+  optional google.protobuf.Timestamp premium_expire = 8;
 }
 
 message GDPRConsent {
