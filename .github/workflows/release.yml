@@ -4,6 +4,10 @@ on:
   release:
     types: [published]
 
+env:
+  RUST_VERSION: stable
+  NODE_VERSION: 12
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -11,31 +15,37 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: "11"
           distribution: "adopt"
+
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
+
       - name: Setup Android NDK
         run: yes | sdkmanager "ndk;21.0.6113669" >/dev/null
-      - name: Set default rust toolchain
-        run: rustup default 1.61.0
-      - name: Install rustfmt
-        run: rustup component add rustfmt
-      - name: Install clippy
-        run: rustup component add clippy
+
+      - name: Set default Rust version - ${{ env.RUST_VERSION }}
+        run: rustup default ${{ env.RUST_VERSION }}
+
       - name: Add armv7 target
         run: rustup target add armv7-linux-androideabi
+
       - name: Add aarch64 target
         run: rustup target add aarch64-linux-android
+
       - name: Add i686 target
         run: rustup target add i686-linux-android
+
       - name: Add x86_64 target
         run: rustup target add x86_64-linux-android
+
       - name: Build aar
         run: ./gradlew assembleRelease && ./gradlew assembleRelease
+
       - name: Upload build artifacts
         uses: svenstaro/upload-release-action@v2
         with:
