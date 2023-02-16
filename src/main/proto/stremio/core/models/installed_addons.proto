@@ -1,0 +1,31 @@
+syntax = "proto2";
+
+package stremio.core.models;
+
+option java_package = "com.stremio.core.models";
+
+import "stremio/core/types/manifest.proto";
+
+message InstalledAddonsWithFilters {
+  optional Selected selected = 1;
+  required Selectable selectable = 2;
+  repeated stremio.core.types.DescriptorPreview catalog = 3;
+
+  message InstalledAddonsRequest {
+    required string type = 1;
+  }
+
+  message Selected {
+    required InstalledAddonsRequest request = 1;
+  }
+
+  message SelectableType {
+    required string type = 1;
+    required bool selected = 2;
+    required InstalledAddonsRequest request = 3;
+  }
+
+  message Selectable {
+    repeated SelectableType types = 1;
+  }
+}
