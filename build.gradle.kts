@@ -87,12 +87,12 @@ protobuf {
     generatedFilesBaseDir = "$projectDir/src"
 
     protoc {
-        artifact = "com.google.protobuf:protoc:$protobufVersion"
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
     }
 
     plugins {
         id("pbandk") {
-            artifact = "pro.streem.pbandk:protoc-gen-pbandk-jvm:$pbandkVersion:jvm8@jar"
+            artifact = "pro.streem.pbandk:protoc-gen-pbandk-jvm:${pbandkVersion}:jvm8@jar"
         }
     }
 
