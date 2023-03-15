@@ -1,6 +1,13 @@
 import com.google.protobuf.gradle.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
 plugins {
     kotlin("multiplatform") version "1.8.0"
     id("com.android.library") version "7.2.2"
@@ -35,13 +42,6 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
 kotlin {
     ios()
     android()
@@ -49,7 +49,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                // implementation("...")
+                implementation("pro.streem.pbandk:pbandk-runtime:${pbandkVersion}")
             }
         }
         val commonTest by getting {
@@ -59,7 +59,6 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation("pro.streem.pbandk:pbandk-runtime:${pbandkVersion}")
                 implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
             }
         }
@@ -97,19 +96,12 @@ protobuf {
     }
 
     generateProtoTasks {
-        ofSourceSet("androidMain").forEach { task ->
-            task.builtins {
-                remove("java")
-            }
+        all().forEach { task ->
             task.plugins {
                 id("pbandk")
             }
         }
     }
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
 }
 
 cargo {
@@ -122,6 +114,10 @@ cargo {
     } else {
         "debug"
     }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
 }
 
 tasks.whenTaskAdded {
