@@ -121,8 +121,8 @@ cargo {
     libname = "stremio_core_android"
     targets = listOf("arm", "arm64", "x86", "x86_64")
     verbose = true
-    profile = if (rootProject.extra.has("stremio_core_android_profile")) {
-        rootProject.extra.get("stremio_core_android_profile") as String
+    profile = if (rootProject.extra.has("stremioCoreAndroidProfile")) {
+        rootProject.extra.get("stremioCoreAndroidProfile") as String
     } else {
         "debug"
     }
