@@ -129,7 +129,7 @@ cargo {
 }
 
 tasks.whenTaskAdded {
-    if (name == "javaPreCompileDebug" || name == "javaPreCompileRelease") {
+    if (name == "javaPreCompileDebug" || name == "javaPreCompileRelease" || name == "mergeDebugJniLibFolders" || name == "mergeReleaseJniLibFolders") {
         dependsOn("cargoBuild")
     }
 }
