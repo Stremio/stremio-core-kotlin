@@ -1,6 +1,9 @@
 import com.google.protobuf.gradle.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+group = "com.github.Stremio"
+version = "2.0.0"
+
 allprojects {
     repositories {
         google()
@@ -10,6 +13,7 @@ allprojects {
 
 plugins {
     kotlin("multiplatform") version "1.8.0"
+    id("maven-publish")
     id("com.android.library") version "7.2.2"
     id("org.mozilla.rust-android-gradle.rust-android") version "0.9.0"
     id("com.google.protobuf") version "0.8.18"
@@ -49,6 +53,7 @@ buildscript {
 kotlin {
     ios()
     android()
+    jvm() // TODO: Can't import stremio-core-kotlin into other projects without this target defined. This may be a bug with KMM or the project or perhaps a misunderstanding, either way we should investigate this further.
 
     sourceSets {
         val commonMain by getting {
@@ -68,6 +73,7 @@ kotlin {
             }
         }
         val androidTest by getting
+        val jvmTest by getting
     }
 }
 
