@@ -51,10 +51,13 @@ buildscript {
 }
 
 kotlin {
-    ios()
-    android()
-    jvm() // TODO: Can't import stremio-core-kotlin into other projects without this target defined. This may be a bug with KMM or the project or perhaps a misunderstanding, either way we should investigate this further.
+    // ios()
 
+    android {
+        publishLibraryVariants("release", "debug")
+    }
+
+    @Suppress("UNUSED_VARIABLE")
     sourceSets {
         val commonMain by getting {
             kotlin.srcDir(protosPath)
@@ -73,7 +76,6 @@ kotlin {
             }
         }
         val androidTest by getting
-        val jvmTest by getting
     }
 }
 
@@ -91,6 +93,17 @@ android {
             manifest.srcFile("src/androidMain/AndroidManifest.xml")
         }
     }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = true
+        }
+
+        getByName("debug") {
+            isJniDebuggable = true
+        }
+    }
+
 }
 
 protosProject.tasks
