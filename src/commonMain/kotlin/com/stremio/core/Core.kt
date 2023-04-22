@@ -6,7 +6,7 @@ import com.stremio.core.runtime.msg.Action
 import com.stremio.core.types.resource.Stream
 import pbandk.Message
 
-interface EventListener {
+fun interface EventListener {
     fun onEvent(event: RuntimeEvent)
 }
 
