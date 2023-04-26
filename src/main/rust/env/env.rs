@@ -230,6 +230,6 @@ async fn get_installation_id() -> Result<String, EnvError> {
     let installation_id = AndroidEnv::get_storage::<String>(INSTALLATION_ID_STORAGE_KEY).await?;
     let installation_id =
         installation_id.unwrap_or_else(|| hex::encode(AndroidEnv::random_buffer(10)));
-    let _ = AndroidEnv::set_storage(INSTALLATION_ID_STORAGE_KEY, Some(&installation_id)).await?;
+    AndroidEnv::set_storage(INSTALLATION_ID_STORAGE_KEY, Some(&installation_id)).await?;
     Ok(installation_id)
 }

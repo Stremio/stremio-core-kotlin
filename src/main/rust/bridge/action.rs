@@ -25,6 +25,18 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Ctx(ActionCtx::Authenticate(auth_request.from_protobuf()))
                 }
                 Some(action_ctx::Args::Logout(_args)) => Action::Ctx(ActionCtx::Logout),
+                Some(action_ctx::Args::InstallAddon(descriptor)) => {
+                    Action::Ctx(ActionCtx::InstallAddon(descriptor.from_protobuf()))
+                }
+                Some(action_ctx::Args::InstallTraktAddon(_args)) => {
+                    Action::Ctx(ActionCtx::InstallTraktAddon)
+                }
+                Some(action_ctx::Args::UpgradeAddon(descriptor)) => {
+                    Action::Ctx(ActionCtx::UpgradeAddon(descriptor.from_protobuf()))
+                }
+                Some(action_ctx::Args::UninstallAddon(descriptor)) => {
+                    Action::Ctx(ActionCtx::UninstallAddon(descriptor.from_protobuf()))
+                }
                 Some(action_ctx::Args::UpdateSettings(settings)) => {
                     Action::Ctx(ActionCtx::UpdateSettings(settings.from_protobuf()))
                 }
@@ -150,12 +162,21 @@ impl FromProtobuf<Action> for runtime::Action {
                 None => unimplemented!("ActionLink missing"),
             },
             Some(runtime::action::Type::Load(action_load)) => match &action_load.args {
+                Some(action_load::Args::AddonDetails(selected)) => {
+                    Action::Load(ActionLoad::AddonDetails(selected.from_protobuf()))
+                }
                 Some(action_load::Args::CatalogsWithExtra(selected)) => {
                     Action::Load(ActionLoad::CatalogsWithExtra(selected.from_protobuf()))
                 }
                 Some(action_load::Args::CatalogWithFilters(selected)) => Action::Load(
                     ActionLoad::CatalogWithFilters(Some(selected.from_protobuf())),
                 ),
+                Some(action_load::Args::AddonsWithFilters(selected)) => {
+                    Action::Load(match selected.request.base.is_empty() {
+                        true => ActionLoad::InstalledAddonsWithFilters(selected.from_protobuf()),
+                        _ => ActionLoad::CatalogWithFilters(Some(selected.from_protobuf())),
+                    })
+                }
                 Some(action_load::Args::LibraryWithFilters(selected)) => {
                     Action::Load(ActionLoad::LibraryWithFilters(selected.from_protobuf()))
                 }

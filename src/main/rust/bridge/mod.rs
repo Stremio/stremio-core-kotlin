@@ -31,6 +31,9 @@ pub use list::*;
 mod loadable;
 pub use loadable::*;
 
+mod manifest;
+pub use manifest::*;
+
 mod meta_preview;
 pub use meta_preview::*;
 

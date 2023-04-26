@@ -14,6 +14,8 @@ impl FromProtobuf<AndroidModelField> for Field {
             Field::Board => AndroidModelField::Board,
             Field::Search => AndroidModelField::Search,
             Field::MetaDetails => AndroidModelField::MetaDetails,
+            Field::Addons => AndroidModelField::Addons,
+            Field::AddonDetails => AndroidModelField::AddonDetails,
             Field::StreamingServer => AndroidModelField::StreamingServer,
             Field::Player => AndroidModelField::Player,
         }
@@ -32,6 +34,8 @@ impl ToProtobuf<Field, ()> for AndroidModelField {
             AndroidModelField::Board => Field::Board,
             AndroidModelField::Search => Field::Search,
             AndroidModelField::MetaDetails => Field::MetaDetails,
+            AndroidModelField::Addons => Field::Addons,
+            AndroidModelField::AddonDetails => Field::AddonDetails,
             AndroidModelField::StreamingServer => Field::StreamingServer,
             AndroidModelField::Player => Field::Player,
         }
