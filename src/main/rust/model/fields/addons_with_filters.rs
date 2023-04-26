@@ -58,15 +58,16 @@ impl ToProtobuf<models::AddonsWithFilters, Ctx> for AddonsWithFilters {
                 .map(|selected| models::addons_with_filters::Selected {
                     request: selected.request.to_protobuf(&()),
                 })
-                .or(self.installed_addons.selected.to_protobuf(&()))
-                .or(self
-                    .installed_addons
-                    .selectable
-                    .types
-                    .first()
-                    .map(|selectable_type| models::addons_with_filters::Selected {
-                        request: selectable_type.request.to_protobuf(&()),
-                    })),
+                .or_else(|| self.installed_addons.selected.to_protobuf(&()))
+                .or_else(|| {
+                    self.installed_addons
+                        .selectable
+                        .types
+                        .first()
+                        .map(|selectable_type| models::addons_with_filters::Selected {
+                            request: selectable_type.request.to_protobuf(&()),
+                        })
+                }),
             selectable: models::addons_with_filters::Selectable {
                 types: match &self.remote_addons.selected.is_some() {
                     true => self
