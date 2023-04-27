@@ -271,6 +271,7 @@ impl ToProtobuf<types::Descriptor, Ctx> for Descriptor {
             flags: self.flags.to_protobuf(&()),
             installed: installed_addon.is_some(),
             upgradeable: installed_addon
+                .filter(|addon| !addon.flags.protected)
                 .map(|addon| addon.manifest.version != self.manifest.version)
                 .unwrap_or_default(),
         }
