@@ -95,7 +95,9 @@ impl AndroidModel {
                 self.meta_details.to_protobuf(&self.ctx).encode_to_vec()
             }
             AndroidModelField::Addons => self.addons.to_protobuf(&self.ctx).encode_to_vec(),
-            AndroidModelField::AddonDetails => self.addon_details.to_protobuf(&()).encode_to_vec(),
+            AndroidModelField::AddonDetails => {
+                self.addon_details.to_protobuf(&self.ctx).encode_to_vec()
+            }
             AndroidModelField::StreamingServer => {
                 self.streaming_server.to_protobuf(&()).encode_to_vec()
             }

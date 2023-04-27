@@ -215,11 +215,11 @@ impl ToProtobuf<models::loadable_addon_catalog::Content, Ctx>
     }
 }
 
-impl ToProtobuf<models::loadable_descriptor::Content, ()> for Loadable<Descriptor, EnvError> {
-    fn to_protobuf(&self, _args: &()) -> models::loadable_descriptor::Content {
+impl ToProtobuf<models::loadable_descriptor::Content, Ctx> for Loadable<Descriptor, EnvError> {
+    fn to_protobuf(&self, ctx: &Ctx) -> models::loadable_descriptor::Content {
         match &self {
             Loadable::Ready(ready) => {
-                models::loadable_descriptor::Content::Ready(ready.to_protobuf(&()))
+                models::loadable_descriptor::Content::Ready(ready.to_protobuf(ctx))
             }
             Loadable::Err(error) => models::loadable_descriptor::Content::Error(models::Error {
                 message: error.to_string(),

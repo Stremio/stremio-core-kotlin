@@ -258,12 +258,21 @@ impl ToProtobuf<types::DescriptorPreview, Ctx> for DescriptorPreview {
     }
 }
 
-impl ToProtobuf<types::Descriptor, ()> for Descriptor {
-    fn to_protobuf(&self, _args: &()) -> types::Descriptor {
+impl ToProtobuf<types::Descriptor, Ctx> for Descriptor {
+    fn to_protobuf(&self, ctx: &Ctx) -> types::Descriptor {
+        let installed_addon = ctx
+            .profile
+            .addons
+            .iter()
+            .find(|addon| addon.transport_url == self.transport_url);
         types::Descriptor {
             manifest: self.manifest.to_protobuf(&()),
             transport_url: self.transport_url.to_protobuf(&()),
             flags: self.flags.to_protobuf(&()),
+            installed: installed_addon.is_some(),
+            upgradeable: installed_addon
+                .map(|addon| addon.manifest.version != self.manifest.version)
+                .unwrap_or_default(),
         }
     }
 }

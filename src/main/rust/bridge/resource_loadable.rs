@@ -123,11 +123,11 @@ impl ToProtobuf<models::LoadableAddonCatalog, Ctx> for &ResourceLoadable<Vec<Des
     }
 }
 
-impl ToProtobuf<models::LoadableDescriptor, ()> for DescriptorLoadable {
-    fn to_protobuf(&self, _args: &()) -> models::LoadableDescriptor {
+impl ToProtobuf<models::LoadableDescriptor, Ctx> for DescriptorLoadable {
+    fn to_protobuf(&self, ctx: &Ctx) -> models::LoadableDescriptor {
         models::LoadableDescriptor {
             transport_url: self.transport_url.to_string(),
-            content: Some(self.content.to_protobuf(&())),
+            content: Some(self.content.to_protobuf(ctx)),
         }
     }
 }

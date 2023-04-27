@@ -8,6 +8,8 @@ message Descriptor {
   required Manifest manifest = 1;
   required string transport_url = 2;
   required DescriptorFlags flags = 3;
+  required bool installed = 4;
+  required bool upgradeable = 5;
 }
 
 message DescriptorPreview {
