@@ -1,3 +1,9 @@
+mod addon_detail;
+pub use addon_detail::*;
+
+mod addons_with_filters;
+pub use addons_with_filters::*;
+
 mod catalogs_with_extra;
 pub use catalogs_with_extra::*;
 

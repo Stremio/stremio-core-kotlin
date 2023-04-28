@@ -4,7 +4,7 @@ use stremio_core::models::ctx::Ctx;
 use stremio_core::models::link::LinkError;
 use stremio_core::models::streaming_server::Settings;
 use stremio_core::runtime::EnvError;
-use stremio_core::types::addon::{ResourcePath, ResourceRequest};
+use stremio_core::types::addon::{Descriptor, DescriptorPreview, ResourcePath, ResourceRequest};
 use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
 use stremio_core::types::library::LibraryItem;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
@@ -191,6 +191,40 @@ impl ToProtobuf<models::LoadableTorrent, ()> for Loadable<ResourcePath, EnvError
         };
         models::LoadableTorrent {
             deeplinks: Some(content),
+        }
+    }
+}
+
+impl ToProtobuf<models::loadable_addon_catalog::Content, Ctx>
+    for Loadable<Vec<DescriptorPreview>, ResourceError>
+{
+    fn to_protobuf(&self, ctx: &Ctx) -> models::loadable_addon_catalog::Content {
+        match &self {
+            Loadable::Ready(ready) => {
+                models::loadable_addon_catalog::Content::Ready(models::Addons {
+                    items: ready.to_protobuf(ctx),
+                })
+            }
+            Loadable::Err(error) => models::loadable_addon_catalog::Content::Error(models::Error {
+                message: error.to_string(),
+            }),
+            Loadable::Loading => {
+                models::loadable_addon_catalog::Content::Loading(models::Loading {})
+            }
+        }
+    }
+}
+
+impl ToProtobuf<models::loadable_descriptor::Content, Ctx> for Loadable<Descriptor, EnvError> {
+    fn to_protobuf(&self, ctx: &Ctx) -> models::loadable_descriptor::Content {
+        match &self {
+            Loadable::Ready(ready) => {
+                models::loadable_descriptor::Content::Ready(ready.to_protobuf(ctx))
+            }
+            Loadable::Err(error) => models::loadable_descriptor::Content::Error(models::Error {
+                message: error.to_string(),
+            }),
+            Loadable::Loading => models::loadable_descriptor::Content::Loading(models::Loading {}),
         }
     }
 }

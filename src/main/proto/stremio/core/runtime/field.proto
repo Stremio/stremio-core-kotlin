@@ -14,6 +14,8 @@ enum Field {
   Board = 6;
   Search = 7;
   MetaDetails = 8;
-  StreamingServer = 9;
-  Player = 10;
+  Addons = 9;
+  AddonDetails = 10;
+  StreamingServer = 11;
+  Player = 12;
 }
