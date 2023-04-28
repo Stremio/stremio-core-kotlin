@@ -9,7 +9,9 @@ message Descriptor {
   required string transport_url = 2;
   required DescriptorFlags flags = 3;
   required bool installed = 4;
-  required bool upgradeable = 5;
+  required bool installable = 5;
+  required bool upgradeable = 6;
+  required bool uninstallable = 7;
 }
 
 message DescriptorPreview {

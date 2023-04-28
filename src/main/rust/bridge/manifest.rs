@@ -270,10 +270,15 @@ impl ToProtobuf<types::Descriptor, Ctx> for Descriptor {
             transport_url: self.transport_url.to_protobuf(&()),
             flags: self.flags.to_protobuf(&()),
             installed: installed_addon.is_some(),
+            installable: installed_addon.is_none()
+                && !self.manifest.behavior_hints.configuration_required,
             upgradeable: installed_addon
                 .filter(|addon| !addon.flags.protected)
                 .map(|addon| addon.manifest.version != self.manifest.version)
                 .unwrap_or_default(),
+            uninstallable: installed_addon
+                .filter(|addon| !addon.flags.protected)
+                .is_some(),
         }
     }
 }
