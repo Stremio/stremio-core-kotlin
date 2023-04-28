@@ -176,7 +176,7 @@ impl Env for AndroidEnv {
     fn now() -> DateTime<Utc> {
         Utc::now()
     }
-    fn flush_analytics() -> EnvFuture<()> {
+    fn flush_analytics() -> EnvFuture<'static, ()> {
         ANALYTICS.flush().boxed_env()
     }
     fn analytics_context(

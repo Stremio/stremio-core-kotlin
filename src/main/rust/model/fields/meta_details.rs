@@ -63,7 +63,7 @@ impl
             released: self.released.to_protobuf(&()),
             overview: self.overview.clone(),
             thumbnail: self.thumbnail.clone(),
-            streams: self.streams.to_protobuf(&(*addon_name, None, None)),
+            streams: self.streams.to_protobuf(&(None, *addon_name, None, None)),
             series_info: self.series_info.to_protobuf(&()),
             upcoming: self
                 .released
@@ -116,7 +116,7 @@ impl
             trailer_streams: self
                 .preview
                 .trailer_streams
-                .to_protobuf(&(None, None, None)),
+                .to_protobuf(&(None, None, None, None)),
             videos: self
                 .videos
                 .to_protobuf(&(*library_item, *watched, *addon_name)),

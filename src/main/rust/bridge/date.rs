@@ -5,7 +5,7 @@ use crate::protobuf::google::protobuf::Timestamp;
 
 impl FromProtobuf<DateTime<Utc>> for Timestamp {
     fn from_protobuf(&self) -> DateTime<Utc> {
-        Utc.timestamp(self.seconds, self.nanos as u32)
+        Utc.timestamp_opt(self.seconds, self.nanos as u32).unwrap()
     }
 }
 

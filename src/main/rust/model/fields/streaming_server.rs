@@ -1,6 +1,8 @@
 use stremio_core::models::streaming_server::{
-    Selected as StreamingServerSelected, Settings as StreamingServerSettings, StreamingServer,
+    PlaybackDevice, Selected as StreamingServerSelected, Settings as StreamingServerSettings,
+    StatisticsRequest, StreamingServer,
 };
+use stremio_core::types::streaming_server::Statistics;
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::models;
@@ -22,10 +24,54 @@ impl FromProtobuf<StreamingServerSettings> for models::streaming_server::Setting
     }
 }
 
+impl FromProtobuf<StatisticsRequest> for models::streaming_server::StatisticsRequest {
+    fn from_protobuf(&self) -> StatisticsRequest {
+        StatisticsRequest {
+            info_hash: self.info_hash.to_string(),
+            file_idx: self.file_index as u16,
+        }
+    }
+}
+
 impl ToProtobuf<models::streaming_server::Selected, ()> for StreamingServerSelected {
     fn to_protobuf(&self, _args: &()) -> models::streaming_server::Selected {
         models::streaming_server::Selected {
             transport_url: self.transport_url.to_string(),
+        }
+    }
+}
+
+impl ToProtobuf<models::streaming_server::PlaybackDevice, ()> for PlaybackDevice {
+    fn to_protobuf(&self, _args: &()) -> models::streaming_server::PlaybackDevice {
+        models::streaming_server::PlaybackDevice {
+            id: self.id.to_string(),
+            name: self.id.to_string(),
+            r#type: self.r#type.to_string(),
+        }
+    }
+}
+
+impl ToProtobuf<models::streaming_server::Statistics, ()> for Statistics {
+    fn to_protobuf(&self, _args: &()) -> models::streaming_server::Statistics {
+        models::streaming_server::Statistics {
+            name: self.name.to_string(),
+            info_hash: self.info_hash.to_string(),
+            download_speed: self.download_speed,
+            upload_speed: self.upload_speed,
+            downloaded: self.downloaded as i64,
+            uploaded: self.uploaded as i64,
+            unchoked: self.unchoked as i64,
+            peers: self.peers as i64,
+            queued: self.queued as i64,
+            unique: self.unique as i64,
+            connection_tries: self.connection_tries as i64,
+            peer_search_running: self.peer_search_running,
+            stream_len: self.stream_len as i64,
+            stream_name: self.stream_name.to_string(),
+            stream_progress: self.stream_progress,
+            swarm_connections: self.swarm_connections as i64,
+            swarm_paused: self.swarm_paused,
+            swarm_size: self.swarm_size as i64,
         }
     }
 }
@@ -58,6 +104,8 @@ impl ToProtobuf<models::StreamingServer, ()> for StreamingServer {
                 .to_owned()
                 .map(|torrent| torrent.1)
                 .map(|path| path.to_protobuf(&())),
+            playback_devices: self.playback_devices.to_protobuf(&()),
+            statistics: self.statistics.to_protobuf(&()),
         }
     }
 }

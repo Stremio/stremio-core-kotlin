@@ -31,8 +31,14 @@ message Profile {
     optional string secondary_audio_language = 18;
     optional string secondary_subtitles_language = 19;
     optional string player_type = 20;
-    required bool auto_frame_rate_matching = 21;
+    required FrameRateMatchingStrategy frame_rate_matching_strategy = 21;
     required int64 next_video_notification_duration = 22;
+  }
+
+  enum FrameRateMatchingStrategy {
+    Disabled = 0;
+    FrameRateOnly = 1;
+    FrameRateAndResolution = 2;
   }
 }
 
