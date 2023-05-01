@@ -25,13 +25,13 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
             })
             .map(|(addon, manifest_catalog)| {
                 format!(
-                    "{} - {} {}",
-                    &addon.manifest.name,
+                    "{} - {}",
                     &manifest_catalog
                         .name
                         .as_ref()
-                        .unwrap_or(&manifest_catalog.id),
-                    &self.request.path.r#type
+                        .unwrap_or(&addon.manifest.name)
+                        .to_title_case(),
+                    &manifest_catalog.r#type.to_title_case(),
                 )
             })
             .unwrap_or_default();
