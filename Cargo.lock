@@ -3,6 +3,16 @@
 version = 3
 
 [[package]]
+name = "Inflector"
+version = "0.11.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fe438c63458706e03479442743baae6c88256498e6431708f6dfc520a26515d3"
+dependencies = [
+ "lazy_static",
+ "regex",
+]
+
+[[package]]
 name = "adler"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1997,6 +2007,7 @@ dependencies = [
 name = "stremio-core-android"
 version = "1.0.19"
 dependencies = [
+ "Inflector",
  "auto_impl",
  "base64 0.13.0",
  "boolinator",

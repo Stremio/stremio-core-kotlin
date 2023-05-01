@@ -1,3 +1,4 @@
+use inflector::Inflector;
 use stremio_core::models::common::{DescriptorLoadable, ResourceLoadable};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::{DescriptorPreview, ResourceRequest};
