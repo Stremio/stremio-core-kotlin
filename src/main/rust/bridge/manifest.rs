@@ -81,6 +81,7 @@ impl FromProtobuf<ManifestPreview> for types::ManifestPreview {
             logo: self.logo.from_protobuf(),
             background: self.background.from_protobuf(),
             types: self.types.to_owned(),
+            behavior_hints: self.behavior_hints.from_protobuf(),
         }
     }
 }
@@ -211,6 +212,7 @@ impl ToProtobuf<types::ManifestPreview, ()> for ManifestPreview {
             logo: self.logo.to_protobuf(&()),
             background: self.background.to_protobuf(&()),
             types: self.types.to_owned(),
+            behavior_hints: self.behavior_hints.to_protobuf(&()),
         }
     }
 }

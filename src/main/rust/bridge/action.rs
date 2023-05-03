@@ -3,7 +3,7 @@ use std::ops::Range;
 use stremio_core::runtime::msg::{
     Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx, ActionLibraryByType,
     ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer, ActionStreamingServer,
-    CreateTorrentArgs,
+    CreateTorrentArgs, PlayOnDeviceArgs,
 };
 use stremio_core::runtime::RuntimeAction;
 
@@ -141,6 +141,20 @@ impl FromProtobuf<Action> for runtime::Action {
                             None => unimplemented!("CreateTorrentArgs missing"),
                         }
                     }
+                    Some(action_streaming_server::Args::PlayOnDevice(args)) => {
+                        Action::StreamingServer(ActionStreamingServer::PlayOnDevice(
+                            PlayOnDeviceArgs {
+                                device: args.device.to_string(),
+                                source: args.source.to_string(),
+                                time: args.time.map(|x| x as u64).to_owned(),
+                            },
+                        ))
+                    }
+                    Some(action_streaming_server::Args::GetStatistics(request)) => {
+                        Action::StreamingServer(ActionStreamingServer::GetStatistics(
+                            request.from_protobuf(),
+                        ))
+                    }
                     None => unimplemented!("ActionStreamingServer missing"),
                 }
             }
@@ -156,9 +170,6 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Player(ActionPlayer::PausedChanged { paused: *paused })
                 }
                 Some(action_player::Args::Ended(_args)) => Action::Player(ActionPlayer::Ended {}),
-                Some(action_player::Args::PushToLibrary(_args)) => {
-                    Action::Player(ActionPlayer::PushToLibrary)
-                }
                 None => unimplemented!("ActionLink missing"),
             },
             Some(runtime::action::Type::Load(action_load)) => match &action_load.args {

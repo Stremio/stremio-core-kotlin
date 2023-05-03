@@ -22,20 +22,22 @@ message Event {
     UserLoggedOut user_logged_out = 11;
     SessionDeleted session_deleted = 12;
     TraktAddonFetched trakt_addon_fetched = 13;
-    AddonInstalled addon_installed = 14;
-    AddonUpgraded addon_upgraded = 15;
-    AddonUninstalled addon_uninstalled = 16;
-    SettingsUpdated settings_updated = 17;
-    LibraryItemAdded library_item_added = 18;
-    LibraryItemRemoved library_item_removed = 19;
-    LibraryItemRewinded library_item_rewinded = 20;
-    PlayerPlaying player_playing = 21;
-    PlayerStopped player_stopped = 22;
-    PlayerEnded player_ended = 23;
-    TraktPlaying trakt_playing = 24;
-    TraktPaused trakt_paused = 25;
-    MagnetParsed magnet_parsed = 26;
-    TorrentParsed torrent_parsed = 27;
+    TraktLoggedOut trakt_logged_out = 14;
+    AddonInstalled addon_installed = 15;
+    AddonUpgraded addon_upgraded = 16;
+    AddonUninstalled addon_uninstalled = 17;
+    SettingsUpdated settings_updated = 18;
+    LibraryItemAdded library_item_added = 19;
+    LibraryItemRemoved library_item_removed = 20;
+    LibraryItemRewinded library_item_rewinded = 21;
+    PlayerPlaying player_playing = 22;
+    PlayerStopped player_stopped = 23;
+    PlayerEnded player_ended = 24;
+    TraktPlaying trakt_playing = 25;
+    TraktPaused trakt_paused = 26;
+    MagnetParsed magnet_parsed = 27;
+    TorrentParsed torrent_parsed = 28;
+    PlayingOnDevice playing_on_device = 29;
     Error error = 100;
   }
 
@@ -77,6 +79,9 @@ message Event {
     required string auth_key = 1;
   }
   message TraktAddonFetched {
+    optional string uid = 1;
+  }
+  message TraktLoggedOut {
     optional string uid = 1;
   }
   message AddonInstalled {
@@ -123,6 +128,9 @@ message Event {
   }
   message TorrentParsed {
     required bytes torrent = 1;
+  }
+  message PlayingOnDevice {
+    required string device = 1;
   }
   message Error {
     required string error = 1;

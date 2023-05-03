@@ -49,6 +49,7 @@ message ManifestPreview {
   optional string logo = 5;
   optional string background = 6;
   repeated string types = 7;
+  required ManifestBehaviorHints behavior_hints = 8;
 }
 
 message ManifestResource {

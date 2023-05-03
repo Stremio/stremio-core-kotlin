@@ -11,7 +11,6 @@ message ActionPlayer {
     PlayerItemState time_changed = 1;
     bool paused_changed = 2;
     google.protobuf.Empty ended = 3;
-    google.protobuf.Empty push_to_library = 4;
   }
 
   message PlayerItemState {

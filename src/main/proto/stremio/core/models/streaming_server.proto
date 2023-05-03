@@ -12,9 +12,15 @@ message StreamingServer {
   required LoadableSettings settings = 2;
   required LoadableBaseUrl base_url = 3;
   optional LoadableTorrent torrent = 4;
+  required LoadablePlaybackDevices playback_devices = 5;
+  optional LoadableStatistics statistics = 6;
 
   message Selected {
     required string transport_url = 1;
+  }
+  message StatisticsRequest {
+    required string info_hash = 1;
+    required int32 file_index = 2;
   }
   message Settings {
     required string app_path = 1;
@@ -27,6 +33,31 @@ message StreamingServer {
     required double bt_download_speed_soft_limit = 8;
     required double bt_download_speed_hard_limit = 9;
     required uint64 bt_min_peers_for_stable = 10;
+  }
+  message Statistics {
+    required string name = 1;
+    required string info_hash = 2;
+    required double download_speed = 6;
+    required double upload_speed = 7;
+    required int64 downloaded = 8;
+    required int64 uploaded = 9;
+    required int64 unchoked = 10;
+    required int64 peers = 11;
+    required int64 queued = 12;
+    required int64 unique = 13;
+    required int64 connection_tries = 14;
+    required bool peer_search_running = 15;
+    required int64 stream_len = 16;
+    required string stream_name = 17;
+    required double stream_progress = 18;
+    required int64 swarm_connections = 19;
+    required bool swarm_paused = 20;
+    required int64 swarm_size = 21;
+  }
+  message PlaybackDevice {
+    required string id = 1;
+    required string name = 2;
+    required string type = 3;
   }
 }
 
@@ -52,4 +83,24 @@ message LoadableTorrent {
     Error error = 2;
     stremio.core.types.MetaItemDeepLinks ready = 3;
   }
+}
+
+message LoadablePlaybackDevices {
+  oneof content {
+    Loading loading = 1;
+    Error error = 2;
+    PlaybackDevices ready = 3;
+  }
+}
+
+message LoadableStatistics {
+  oneof content {
+    Loading loading = 1;
+    Error error = 2;
+    StreamingServer.Statistics ready = 3;
+  }
+}
+
+message PlaybackDevices {
+  repeated StreamingServer.PlaybackDevice devices = 1;
 }

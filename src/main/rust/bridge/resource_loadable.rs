@@ -92,7 +92,7 @@ impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
             request: self.request.to_protobuf(&()),
             content: self
                 .content
-                .to_protobuf(&(&addon_name, &self.request, *meta_request)),
+                .to_protobuf(&(ctx, &addon_name, &self.request, *meta_request)),
         }
     }
 }
