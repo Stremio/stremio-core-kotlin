@@ -36,8 +36,17 @@ impl ToProtobuf<models::player::VideoParams, ()> for VideoParams {
 
 impl ToProtobuf<models::player::Selected, Ctx> for Selected {
     fn to_protobuf(&self, ctx: &Ctx) -> models::player::Selected {
+        let addon_name = self.stream_request.as_ref().and_then(|request| {
+            ctx.profile
+                .addons
+                .iter()
+                .find(|addon| addon.transport_url == request.base)
+                .map(|addon| &addon.manifest.name)
+        });
         models::player::Selected {
-            stream: self.stream.to_protobuf(&(Some(ctx), None, None, None)),
+            stream: self
+                .stream
+                .to_protobuf(&(Some(ctx), addon_name, None, None)),
             stream_request: self.stream_request.to_protobuf(&()),
             meta_request: self.meta_request.to_protobuf(&()),
             subtitles_path: self.subtitles_path.to_protobuf(&()),
