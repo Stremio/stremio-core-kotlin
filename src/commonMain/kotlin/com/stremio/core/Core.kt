@@ -6,11 +6,10 @@ import com.stremio.core.runtime.msg.Action
 import com.stremio.core.types.resource.Stream
 import pbandk.Message
 
-fun interface EventListener {
-    fun onEvent(event: RuntimeEvent)
-}
-
 expect object Core {
+    fun interface EventListener {
+        fun onEvent(event: RuntimeEvent)
+    }
     fun addEventListener(listener: EventListener)
     fun removeEventListener(listener: EventListener)
     fun initialize(storage: Storage): EnvError?

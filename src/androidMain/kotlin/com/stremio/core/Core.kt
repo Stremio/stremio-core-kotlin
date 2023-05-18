@@ -18,6 +18,10 @@ actual object Core {
         System.loadLibrary("stremio_core_android")
     }
 
+    actual fun interface EventListener {
+        actual fun onEvent(event: RuntimeEvent)
+    }
+
     private val listeners = Collections.newSetFromMap(ConcurrentHashMap<EventListener, Boolean>())
 
     actual fun addEventListener(listener: EventListener) {
