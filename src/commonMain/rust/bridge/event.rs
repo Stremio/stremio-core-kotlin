@@ -58,6 +58,11 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     uid: uid.clone(),
                 })
             }
+            Event::TraktLoggedOut { uid } => {
+                runtime::event::Type::TraktLoggedOut(runtime::event::TraktLoggedOut {
+                    uid: uid.clone(),
+                })
+            }
             Event::AddonInstalled { transport_url, id } => {
                 runtime::event::Type::AddonInstalled(runtime::event::AddonInstalled {
                     transport_url: transport_url.to_string(),
@@ -137,6 +142,11 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             Event::TorrentParsed { torrent } => {
                 runtime::event::Type::TorrentParsed(runtime::event::TorrentParsed {
                     torrent: torrent.to_owned(),
+                })
+            }
+            Event::PlayingOnDevice { device } => {
+                runtime::event::Type::PlayingOnDevice(runtime::event::PlayingOnDevice {
+                    device: device.to_owned(),
                 })
             }
             Event::Error { error, source } => {

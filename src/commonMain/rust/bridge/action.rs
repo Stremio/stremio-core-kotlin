@@ -3,7 +3,7 @@ use std::ops::Range;
 use stremio_core::runtime::msg::{
     Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx, ActionLibraryByType,
     ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer, ActionStreamingServer,
-    CreateTorrentArgs,
+    CreateTorrentArgs, PlayOnDeviceArgs,
 };
 use stremio_core::runtime::RuntimeAction;
 
@@ -25,6 +25,18 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Ctx(ActionCtx::Authenticate(auth_request.from_protobuf()))
                 }
                 Some(action_ctx::Args::Logout(_args)) => Action::Ctx(ActionCtx::Logout),
+                Some(action_ctx::Args::InstallAddon(descriptor)) => {
+                    Action::Ctx(ActionCtx::InstallAddon(descriptor.from_protobuf()))
+                }
+                Some(action_ctx::Args::InstallTraktAddon(_args)) => {
+                    Action::Ctx(ActionCtx::InstallTraktAddon)
+                }
+                Some(action_ctx::Args::UpgradeAddon(descriptor)) => {
+                    Action::Ctx(ActionCtx::UpgradeAddon(descriptor.from_protobuf()))
+                }
+                Some(action_ctx::Args::UninstallAddon(descriptor)) => {
+                    Action::Ctx(ActionCtx::UninstallAddon(descriptor.from_protobuf()))
+                }
                 Some(action_ctx::Args::UpdateSettings(settings)) => {
                     Action::Ctx(ActionCtx::UpdateSettings(settings.from_protobuf()))
                 }
@@ -129,6 +141,20 @@ impl FromProtobuf<Action> for runtime::Action {
                             None => unimplemented!("CreateTorrentArgs missing"),
                         }
                     }
+                    Some(action_streaming_server::Args::PlayOnDevice(args)) => {
+                        Action::StreamingServer(ActionStreamingServer::PlayOnDevice(
+                            PlayOnDeviceArgs {
+                                device: args.device.to_string(),
+                                source: args.source.to_string(),
+                                time: args.time.map(|x| x as u64).to_owned(),
+                            },
+                        ))
+                    }
+                    Some(action_streaming_server::Args::GetStatistics(request)) => {
+                        Action::StreamingServer(ActionStreamingServer::GetStatistics(
+                            request.from_protobuf(),
+                        ))
+                    }
                     None => unimplemented!("ActionStreamingServer missing"),
                 }
             }
@@ -144,18 +170,24 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Player(ActionPlayer::PausedChanged { paused: *paused })
                 }
                 Some(action_player::Args::Ended(_args)) => Action::Player(ActionPlayer::Ended {}),
-                Some(action_player::Args::PushToLibrary(_args)) => {
-                    Action::Player(ActionPlayer::PushToLibrary)
-                }
                 None => unimplemented!("ActionLink missing"),
             },
             Some(runtime::action::Type::Load(action_load)) => match &action_load.args {
+                Some(action_load::Args::AddonDetails(selected)) => {
+                    Action::Load(ActionLoad::AddonDetails(selected.from_protobuf()))
+                }
                 Some(action_load::Args::CatalogsWithExtra(selected)) => {
                     Action::Load(ActionLoad::CatalogsWithExtra(selected.from_protobuf()))
                 }
                 Some(action_load::Args::CatalogWithFilters(selected)) => Action::Load(
                     ActionLoad::CatalogWithFilters(Some(selected.from_protobuf())),
                 ),
+                Some(action_load::Args::AddonsWithFilters(selected)) => {
+                    Action::Load(match selected.request.base.is_empty() {
+                        true => ActionLoad::InstalledAddonsWithFilters(selected.from_protobuf()),
+                        _ => ActionLoad::CatalogWithFilters(Some(selected.from_protobuf())),
+                    })
+                }
                 Some(action_load::Args::LibraryWithFilters(selected)) => {
                     Action::Load(ActionLoad::LibraryWithFilters(selected.from_protobuf()))
                 }

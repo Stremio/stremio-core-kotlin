@@ -12,6 +12,8 @@ message ActionStreamingServer {
     google.protobuf.Empty reload = 1;
     stremio.core.models.StreamingServer.Settings update_settings = 2;
     CreateTorrentArgs create_torrent = 3;
+    stremio.core.models.StreamingServer.StatisticsRequest get_statistics = 4;
+    PlayOnDeviceArgs play_on_device = 5;
   }
 }
 
@@ -20,4 +22,10 @@ message CreateTorrentArgs {
     bytes file = 1;
     string magnet = 2;
   }
+}
+
+message PlayOnDeviceArgs {
+  required string device = 1;
+  required string source = 2;
+  optional int64 time = 3;
 }

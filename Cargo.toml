@@ -1,6 +1,6 @@
 [package]
 name = "stremio-core-android"
-version = "1.0.19"
+version = "1.0.20"
 authors = ["Smart Code OOD"]
 edition = "2018"
 
@@ -24,7 +24,7 @@ http = "0.2.*"
 url = { version = "2.2.*", features = ["serde"] }
 percent-encoding = "2.1.*"
 chrono = "0.4.*"
-semver = { version = "0.11.*", features = ["serde"] }
+semver = { version = "1", features = ["serde"] }
 base64 = "0.13.*"
 hex = "0.4.*"
 flate2 = "1.0.*"
@@ -35,6 +35,7 @@ itertools = "0.10.*"
 strum = "0.22.*"
 strum_macros = "0.22.*"
 boolinator = "2.4.*"
+Inflector = "0.11.*"
 getrandom = "0.2.*"
 cfg-if = "0.1.*"
 auto_impl = "0.5.*"

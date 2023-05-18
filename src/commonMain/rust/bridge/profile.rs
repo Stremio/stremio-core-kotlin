@@ -2,10 +2,44 @@ use std::cmp;
 use std::convert::TryFrom;
 
 use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
-use stremio_core::types::profile::{Auth, GDPRConsent, Profile, Settings, User};
+use stremio_core::types::profile::{
+    Auth, FrameRateMatchingStrategy, GDPRConsent, Profile, Settings, User,
+};
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::types;
+
+impl FromProtobuf<FrameRateMatchingStrategy> for types::profile::FrameRateMatchingStrategy {
+    fn from_protobuf(&self) -> FrameRateMatchingStrategy {
+        match self {
+            types::profile::FrameRateMatchingStrategy::Disabled => {
+                FrameRateMatchingStrategy::Disabled
+            }
+            types::profile::FrameRateMatchingStrategy::FrameRateOnly => {
+                FrameRateMatchingStrategy::FrameRateOnly
+            }
+            types::profile::FrameRateMatchingStrategy::FrameRateAndResolution => {
+                FrameRateMatchingStrategy::FrameRateAndResolution
+            }
+        }
+    }
+}
+
+impl ToProtobuf<types::profile::FrameRateMatchingStrategy, ()> for FrameRateMatchingStrategy {
+    fn to_protobuf(&self, _args: &()) -> types::profile::FrameRateMatchingStrategy {
+        match self {
+            FrameRateMatchingStrategy::Disabled => {
+                types::profile::FrameRateMatchingStrategy::Disabled
+            }
+            FrameRateMatchingStrategy::FrameRateOnly => {
+                types::profile::FrameRateMatchingStrategy::FrameRateOnly
+            }
+            FrameRateMatchingStrategy::FrameRateAndResolution => {
+                types::profile::FrameRateMatchingStrategy::FrameRateAndResolution
+            }
+        }
+    }
+}
 
 impl FromProtobuf<GDPRConsent> for types::GdprConsent {
     fn from_protobuf(&self) -> GDPRConsent {
@@ -27,7 +61,11 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             binge_watching: self.binge_watching,
             play_in_background: self.play_in_background,
             hardware_decoding: self.hardware_decoding,
-            auto_frame_rate_matching: self.auto_frame_rate_matching,
+            frame_rate_matching_strategy: types::profile::FrameRateMatchingStrategy::from_i32(
+                self.frame_rate_matching_strategy,
+            )
+            .from_protobuf()
+            .unwrap_or(FrameRateMatchingStrategy::Disabled),
             next_video_notification_duration: u32::try_from(cmp::max(
                 self.next_video_notification_duration,
                 0,
@@ -127,7 +165,7 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             secondary_audio_language: self.secondary_audio_language.clone(),
             secondary_subtitles_language: self.secondary_subtitles_language.clone(),
             player_type: self.player_type.clone(),
-            auto_frame_rate_matching: self.auto_frame_rate_matching,
+            frame_rate_matching_strategy: self.frame_rate_matching_strategy.to_protobuf(&()) as i32,
             next_video_notification_duration: self.next_video_notification_duration as i64,
         }
     }

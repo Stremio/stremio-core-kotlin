@@ -1,6 +1,7 @@
-use stremio_core::models::common::ResourceLoadable;
+use inflector::Inflector;
+use stremio_core::models::common::{DescriptorLoadable, ResourceLoadable};
 use stremio_core::models::ctx::Ctx;
-use stremio_core::types::addon::ResourceRequest;
+use stremio_core::types::addon::{DescriptorPreview, ResourceRequest};
 use stremio_core::types::library::LibraryItem;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
 use stremio_watched_bitfield::WatchedBitField;
@@ -25,13 +26,13 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
             })
             .map(|(addon, manifest_catalog)| {
                 format!(
-                    "{} - {} {}",
-                    &addon.manifest.name,
+                    "{} - {}",
                     &manifest_catalog
                         .name
                         .as_ref()
-                        .unwrap_or(&manifest_catalog.id),
-                    &self.request.path.r#type
+                        .unwrap_or(&addon.manifest.name)
+                        .to_title_case(),
+                    &manifest_catalog.r#type.to_title_case(),
                 )
             })
             .unwrap_or_default();
@@ -91,7 +92,7 @@ impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
             request: self.request.to_protobuf(&()),
             content: self
                 .content
-                .to_protobuf(&(&addon_name, &self.request, *meta_request)),
+                .to_protobuf(&(ctx, &addon_name, &self.request, *meta_request)),
         }
     }
 }
@@ -110,6 +111,24 @@ impl ToProtobuf<models::LoadableSubtitles, Ctx> for ResourceLoadable<Vec<Subtitl
             title: addon_name.to_owned(),
             request: self.request.to_protobuf(&()),
             content: self.content.to_protobuf(&(Some(&addon_name))),
+        }
+    }
+}
+
+impl ToProtobuf<models::LoadableAddonCatalog, Ctx> for &ResourceLoadable<Vec<DescriptorPreview>> {
+    fn to_protobuf(&self, ctx: &Ctx) -> models::LoadableAddonCatalog {
+        models::LoadableAddonCatalog {
+            request: self.request.to_protobuf(&()),
+            content: self.content.to_protobuf(ctx),
+        }
+    }
+}
+
+impl ToProtobuf<models::LoadableDescriptor, Ctx> for DescriptorLoadable {
+    fn to_protobuf(&self, ctx: &Ctx) -> models::LoadableDescriptor {
+        models::LoadableDescriptor {
+            transport_url: self.transport_url.to_string(),
+            content: Some(self.content.to_protobuf(ctx)),
         }
     }
 }

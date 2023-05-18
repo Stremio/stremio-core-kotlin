@@ -1,5 +1,6 @@
 use hex::FromHex;
 use stremio_core::deep_links::StreamDeepLinks;
+use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{
     Stream, StreamBehaviorHints, StreamProxyHeaders, StreamSource,
@@ -114,6 +115,7 @@ impl
     ToProtobuf<
         types::Stream,
         (
+            Option<&Ctx>,
             Option<&String>,
             Option<&ResourceRequest>,
             Option<&ResourceRequest>,
@@ -122,16 +124,24 @@ impl
 {
     fn to_protobuf(
         &self,
-        (addon_name, stream_request, meta_request): &(
+        (ctx, addon_name, stream_request, meta_request): &(
+            Option<&Ctx>,
             Option<&String>,
             Option<&ResourceRequest>,
             Option<&ResourceRequest>,
         ),
     ) -> types::Stream {
+        let streaming_server_url =
+            ctx.map(|ctx| ctx.profile.settings.streaming_server_url.to_owned());
         let deep_links = if stream_request.is_some() && meta_request.is_some() {
-            StreamDeepLinks::from((self, stream_request.unwrap(), meta_request.unwrap()))
+            StreamDeepLinks::from((
+                self,
+                stream_request.unwrap(),
+                meta_request.unwrap(),
+                &streaming_server_url,
+            ))
         } else {
-            StreamDeepLinks::from(self)
+            StreamDeepLinks::from((self, &streaming_server_url))
         };
         types::Stream {
             name: self.name.to_owned().or_else(|| addon_name.cloned()),
