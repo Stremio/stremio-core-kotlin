@@ -23,7 +23,7 @@ message Player {
 
   message VideoParams {
     optional string hash = 1;
-    optional int32 size = 2;
+    optional int64 size = 2;
   }
   message Selected {
     required stremio.core.types.Stream stream = 1;
