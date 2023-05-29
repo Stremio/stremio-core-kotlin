@@ -35,6 +35,7 @@ pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Se
             ClientBuilder::new(
                 Client::builder()
                     .connect_timeout(Duration::from_secs(30))
+                    .use_rustls_tls()
                     .build()
                     .unwrap_or_default(),
             )
@@ -52,6 +53,7 @@ pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Se
             ClientBuilder::new(
                 Client::builder()
                     .connect_timeout(Duration::from_secs(30))
+                    .use_rustls_tls()
                     .build()
                     .unwrap_or_default(),
             )

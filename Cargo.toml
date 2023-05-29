@@ -1,6 +1,6 @@
 [package]
 name = "stremio-core-android"
-version = "1.0.20"
+version = "1.0.21"
 authors = ["Smart Code OOD"]
 edition = "2018"
 
@@ -41,8 +41,9 @@ cfg-if = "0.1.*"
 auto_impl = "0.5.*"
 serde_path_to_error = "0.1.*"
 jni = "0.19.*"
-reqwest = { version = "0.11", features = ["json", "native-tls-vendored"] }
+reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
 tokio = { version = "1.12.*", features = ["rt", "rt-multi-thread"] }
+openssl = { version = "0.10.*", features = ["vendored"] }
 bytes = "1.1.0"
 prost = "0.10.4"
 prost-types = "0.10.1"

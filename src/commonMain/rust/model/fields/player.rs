@@ -20,7 +20,7 @@ impl FromProtobuf<VideoParams> for models::player::VideoParams {
     fn from_protobuf(&self) -> VideoParams {
         VideoParams {
             hash: self.hash.to_owned(),
-            size: self.size.map(|x| x as u32).to_owned(),
+            size: self.size.map(|x| x as u64).to_owned(),
         }
     }
 }
@@ -29,7 +29,7 @@ impl ToProtobuf<models::player::VideoParams, ()> for VideoParams {
     fn to_protobuf(&self, _args: &()) -> models::player::VideoParams {
         models::player::VideoParams {
             hash: self.hash.to_owned(),
-            size: self.size.map(|x| x as i32).to_owned(),
+            size: self.size.map(|x| x as i64).to_owned(),
         }
     }
 }
