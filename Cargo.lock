@@ -2166,7 +2166,7 @@ dependencies = [
 
 [[package]]
 name = "stremio-core-android"
-version = "1.0.21"
+version = "1.0.22"
 dependencies = [
  "Inflector",
  "auto_impl",
