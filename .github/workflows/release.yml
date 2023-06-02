@@ -34,6 +34,8 @@ jobs:
         run: rustup target add i686-linux-android
       - name: Add x86_64 target
         run: rustup target add x86_64-linux-android
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
       - name: Build aar
         run: ./gradlew assembleRelease
       - name: Upload build artifacts
