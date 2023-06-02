@@ -1,4 +1,4 @@
-import com.google.protobuf.gradle.GenerateProtoTask
+import com.google.protobuf.gradle.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "com.github.Stremio"
@@ -23,10 +23,6 @@ val kotlinVersion: String by extra
 val pbandkVersion: String by extra
 val protobufVersion: String by extra
 val stremioCoreAndroidProfile: String by extra
-val protosProject = project(":protobuf-codegen")
-val protosPath = file("generated")
-
-protosPath.mkdirs()
 
 buildscript {
     extra["kotlinVersion"] = "1.7.20"
@@ -60,7 +56,6 @@ kotlin {
     @Suppress("UNUSED_VARIABLE")
     sourceSets {
         val commonMain by getting {
-            kotlin.srcDir(protosPath)
             dependencies {
                 implementation("pro.streem.pbandk:pbandk-runtime:${pbandkVersion}")
             }
@@ -100,34 +95,30 @@ android {
 
 }
 
-protosProject.tasks
-    .matching { it.name == "generateProto" }
-    .all {
-        this as GenerateProtoTask
+protobuf {
+    generatedFilesBaseDir = "$projectDir/src"
 
-        val compileTasks = tasks.matching { it is KotlinCompile }
-        compileTasks.forEach { compileTask ->
-            compileTask.dependsOn(this)
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
+
+    plugins {
+        id("pbandk") {
+            artifact = "pro.streem.pbandk:protoc-gen-pbandk-jvm:${pbandkVersion}:jvm8@jar"
         }
+    }
 
-        outputs.upToDateWhen {
-            false
-        }
-
-        doLast {
-            outputSourceDirectorySet.srcDirs.forEach { generatedDirectory ->
-                protosPath.mkdirs()
-
-                val targetDirectory = File(protosPath, generatedDirectory.name)
-                targetDirectory.deleteRecursively()
-
-                require(generatedDirectory.renameTo(targetDirectory)) {
-                    "Failed to move Generated protobuf files from '${generatedDirectory.absolutePath}' " +
-                            "to destination directory '${targetDirectory.absolutePath}'"
-                }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+//                remove("java")
+            }
+            task.plugins {
+                id("pbandk")
             }
         }
     }
+}
 
 cargo {
     module = "./"
@@ -140,5 +131,11 @@ cargo {
 tasks.whenTaskAdded {
     if (name == "javaPreCompileDebug" || name == "javaPreCompileRelease" || name == "mergeDebugJniLibFolders" || name == "mergeReleaseJniLibFolders") {
         dependsOn("cargoBuild")
+    }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 }

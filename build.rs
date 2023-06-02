@@ -2,7 +2,7 @@ use glob::glob;
 use prost_build::Config;
 
 fn main() {
-    let proto_dir = "protobuf-codegen/src/main/proto";
+    let proto_dir = "src/main/proto";
     let proto_paths = glob(format!("{proto_dir}/**/*.proto").as_str())
         .unwrap()
         .filter_map(Result::ok)
