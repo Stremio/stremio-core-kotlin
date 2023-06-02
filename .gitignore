@@ -1,10 +1,8 @@
 /build
-/protobuf-codegen/build
 /target
 /.gradle
 /src/debug
 /src/release
-/generated
 /**/rust/protobuf/*
 !/**/rust/protobuf/README.md
 /.idea/

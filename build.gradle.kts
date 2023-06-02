@@ -2,7 +2,7 @@ import com.google.protobuf.gradle.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "com.github.Stremio"
-version = "2.0.0"
+version = "1.0.21"
 
 allprojects {
     repositories {
@@ -50,7 +50,7 @@ kotlin {
     // ios()
 
     android {
-        publishLibraryVariants("release", "debug")
+        publishLibraryVariants("release")
     }
 
     @Suppress("UNUSED_VARIABLE")
@@ -110,9 +110,6 @@ protobuf {
 
     generateProtoTasks {
         all().forEach { task ->
-            task.builtins {
-//                remove("java")
-            }
             task.plugins {
                 id("pbandk")
             }
