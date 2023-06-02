@@ -1,4 +1,4 @@
-import com.google.protobuf.gradle.*
+import com.google.protobuf.gradle.GenerateProtoTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "com.github.Stremio"
@@ -65,17 +65,11 @@ kotlin {
                 implementation("pro.streem.pbandk:pbandk-runtime:${pbandkVersion}")
             }
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
         val androidMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
             }
         }
-        val androidTest by getting
     }
 }
 
@@ -140,11 +134,7 @@ cargo {
     libname = "stremio_core_android"
     targets = listOf("arm", "arm64", "x86", "x86_64")
     verbose = true
-    profile = if (rootProject.extra.has("stremioCoreAndroidProfile")) {
-        rootProject.extra.get("stremioCoreAndroidProfile") as String
-    } else {
-        "debug"
-    }
+    profile = stremioCoreAndroidProfile
 }
 
 tasks.whenTaskAdded {
