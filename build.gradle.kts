@@ -49,7 +49,7 @@ kotlin {
     // ios()
 
     android {
-        publishLibraryVariants("release")
+        publishLibraryVariants("release", "debug")
     }
 
     @Suppress("UNUSED_VARIABLE")
