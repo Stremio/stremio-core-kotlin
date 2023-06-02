@@ -37,7 +37,7 @@ jobs:
       - name: Rust cache
         uses: Swatinem/rust-cache@v2
       - name: Build aar
-        run: ./gradlew publishToMavenLocal
+        run: ./gradlew -Pversion=${GITHUB_REF##*/} publishToMavenLocal
       - name: Archive artifacts
         run: tar -C ~/.m2/repository/com/github/Stremio -cvzf stremio-core-kotlin.tar.gz .
       - name: Upload build artifacts
