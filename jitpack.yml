@@ -1,5 +1,6 @@
 install:
   - wget https://github.com/Stremio/stremio-core-kotlin/releases/download/$VERSION/stremio-core-kotlin.tar.gz
-  - mkdir -p ~/.m2/repository/com/github/Stremio
+  - wget https://github.com/Stremio/stremio-core-kotlin/releases/download/$VERSION/build.tar.gz
+  - mkdir -p ~/.m2/repository/com/github/Stremio build
   - tar -C ~/.m2/repository/com/github/Stremio -xvzf stremio-core-kotlin.tar.gz
-  - find ~/.m2/repository/com/github/Stremio -type f
+  - tar -C build -xvzf build.tar.gz
