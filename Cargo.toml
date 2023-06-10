@@ -46,11 +46,12 @@ tokio = { version = "1.12.*", features = ["rt", "rt-multi-thread"] }
 openssl = { version = "0.10.*", features = ["vendored"] }
 bytes = "1.1.0"
 prost = "0.10.4"
-prost-types = "0.10.1"
+prost-types = "0.11.9"
 http-cache-reqwest = "0.4.5"
 reqwest-middleware = "0.1.6"
 once_cell = "1.12.0"
 
 [build-dependencies]
-prost-build = "0.10.4"
+prost-build = "0.11.9"
+protox = "0.3.3"
 glob = "0.3.0"

@@ -1,6 +1,6 @@
 rootProject.name = "stremio-core-kotlin"
 
-include("protobuf-codegen")
+include("src")
 
 pluginManagement {
     repositories {
