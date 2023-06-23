@@ -84,7 +84,7 @@ android {
 
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = true
+            isJniDebuggable = false
         }
 
         getByName("debug") {
