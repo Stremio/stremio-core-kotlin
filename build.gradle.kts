@@ -82,16 +82,6 @@ android {
         }
     }
 
-    buildTypes {
-        getByName("release") {
-            isJniDebuggable = false
-        }
-
-        getByName("debug") {
-            isJniDebuggable = true
-        }
-    }
-
     packagingOptions {
         resources {
             excludes += "**/*.proto"
