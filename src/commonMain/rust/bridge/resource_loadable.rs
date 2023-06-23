@@ -21,7 +21,10 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
                     .manifest
                     .catalogs
                     .iter()
-                    .find(|manifest_catalog| manifest_catalog.id == self.request.path.id)
+                    .find(|manifest_catalog| {
+                        manifest_catalog.id == self.request.path.id
+                            && manifest_catalog.r#type == self.request.path.r#type
+                    })
                     .map(|manifest_catalog| (addon, manifest_catalog))
             })
             .map(|(addon, manifest_catalog)| {
