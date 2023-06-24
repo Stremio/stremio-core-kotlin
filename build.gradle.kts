@@ -47,10 +47,9 @@ buildscript {
 }
 
 kotlin {
-    // ios()
-
     android {
-        publishLibraryVariants("release", "debug")
+        // TODO: Adding a "debug" variant here results in failing imports in KMM projects. Figure out why.
+        publishLibraryVariants("release")
     }
 
     @Suppress("UNUSED_VARIABLE")
