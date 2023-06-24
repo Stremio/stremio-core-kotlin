@@ -1,4 +1,6 @@
 install:
-  - wget https://github.com/Stremio/stremio-core-kotlin/releases/download/$VERSION/stremio-core-kotlin.aar
-  - FILE="-Dfile=stremio-core-kotlin.aar"
-  - mvn install:install-file $FILE -DgroupId=com.stremio.core -DartifactId=stremio-core-kotlin -Dversion=1.0.22 -Dpackaging=aar -DgeneratePom=true
+  - wget https://github.com/Stremio/stremio-core-kotlin/releases/download/$VERSION/stremio-core-kotlin.tar.gz
+  - wget https://github.com/Stremio/stremio-core-kotlin/releases/download/$VERSION/build.tar.gz
+  - mkdir -p ~/.m2/repository/com/github/Stremio build
+  - tar -C ~/.m2/repository/com/github/Stremio -xvzf stremio-core-kotlin.tar.gz
+  - tar -C build -xvzf build.tar.gz

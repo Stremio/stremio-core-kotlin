@@ -17,6 +17,8 @@ jobs:
         run: rustup component add rustfmt
       - name: Install clippy
         run: rustup component add clippy
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
       - name: Build code
         run: cargo build
       - name: Lint code format

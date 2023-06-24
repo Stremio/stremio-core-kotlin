@@ -13,22 +13,22 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.full.companionObjectInstance
 
-object Core {
+actual object Core {
     init {
         System.loadLibrary("stremio_core_android")
     }
 
-    fun interface EventListener {
-        fun onEvent(event: RuntimeEvent)
+    actual fun interface EventListener {
+        actual fun onEvent(event: RuntimeEvent)
     }
 
     private val listeners = Collections.newSetFromMap(ConcurrentHashMap<EventListener, Boolean>())
 
-    fun addEventListener(listener: EventListener) {
+    actual fun addEventListener(listener: EventListener) {
         listeners.add(listener)
     }
 
-    fun removeEventListener(listener: EventListener) {
+    actual fun removeEventListener(listener: EventListener) {
         listeners.remove(listener)
     }
 
@@ -42,24 +42,24 @@ object Core {
 
     external fun sendNextAnalyticsBatch()
 
-    fun initialize(storage: Storage): EnvError? {
+    actual fun initialize(storage: Storage): EnvError? {
         return initializeNative(storage)
             ?.let { EnvError.decodeFromByteArray(it) }
     }
 
-    fun dispatch(action: Action, field: Field?) {
+    actual fun dispatch(action: Action, field: Field?) {
         val actionProtobuf = RuntimeAction(field, action).encodeToByteArray()
         dispatchNative(actionProtobuf)
     }
 
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T : Message> getState(field: Field): T {
+    actual inline fun <reified T : Message> getState(field: Field): T {
         val protobuf = getStateNative(field)
         val companion = T::class.companionObjectInstance as Message.Companion<T>
         return companion.decodeFromByteArray(protobuf)
     }
 
-    fun decodeStreamData(streamData: String): Stream? {
+    actual fun decodeStreamData(streamData: String): Stream? {
         return decodeStreamDataNative(streamData)
             ?.let { Stream.decodeFromByteArray(it) }
     }
