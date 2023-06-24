@@ -24,8 +24,3 @@ dependencies {
     implementation 'com.github.Stremio:stremio-core-kotlin:1.0.22'
 }
 ```
-
-## Manual
-
-[Download](https://jitpack.io/com/github/stremio/stremio-core-kotlin/1.0.22/stremio-core-kotlin-1.0.22.aar) aar and link
-it manually
