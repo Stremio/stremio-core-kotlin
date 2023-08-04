@@ -12,13 +12,16 @@ use jni::{JNIEnv, JavaVM};
 use lazy_static::lazy_static;
 use prost::Message;
 use stremio_core::constants::{
-    LIBRARY_RECENT_STORAGE_KEY, LIBRARY_STORAGE_KEY, PROFILE_STORAGE_KEY,
+    LIBRARY_RECENT_STORAGE_KEY, LIBRARY_STORAGE_KEY, NOTIFICATIONS_STORAGE_KEY,
+    PROFILE_STORAGE_KEY, STREAMS_STORAGE_KEY,
 };
 use stremio_core::models::common::Loadable;
 use stremio_core::runtime::{Env, EnvError, Runtime, RuntimeEvent};
 use stremio_core::types::library::LibraryBucket;
+use stremio_core::types::notifications::NotificationsBucket;
 use stremio_core::types::profile::Profile;
 use stremio_core::types::resource::Stream;
+use stremio_core::types::streams::StreamsBucket;
 
 use crate::bridge::{FromProtobuf, ToJNIByteArray, ToProtobuf};
 use crate::env::{AndroidEnv, AndroidEvent, KotlinClassName};
@@ -55,13 +58,15 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
     let init_result = AndroidEnv::exec_sync(AndroidEnv::init(&env, storage));
     match init_result {
         Ok(_) => {
-            let storage_result = AndroidEnv::exec_sync(future::try_join3(
+            let storage_result = AndroidEnv::exec_sync(future::try_join5(
                 AndroidEnv::get_storage::<Profile>(PROFILE_STORAGE_KEY),
                 AndroidEnv::get_storage::<LibraryBucket>(LIBRARY_RECENT_STORAGE_KEY),
                 AndroidEnv::get_storage::<LibraryBucket>(LIBRARY_STORAGE_KEY),
+                AndroidEnv::get_storage::<StreamsBucket>(STREAMS_STORAGE_KEY),
+                AndroidEnv::get_storage::<NotificationsBucket>(NOTIFICATIONS_STORAGE_KEY),
             ));
             match storage_result {
-                Ok((profile, recent_bucket, other_bucket)) => {
+                Ok((profile, recent_bucket, other_bucket, streams, notifications)) => {
                     let profile = profile.unwrap_or_default();
                     let mut library = LibraryBucket::new(profile.uid(), vec![]);
                     if let Some(recent_bucket) = recent_bucket {
@@ -70,7 +75,12 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                     if let Some(other_bucket) = other_bucket {
                         library.merge_bucket(other_bucket);
                     };
-                    let (model, effects) = AndroidModel::new(profile, library);
+                    let streams = streams.unwrap_or(StreamsBucket::new(profile.uid()));
+                    let notifications = notifications.unwrap_or(
+                        NotificationsBucket::new::<AndroidEnv>(profile.uid(), vec![]),
+                    );
+                    let (model, effects) =
+                        AndroidModel::new(profile, library, streams, notifications);
                     let (runtime, rx) = Runtime::<AndroidEnv, _>::new(
                         model,
                         effects.into_iter().collect::<Vec<_>>(),
