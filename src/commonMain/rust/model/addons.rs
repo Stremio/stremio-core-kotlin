@@ -6,7 +6,7 @@ use stremio_core::runtime::{Effects, Env, UpdateWithCtx};
 use stremio_core::types::addon::DescriptorPreview;
 use stremio_core::types::profile::Profile;
 
-#[derive(Default, Clone)]
+#[derive(Default)]
 pub struct AddonsWithFilters {
     pub remote_addons: CatalogWithFilters<DescriptorPreview>,
     pub installed_addons: InstalledAddonsWithFilters,

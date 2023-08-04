@@ -131,32 +131,18 @@ impl
             Option<&ResourceRequest>,
         ),
     ) -> types::Stream {
-        // in calls that have None for ctx this would panic if we don't set it to default.
-        let settings = ctx
-            .map(|ctx| ctx.profile.settings.to_owned())
-            .unwrap_or_default();
-
-        let deep_links = match (stream_request, meta_request) {
-            (Some(stream_request), Some(meta_request)) => {
-                // when https://github.com/Stremio/stremio-core/pull/490 is merged:
-                // StreamDeepLinks::from((self, *stream_request, *meta_request, &settings))
-                StreamDeepLinks::from((
-                    self,
-                    *stream_request,
-                    *meta_request,
-                    &ctx.map(|ctx| ctx.profile.settings.streaming_server_url.clone()),
-                    &settings,
-                ))
-            }
-            // when https://github.com/Stremio/stremio-core/pull/490 is merged:
-            // _ => StreamDeepLinks::from((self, &settings)),
-            _ => StreamDeepLinks::from((
+        let streaming_server_url =
+            ctx.map(|ctx| ctx.profile.settings.streaming_server_url.to_owned());
+        let deep_links = if stream_request.is_some() && meta_request.is_some() {
+            StreamDeepLinks::from((
                 self,
-                &ctx.map(|ctx| ctx.profile.settings.streaming_server_url.clone()),
-                &settings,
-            )),
+                stream_request.unwrap(),
+                meta_request.unwrap(),
+                &streaming_server_url,
+            ))
+        } else {
+            StreamDeepLinks::from((self, &streaming_server_url))
         };
-
         types::Stream {
             name: self.name.to_owned().or_else(|| addon_name.cloned()),
             description: self.description.clone(),

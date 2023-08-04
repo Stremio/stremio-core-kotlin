@@ -13,17 +13,15 @@ use stremio_core::models::streaming_server::StreamingServer;
 use stremio_core::runtime::Effects;
 use stremio_core::types::api::LinkAuthKey;
 use stremio_core::types::library::LibraryBucket;
-use stremio_core::types::notifications::NotificationsBucket;
 use stremio_core::types::profile::Profile;
 use stremio_core::types::resource::MetaItemPreview;
-use stremio_core::types::streams::StreamsBucket;
-use stremio_core::Model;
+use stremio_derive::Model;
 
 use crate::bridge::ToProtobuf;
 use crate::env::AndroidEnv;
 use crate::model::AddonsWithFilters;
 
-#[derive(Model, Clone)]
+#[derive(Model)]
 #[model(AndroidEnv)]
 pub struct AndroidModel {
     pub ctx: Ctx,
@@ -42,12 +40,10 @@ pub struct AndroidModel {
 }
 
 impl AndroidModel {
-    pub fn new(profile: Profile, library: LibraryBucket, streams: StreamsBucket, notifications: NotificationsBucket) -> (AndroidModel, Effects) {
+    pub fn new(profile: Profile, library: LibraryBucket) -> (AndroidModel, Effects) {
+        let ctx = Ctx::new(profile, library);
         let (continue_watching_preview, continue_watching_preview_effects) =
-            ContinueWatchingPreview::new(&library, &notifications);
-
-        let ctx = Ctx::new(profile, library, streams, notifications);
-
+            ContinueWatchingPreview::new(&ctx.library);
         let (discover, discover_effects) = CatalogWithFilters::<MetaItemPreview>::new(&ctx.profile);
         let (library_, library_effects) = LibraryWithFilters::<NotRemovedFilter>::new(&ctx.library);
         let (library_by_type, library_by_type_effects) = LibraryByType::<NotRemovedFilter>::new();
