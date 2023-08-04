@@ -42,7 +42,12 @@ pub struct AndroidModel {
 }
 
 impl AndroidModel {
-    pub fn new(profile: Profile, library: LibraryBucket, streams: StreamsBucket, notifications: NotificationsBucket) -> (AndroidModel, Effects) {
+    pub fn new(
+        profile: Profile,
+        library: LibraryBucket,
+        streams: StreamsBucket,
+        notifications: NotificationsBucket,
+    ) -> (AndroidModel, Effects) {
         let (continue_watching_preview, continue_watching_preview_effects) =
             ContinueWatchingPreview::new(&library, &notifications);
 

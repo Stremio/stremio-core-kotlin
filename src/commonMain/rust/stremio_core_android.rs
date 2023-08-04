@@ -76,9 +76,11 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                         library.merge_bucket(other_bucket);
                     };
                     let streams = streams.unwrap_or(StreamsBucket::new(profile.uid()));
-                    let notifications = notifications.unwrap_or(
-                        NotificationsBucket::new::<AndroidEnv>(profile.uid(), vec![]),
-                    );
+                    let notifications = notifications.unwrap_or(NotificationsBucket::new::<
+                        AndroidEnv,
+                    >(
+                        profile.uid(), vec![]
+                    ));
                     let (model, effects) =
                         AndroidModel::new(profile, library, streams, notifications);
                     let (runtime, rx) = Runtime::<AndroidEnv, _>::new(

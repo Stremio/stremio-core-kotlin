@@ -12,7 +12,7 @@ fn main() {
         println!("cargo:rerun-if-changed={display_path}");
     }
     let file_descriptors =
-        protox::compile(proto_paths, &[proto_dir]).expect("Expected file descriptors");
+        protox::compile(proto_paths, [proto_dir]).expect("Expected file descriptors");
     Config::new()
         .compile_well_known_types()
         .out_dir("src/commonMain/rust/protobuf")

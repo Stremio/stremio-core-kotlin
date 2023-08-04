@@ -45,9 +45,8 @@ serde_path_to_error = "0.1"
 # TODO: Updating the dependency requires changes to jni_ext
 jni = "0.19"
 reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
-tokio = { version = "1", features = ["rt", "rt-multi-thread", "sync"] }
+tokio = { version = "1", features = ["rt", "rt-multi-thread"] }
 openssl = { version = "0.10", features = ["vendored"] }
-# bytes = "1.1"
 prost = "0.11"
 prost-types = "0.11"
 http-cache-reqwest = "0.11"

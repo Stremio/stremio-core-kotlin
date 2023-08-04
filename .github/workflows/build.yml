@@ -19,9 +19,9 @@ jobs:
       - name: Build code
         run: cargo build
       - name: Lint code format
-        run: cargo fmt --all -- --check
+        run: cargo fmt --all --check
       - name: Lint code
-        run: cargo clippy --all -- -D warnings
+        run: cargo clippy --no-deps -- -D warnings
 
       # MSRV
       - name: Check MSRV
