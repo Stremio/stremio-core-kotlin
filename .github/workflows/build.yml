@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches:
-      - '**'
+      - "**"
 
 jobs:
   build:
@@ -23,8 +23,7 @@ jobs:
       - name: Lint code
         run: cargo clippy --no-deps -- -D warnings
 
-      # MSRV
-      - name: Check MSRV
-        uses: dtolnay/rust-toolchain@1.66.1
-      - name: Cargo check
+        # MSRV
+      - uses: dtolnay/rust-toolchain@1.67.1
+      - name: Cargo check MSRV
         run: cargo check
