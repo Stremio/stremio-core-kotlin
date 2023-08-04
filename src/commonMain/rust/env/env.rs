@@ -1,5 +1,9 @@
-use crate::env::{fetch, AndroidEvent, KotlinClassName, Storage};
-use crate::model::AndroidModel;
+use std::{
+    collections::HashMap,
+    os::raw::{c_char, c_int},
+    sync::{LockResult, RwLock, RwLockReadGuard},
+};
+
 use chrono::{DateTime, Utc};
 use futures::{Future, TryFutureExt};
 use http::Request;
@@ -8,17 +12,18 @@ use jni::JNIEnv;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use std::collections::HashMap;
-#[cfg(debug_assertions)]
-use std::ffi::CString;
-use std::os::raw::{c_char, c_int};
-use std::sync::{LockResult, RwLock, RwLockReadGuard};
-use stremio_analytics::Analytics;
-use stremio_core::models::ctx::Ctx;
-use stremio_core::models::streaming_server::StreamingServer;
-use stremio_core::runtime::msg::Event;
-use stremio_core::runtime::{Env, EnvError, EnvFuture, EnvFutureExt, TryEnvFuture};
 use strum::IntoEnumIterator;
+
+use stremio_core::{
+    analytics::Analytics,
+    models::{ctx::Ctx, streaming_server::StreamingServer},
+    runtime::{msg::Event, Env, EnvError, EnvFuture, EnvFutureExt, TryEnvFuture},
+};
+
+use crate::{
+    env::{fetch, AndroidEvent, KotlinClassName, Storage},
+    model::AndroidModel,
+};
 
 const INSTALLATION_ID_STORAGE_KEY: &str = "installation_id";
 #[cfg(debug_assertions)]
@@ -208,9 +213,11 @@ impl Env for AndroidEnv {
     }
     #[cfg(debug_assertions)]
     fn log(message: String) {
+        use std::ffi::CString;
+        let tag = CString::new(LOG_TAG).unwrap();
+        let message = CString::new(message).unwrap();
+
         unsafe {
-            let tag = CString::new(LOG_TAG).unwrap();
-            let message = CString::new(message).unwrap();
             __android_log_write(LOG_DEBUG_PRIORITY as c_int, tag.as_ptr(), message.as_ptr());
         }
     }
