@@ -62,7 +62,7 @@ glob = "0.3.0"
 # see https://github.com/nicokoch/reflink/issues/4
 reflink = { git = "https://github.com/nicokoch/reflink", rev = "e8d93b46" }
 # see https://github.com/alexcrichton/openssl-src-rs/issues/188
-openssl-src = { git = "https://github.com/sleeyax/openssl-src-rs", rev =  "920c4df6b10dbca574810c0dc88db4bca4c332af" }
+openssl-src = { git = "https://github.com/Stremio/openssl-src-rs", rev =  "920c4df6b10dbca574810c0dc88db4bca4c332af" }
 
 # [patch.'https://github.com/Stremio/stremio-core']
 
