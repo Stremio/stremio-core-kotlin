@@ -11,33 +11,35 @@ message Event {
   oneof type {
     ProfilePushedToStorage profile_pushed_to_storage = 1;
     LibraryItemsPushedToStorage library_items_pushed_to_storage = 2;
-    UserPulledFromAPI user_pulled_from_api = 3;
-    UserPushedToAPI user_pushed_to_api = 4;
-    AddonsPulledFromAPI addons_pulled_from_api = 5;
-    AddonsPushedToAPI addons_pushed_to_api = 6;
-    LibrarySyncWithAPIPlanned library_sync_with_api_planned = 7;
-    LibraryItemsPushedToAPI library_items_pushed_to_api = 8;
-    LibraryItemsPulledFromAPI library_items_pulled_from_api = 9;
-    UserAuthenticated user_authenticated = 10;
-    UserLoggedOut user_logged_out = 11;
-    SessionDeleted session_deleted = 12;
-    TraktAddonFetched trakt_addon_fetched = 13;
-    TraktLoggedOut trakt_logged_out = 14;
-    AddonInstalled addon_installed = 15;
-    AddonUpgraded addon_upgraded = 16;
-    AddonUninstalled addon_uninstalled = 17;
-    SettingsUpdated settings_updated = 18;
-    LibraryItemAdded library_item_added = 19;
-    LibraryItemRemoved library_item_removed = 20;
-    LibraryItemRewinded library_item_rewinded = 21;
-    PlayerPlaying player_playing = 22;
-    PlayerStopped player_stopped = 23;
-    PlayerEnded player_ended = 24;
-    TraktPlaying trakt_playing = 25;
-    TraktPaused trakt_paused = 26;
-    MagnetParsed magnet_parsed = 27;
-    TorrentParsed torrent_parsed = 28;
-    PlayingOnDevice playing_on_device = 29;
+    StreamsPushedToStorage streams_pushed_to_storage = 3;
+    NotificationsPushedToStorage notifications_pushed_to_storage = 4;
+    UserPulledFromAPI user_pulled_from_api = 5;
+    UserPushedToAPI user_pushed_to_api = 6;
+    AddonsPulledFromAPI addons_pulled_from_api = 7;
+    AddonsPushedToAPI addons_pushed_to_api = 8;
+    LibrarySyncWithAPIPlanned library_sync_with_api_planned = 9;
+    LibraryItemsPushedToAPI library_items_pushed_to_api = 10;
+    LibraryItemsPulledFromAPI library_items_pulled_from_api = 11;
+    UserAuthenticated user_authenticated = 12;
+    UserLoggedOut user_logged_out = 13;
+    SessionDeleted session_deleted = 14;
+    TraktAddonFetched trakt_addon_fetched = 15;
+    TraktLoggedOut trakt_logged_out = 16;
+    AddonInstalled addon_installed = 17;
+    AddonUpgraded addon_upgraded = 18;
+    AddonUninstalled addon_uninstalled = 19;
+    SettingsUpdated settings_updated = 20;
+    LibraryItemAdded library_item_added = 21;
+    LibraryItemRemoved library_item_removed = 22;
+    LibraryItemRewinded library_item_rewinded = 23;
+    PlayerPlaying player_playing = 24;
+    PlayerStopped player_stopped = 25;
+    PlayerEnded player_ended = 26;
+    TraktPlaying trakt_playing = 27;
+    TraktPaused trakt_paused = 28;
+    MagnetParsed magnet_parsed = 29;
+    TorrentParsed torrent_parsed = 30;
+    PlayingOnDevice playing_on_device = 31;
     Error error = 100;
   }
 
@@ -45,6 +47,12 @@ message Event {
     optional string uid = 1;
   }
   message LibraryItemsPushedToStorage {
+    repeated string ids = 1;
+  }
+  message StreamsPushedToStorage {
+    optional string uid = 1;
+  }
+  message NotificationsPushedToStorage {
     repeated string ids = 1;
   }
   message UserPulledFromAPI {

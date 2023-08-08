@@ -1214,7 +1214,7 @@ checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
 [[package]]
 name = "openssl-src"
 version = "111.27.0+1.1.1v"
-source = "git+https://github.com/sleeyax/openssl-src-rs?rev=920c4df6b10dbca574810c0dc88db4bca4c332af#920c4df6b10dbca574810c0dc88db4bca4c332af"
+source = "git+https://github.com/Stremio/openssl-src-rs?rev=920c4df6b10dbca574810c0dc88db4bca4c332af#920c4df6b10dbca574810c0dc88db4bca4c332af"
 dependencies = [
  "cc",
 ]
