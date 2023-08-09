@@ -18,11 +18,13 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     runtime::event::LibraryItemsPushedToStorage { ids: ids.clone() },
                 )
             }
-            Event::StreamsPushedToStorage { uid: _ } => {
-                todo!()
-            }
-            Event::NotificationsPushedToStorage { ids: _ } => {
-                todo!()
+            Event::StreamsPushedToStorage { uid } => runtime::event::Type::StreamsPushedToStorage(
+                runtime::event::StreamsPushedToStorage { uid: uid.clone() },
+            ),
+            Event::NotificationsPushedToStorage { ids } => {
+                runtime::event::Type::NotificationsPushedToStorage(
+                    runtime::event::NotificationsPushedToStorage { ids: ids.clone() },
+                )
             }
             Event::UserPulledFromAPI { uid } => {
                 runtime::event::Type::UserPulledFromApi(runtime::event::UserPulledFromApi {
