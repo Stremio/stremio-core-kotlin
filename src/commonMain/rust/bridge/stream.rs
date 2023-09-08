@@ -137,15 +137,13 @@ impl
             .unwrap_or_default();
 
         let deep_links = match (stream_request, meta_request) {
-            (Some(stream_request), Some(meta_request)) => {
-                StreamDeepLinks::from((
-                    self,
-                    *stream_request,
-                    *meta_request,
-                    &ctx.map(|ctx| ctx.profile.settings.streaming_server_url.clone()),
-                    &settings,
-                ))
-            }
+            (Some(stream_request), Some(meta_request)) => StreamDeepLinks::from((
+                self,
+                *stream_request,
+                *meta_request,
+                &ctx.map(|ctx| ctx.profile.settings.streaming_server_url.clone()),
+                &settings,
+            )),
             _ => StreamDeepLinks::from((
                 self,
                 &ctx.map(|ctx| ctx.profile.settings.streaming_server_url.clone()),
