@@ -138,8 +138,6 @@ impl
 
         let deep_links = match (stream_request, meta_request) {
             (Some(stream_request), Some(meta_request)) => {
-                // when https://github.com/Stremio/stremio-core/pull/490 is merged:
-                // StreamDeepLinks::from((self, *stream_request, *meta_request, &settings))
                 StreamDeepLinks::from((
                     self,
                     *stream_request,
@@ -148,8 +146,6 @@ impl
                     &settings,
                 ))
             }
-            // when https://github.com/Stremio/stremio-core/pull/490 is merged:
-            // _ => StreamDeepLinks::from((self, &settings)),
             _ => StreamDeepLinks::from((
                 self,
                 &ctx.map(|ctx| ctx.profile.settings.streaming_server_url.clone()),
