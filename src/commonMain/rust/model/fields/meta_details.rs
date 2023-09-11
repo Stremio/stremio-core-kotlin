@@ -39,6 +39,15 @@ impl ToProtobuf<types::video::SeriesInfo, ()> for SeriesInfo {
     }
 }
 
+impl FromProtobuf<SeriesInfo> for types::video::SeriesInfo {
+    fn from_protobuf(&self) -> SeriesInfo {
+        SeriesInfo {
+            season: self.season.unsigned_abs() as u32,
+            episode: self.episode.unsigned_abs() as u32,
+        }
+    }
+}
+
 impl
     ToProtobuf<
         types::Video,
@@ -76,6 +85,23 @@ impl
                 .and_then(|library_item| library_item.state.video_id.to_owned())
                 .map(|current_video_id| current_video_id == self.id)
                 .unwrap_or_default(),
+        }
+    }
+}
+
+impl FromProtobuf<Video> for types::Video {
+    fn from_protobuf(&self) -> Video {
+        Video {
+            id: self.id.to_owned(),
+            title: self.title.to_owned(),
+            released: self.released.to_owned().from_protobuf(),
+            overview: self.overview.to_owned(),
+            thumbnail: self.thumbnail.to_owned(),
+            streams: self.streams.to_owned().from_protobuf(),
+            series_info: self.series_info.to_owned().from_protobuf(),
+            // trailer_streams: self.trailer_streams.to_owned(),
+            // TODO: implement trailer streams!
+            trailer_streams: vec![],
         }
     }
 }

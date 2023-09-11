@@ -54,7 +54,8 @@ impl AndroidModel {
         let ctx = Ctx::new(profile, library, streams, notifications);
 
         let (discover, discover_effects) = CatalogWithFilters::<MetaItemPreview>::new(&ctx.profile);
-        let (library_, library_effects) = LibraryWithFilters::<NotRemovedFilter>::new(&ctx.library);
+        let (library_, library_effects) =
+            LibraryWithFilters::<NotRemovedFilter>::new(&ctx.library, &ctx.notifications);
         let (library_by_type, library_by_type_effects) = LibraryByType::<NotRemovedFilter>::new();
         let (addons, addons_effects) = AddonsWithFilters::new(&ctx.profile);
         let (streaming_server, streaming_server_effects) =

@@ -109,7 +109,7 @@ impl FromProtobuf<Action> for runtime::Action {
                     }
                     Some(action_meta_details::Args::MarkVideoAsWatched(video_state)) => {
                         Action::MetaDetails(ActionMetaDetails::MarkVideoAsWatched(
-                            video_state.video_id.to_owned(),
+                            video_state.video.from_protobuf(),
                             video_state.is_watched,
                         ))
                     }
