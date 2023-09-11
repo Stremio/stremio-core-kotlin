@@ -181,7 +181,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateNative(
         .call_method(field, "getValue", "()I", &[])
         .and_then(|result| result.i())
         .ok()
-        .and_then(|result| Field::from_i32(result).from_protobuf())
+        .and_then(|result| Field::try_from(result).ok().from_protobuf())
         .expect("AndroidModelField convert failed");
     let runtime = RUNTIME.read().expect("RUNTIME read failed");
     let runtime = runtime

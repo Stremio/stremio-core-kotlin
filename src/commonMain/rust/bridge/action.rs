@@ -212,7 +212,10 @@ impl FromProtobuf<Action> for runtime::Action {
 impl FromProtobuf<RuntimeAction<AndroidEnv, AndroidModel>> for runtime::RuntimeAction {
     fn from_protobuf(&self) -> RuntimeAction<AndroidEnv, AndroidModel> {
         RuntimeAction {
-            field: self.field.and_then(Field::from_i32).from_protobuf(),
+            field: self
+                .field
+                .and_then(|value| Field::try_from(value).ok())
+                .from_protobuf(),
             action: self.action.from_protobuf(),
         }
     }

@@ -61,9 +61,10 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             binge_watching: self.binge_watching,
             play_in_background: self.play_in_background,
             hardware_decoding: self.hardware_decoding,
-            frame_rate_matching_strategy: types::profile::FrameRateMatchingStrategy::from_i32(
+            frame_rate_matching_strategy: types::profile::FrameRateMatchingStrategy::try_from(
                 self.frame_rate_matching_strategy,
             )
+            .ok()
             .from_protobuf()
             .unwrap_or(FrameRateMatchingStrategy::Disabled),
             next_video_notification_duration: u32::try_from(cmp::max(
