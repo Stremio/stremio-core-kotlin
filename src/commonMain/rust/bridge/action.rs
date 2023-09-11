@@ -109,7 +109,7 @@ impl FromProtobuf<Action> for runtime::Action {
                     }
                     Some(action_meta_details::Args::MarkVideoAsWatched(video_state)) => {
                         Action::MetaDetails(ActionMetaDetails::MarkVideoAsWatched(
-                            video_state.video_id.to_owned(),
+                            video_state.video.from_protobuf(),
                             video_state.is_watched,
                         ))
                     }
@@ -212,7 +212,10 @@ impl FromProtobuf<Action> for runtime::Action {
 impl FromProtobuf<RuntimeAction<AndroidEnv, AndroidModel>> for runtime::RuntimeAction {
     fn from_protobuf(&self) -> RuntimeAction<AndroidEnv, AndroidModel> {
         RuntimeAction {
-            field: self.field.and_then(Field::from_i32).from_protobuf(),
+            field: self
+                .field
+                .and_then(|value| Field::try_from(value).ok())
+                .from_protobuf(),
             action: self.action.from_protobuf(),
         }
     }

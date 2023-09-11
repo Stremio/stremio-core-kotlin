@@ -26,7 +26,8 @@ impl FromProtobuf<LibraryRequest> for models::library_with_filters::LibraryReque
         let page = LibraryRequestPage(NonZeroUsize::new(page).unwrap());
         LibraryRequest {
             r#type: self.r#type.to_owned(),
-            sort: models::library_with_filters::Sort::from_i32(self.sort)
+            sort: models::library_with_filters::Sort::try_from(self.sort)
+                .ok()
                 .from_protobuf()
                 .unwrap_or(Sort::LastWatched),
             page,

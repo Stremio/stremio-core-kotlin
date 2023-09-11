@@ -6,6 +6,22 @@ option java_package = "com.stremio.core.models";
 
 import "stremio/core/types/library.proto";
 
+import "stremio/core/types/meta_item.proto";
+
+message ContinueWatchingItem {
+  required string id = 1;
+  required string type = 2;
+  required string name = 3;
+  optional string poster = 4;
+  required stremio.core.types.PosterShape poster_shape = 5;
+  required stremio.core.types.LibraryItemState state = 6;
+  required stremio.core.types.MetaItemBehaviorHints behavior_hints = 7;
+  required stremio.core.types.MetaItemDeepLinks deep_links = 8;
+  optional double progress = 9;
+  required bool watched = 10;
+  required uint64 notifications = 11;
+}
+
 message ContinueWatchingPreview {
-  repeated stremio.core.types.LibraryItem library_items = 1;
+  repeated ContinueWatchingItem items = 1;
 }

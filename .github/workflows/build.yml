@@ -3,25 +3,32 @@ name: Build
 on:
   push:
     branches:
-      - '**'
+      - "**"
+
+# Stops the running workflow of previous pushes
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set default rust toolchain
-        run: rustup default 1.61.0
-      - name: Install rustfmt
-        run: rustup component add rustfmt
-      - name: Install clippy
-        run: rustup component add clippy
+        uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
       - name: Rust cache
         uses: Swatinem/rust-cache@v2
       - name: Build code
         run: cargo build
       - name: Lint code format
-        run: cargo fmt --all -- --check
+        run: cargo fmt --all --check
       - name: Lint code
-        run: cargo clippy --all -- -D warnings
+        run: cargo clippy --no-deps -- -D warnings
+
+        # MSRV
+      - uses: dtolnay/rust-toolchain@1.67.1
+      - name: Cargo check MSRV
+        run: cargo check

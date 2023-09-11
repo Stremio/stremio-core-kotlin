@@ -26,7 +26,8 @@ impl FromProtobuf<MetaItemPreview> for types::MetaItemPreview {
             id: self.id.to_owned(),
             r#type: self.r#type.to_owned(),
             name: self.name.to_owned(),
-            poster_shape: types::PosterShape::from_i32(self.poster_shape)
+            poster_shape: types::PosterShape::try_from(self.poster_shape)
+                .ok()
                 .from_protobuf()
                 .unwrap_or(PosterShape::Poster),
             poster: self.poster.from_protobuf(),

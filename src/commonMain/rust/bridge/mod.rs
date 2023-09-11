@@ -7,6 +7,9 @@ pub use android_model_field::*;
 mod auth_request;
 pub use auth_request::*;
 
+mod continue_watching_preview;
+pub use continue_watching_preview::*;
+
 mod date;
 pub use date::*;
 

@@ -9,7 +9,8 @@ use crate::protobuf::stremio::core::models;
 impl FromProtobuf<Selected> for models::library_by_type::Selected {
     fn from_protobuf(&self) -> Selected {
         Selected {
-            sort: models::library_with_filters::Sort::from_i32(self.sort)
+            sort: models::library_with_filters::Sort::try_from(self.sort)
+                .ok()
                 .from_protobuf()
                 .unwrap_or(Sort::LastWatched),
         }

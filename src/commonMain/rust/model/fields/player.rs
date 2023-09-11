@@ -43,6 +43,7 @@ impl ToProtobuf<models::player::Selected, Ctx> for Selected {
                 .find(|addon| addon.transport_url == request.base)
                 .map(|addon| &addon.manifest.name)
         });
+
         models::player::Selected {
             stream: self
                 .stream
