@@ -104,6 +104,14 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     id: id.to_owned(),
                 })
             }
+            Event::LibraryItemNotificationsToggled { id } => {
+                runtime::event::Type::LibraryItemNotificationsToggled(
+                    runtime::event::LibraryItemNotificationsToggled { id: id.clone() },
+                )
+            }
+            Event::NotificationsDismissed { id } => runtime::event::Type::NotificationsDismissed(
+                runtime::event::NotificationsDismissed { id: id.clone() },
+            ),
             Event::LibrarySyncWithAPIPlanned { uid, plan } => {
                 runtime::event::Type::LibrarySyncWithApiPlanned(
                     runtime::event::LibrarySyncWithApiPlanned {

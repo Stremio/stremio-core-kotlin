@@ -32,14 +32,16 @@ message Event {
     LibraryItemAdded library_item_added = 21;
     LibraryItemRemoved library_item_removed = 22;
     LibraryItemRewinded library_item_rewinded = 23;
-    PlayerPlaying player_playing = 24;
-    PlayerStopped player_stopped = 25;
-    PlayerEnded player_ended = 26;
-    TraktPlaying trakt_playing = 27;
-    TraktPaused trakt_paused = 28;
-    MagnetParsed magnet_parsed = 29;
-    TorrentParsed torrent_parsed = 30;
-    PlayingOnDevice playing_on_device = 31;
+    LibraryItemNotificationsToggled library_item_notifications_toggled = 24;
+    NotificationsDismissed notifications_dismissed = 25;
+    PlayerPlaying player_playing = 26;
+    PlayerStopped player_stopped = 27;
+    PlayerEnded player_ended = 28;
+    TraktPlaying trakt_playing = 29;
+    TraktPaused trakt_paused = 30;
+    MagnetParsed magnet_parsed = 31;
+    TorrentParsed torrent_parsed = 32;
+    PlayingOnDevice playing_on_device = 33;
     Error error = 100;
   }
 
@@ -114,6 +116,12 @@ message Event {
     required string id = 1;
   }
   message LibraryItemRewinded {
+    required string id = 1;
+  }
+  message LibraryItemNotificationsToggled {
+    required string id = 1;
+  }
+  message NotificationsDismissed {
     required string id = 1;
   }
   message PlayerPlaying {
