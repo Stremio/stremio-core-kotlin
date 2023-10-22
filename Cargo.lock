@@ -2240,7 +2240,7 @@ dependencies = [
 [[package]]
 name = "stremio-analytics"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#1b2f6d7427ae08f9155ec74686f285b28004dd72"
+source = "git+https://github.com/Stremio/stremio-core?branch=tv-official-addons-patch#0f1287d9cd0cd5f1376ce452d7c40c18af956fcb"
 dependencies = [
  "derivative",
  "enclose",
@@ -2253,7 +2253,7 @@ dependencies = [
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#1b2f6d7427ae08f9155ec74686f285b28004dd72"
+source = "git+https://github.com/Stremio/stremio-core?branch=tv-official-addons-patch#0f1287d9cd0cd5f1376ce452d7c40c18af956fcb"
 dependencies = [
  "anyhow",
  "base64 0.21.0",
@@ -2337,7 +2337,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#1b2f6d7427ae08f9155ec74686f285b28004dd72"
+source = "git+https://github.com/Stremio/stremio-core?branch=tv-official-addons-patch#0f1287d9cd0cd5f1376ce452d7c40c18af956fcb"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2349,9 +2349,9 @@ dependencies = [
 
 [[package]]
 name = "stremio-official-addons"
-version = "2.0.10"
+version = "2.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f85866d77a26e83d3774dfcbb3871540b3e5e4fc753e26bdd5e8e4aa3bb9f9be"
+checksum = "7e078e462526ca579a7a6e46bcb0106457006abec0ecb97a643b4d6257613db6"
 
 [[package]]
 name = "stremio-serde-hex"
@@ -2367,7 +2367,7 @@ dependencies = [
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#1b2f6d7427ae08f9155ec74686f285b28004dd72"
+source = "git+https://github.com/Stremio/stremio-core?branch=tv-official-addons-patch#0f1287d9cd0cd5f1376ce452d7c40c18af956fcb"
 dependencies = [
  "base64 0.13.0",
  "flate2",
