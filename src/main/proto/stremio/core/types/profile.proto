@@ -27,12 +27,15 @@ message Profile {
     required string subtitles_text_color = 14;
     required string subtitles_background_color = 15;
     required string subtitles_outline_color = 16;
-    required int64 seek_time_duration = 17;
-    optional string secondary_audio_language = 18;
-    optional string secondary_subtitles_language = 19;
-    optional string player_type = 20;
-    required FrameRateMatchingStrategy frame_rate_matching_strategy = 21;
-    required int64 next_video_notification_duration = 22;
+    required bool esc_exit_fullscreen = 17;
+    required int64 seek_time_duration = 18;
+    required int64 seek_short_time_duration = 19;
+    required bool pause_on_minimize = 20;
+    optional string secondary_audio_language = 21;
+    optional string secondary_subtitles_language = 22;
+    optional string player_type = 23;
+    required FrameRateMatchingStrategy frame_rate_matching_strategy = 24;
+    required int64 next_video_notification_duration = 25;
   }
 
   enum FrameRateMatchingStrategy {

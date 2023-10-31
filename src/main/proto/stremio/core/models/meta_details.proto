@@ -18,6 +18,7 @@ message MetaDetails {
   message Selected {
     required stremio.core.types.ResourcePath meta_path = 1;
     optional stremio.core.types.ResourcePath stream_path = 2;
+    required bool guess_stream = 3;
   }
 }
 

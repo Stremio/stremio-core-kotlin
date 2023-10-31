@@ -11,6 +11,35 @@ message Event {
   oneof type {
     ProfilePushedToStorage profile_pushed_to_storage = 1;
     LibraryItemsPushedToStorage library_items_pushed_to_storage = 2;
+<<<<<<< HEAD
+    UserPulledFromAPI user_pulled_from_api = 3;
+    UserPushedToAPI user_pushed_to_api = 4;
+    AddonsPulledFromAPI addons_pulled_from_api = 5;
+    AddonsPushedToAPI addons_pushed_to_api = 6;
+    LibrarySyncWithAPIPlanned library_sync_with_api_planned = 7;
+    LibraryItemsPushedToAPI library_items_pushed_to_api = 8;
+    LibraryItemsPulledFromAPI library_items_pulled_from_api = 9;
+    UserAuthenticated user_authenticated = 10;
+    UserLoggedOut user_logged_out = 11;
+    SessionDeleted session_deleted = 12;
+    TraktAddonFetched trakt_addon_fetched = 13;
+    TraktLoggedOut trakt_logged_out = 14;
+    AddonInstalled addon_installed = 15;
+    AddonUpgraded addon_upgraded = 16;
+    AddonUninstalled addon_uninstalled = 17;
+    SettingsUpdated settings_updated = 18;
+    LibraryItemAdded library_item_added = 19;
+    LibraryItemRemoved library_item_removed = 20;
+    LibraryItemRewinded library_item_rewinded = 21;
+    PlayerPlaying player_playing = 22;
+    PlayerStopped player_stopped = 23;
+    PlayerEnded player_ended = 24;
+    TraktPlaying trakt_playing = 25;
+    TraktPaused trakt_paused = 26;
+    MagnetParsed magnet_parsed = 27;
+    TorrentParsed torrent_parsed = 28;
+    PlayingOnDevice playing_on_device = 29;
+=======
     StreamsPushedToStorage streams_pushed_to_storage = 3;
     NotificationsPushedToStorage notifications_pushed_to_storage = 4;
     UserPulledFromAPI user_pulled_from_api = 5;
@@ -42,6 +71,7 @@ message Event {
     MagnetParsed magnet_parsed = 31;
     TorrentParsed torrent_parsed = 32;
     PlayingOnDevice playing_on_device = 33;
+>>>>>>> 0b39eef (chore: Add missing runtime events for notifications)
     Error error = 100;
   }
 
@@ -49,12 +79,6 @@ message Event {
     optional string uid = 1;
   }
   message LibraryItemsPushedToStorage {
-    repeated string ids = 1;
-  }
-  message StreamsPushedToStorage {
-    optional string uid = 1;
-  }
-  message NotificationsPushedToStorage {
     repeated string ids = 1;
   }
   message UserPulledFromAPI {

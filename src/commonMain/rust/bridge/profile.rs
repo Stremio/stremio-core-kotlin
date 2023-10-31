@@ -61,9 +61,10 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             binge_watching: self.binge_watching,
             play_in_background: self.play_in_background,
             hardware_decoding: self.hardware_decoding,
-            frame_rate_matching_strategy: types::profile::FrameRateMatchingStrategy::from_i32(
+            frame_rate_matching_strategy: types::profile::FrameRateMatchingStrategy::try_from(
                 self.frame_rate_matching_strategy,
             )
+            .ok()
             .from_protobuf()
             .unwrap_or(FrameRateMatchingStrategy::Disabled),
             next_video_notification_duration: u32::try_from(cmp::max(
@@ -83,8 +84,12 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             subtitles_text_color: self.subtitles_text_color.to_string(),
             subtitles_background_color: self.subtitles_background_color.to_string(),
             subtitles_outline_color: self.subtitles_outline_color.to_string(),
+            esc_exit_fullscreen: self.esc_exit_fullscreen,
             seek_time_duration: u32::try_from(cmp::max(self.seek_time_duration, 0))
                 .unwrap_or(u32::MAX),
+            seek_short_time_duration: u32::try_from(cmp::max(self.seek_time_duration, 0))
+                .unwrap_or(u32::MAX),
+            pause_on_minimize: self.pause_on_minimize,
             streaming_server_warning_dismissed: None,
         }
     }
@@ -161,7 +166,10 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             subtitles_text_color: self.subtitles_text_color.to_string(),
             subtitles_background_color: self.subtitles_background_color.to_string(),
             subtitles_outline_color: self.subtitles_outline_color.to_string(),
+            esc_exit_fullscreen: self.esc_exit_fullscreen,
             seek_time_duration: self.seek_time_duration as i64,
+            seek_short_time_duration: self.seek_short_time_duration as i64,
+            pause_on_minimize: self.pause_on_minimize,
             secondary_audio_language: self.secondary_audio_language.clone(),
             secondary_subtitles_language: self.secondary_subtitles_language.clone(),
             player_type: self.player_type.clone(),

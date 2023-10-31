@@ -1,12 +1,15 @@
 use stremio_core::deep_links::LibraryItemDeepLinks;
 use stremio_core::types::library::LibraryItem;
+use stremio_core::types::profile::Settings;
+use stremio_core::types::streams::StreamsItem;
+use url::Url;
 
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::types;
 
-impl ToProtobuf<types::LibraryItem, ()> for LibraryItem {
-    fn to_protobuf(&self, _args: &()) -> types::LibraryItem {
-        let deep_links = LibraryItemDeepLinks::from(self);
+impl ToProtobuf<types::LibraryItem, (Option<&StreamsItem>, Option<&Url>, &Settings)> for LibraryItem {
+    fn to_protobuf(&self, args: &(Option<&StreamsItem>, Option<&Url>, &Settings)) -> types::LibraryItem {
+        let deep_links = LibraryItemDeepLinks::from((self, args.0, args.1, args.2));
         types::LibraryItem {
             id: self.id.to_string(),
             r#type: self.r#type.to_string(),

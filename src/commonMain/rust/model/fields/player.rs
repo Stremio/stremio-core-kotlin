@@ -1,5 +1,6 @@
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::player::{Player, Selected, VideoParams};
+use stremio_core::types::streams::StreamsItemKey;
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::models;
@@ -11,7 +12,6 @@ impl FromProtobuf<Selected> for models::player::Selected {
             stream_request: self.stream_request.from_protobuf(),
             meta_request: self.meta_request.from_protobuf(),
             subtitles_path: self.subtitles_path.from_protobuf(),
-            video_params: self.video_params.from_protobuf(),
         }
     }
 }
@@ -50,15 +50,28 @@ impl ToProtobuf<models::player::Selected, Ctx> for Selected {
             stream_request: self.stream_request.to_protobuf(&()),
             meta_request: self.meta_request.to_protobuf(&()),
             subtitles_path: self.subtitles_path.to_protobuf(&()),
-            video_params: self.video_params.to_protobuf(&()),
         }
     }
 }
 
 impl ToProtobuf<models::Player, Ctx> for Player {
     fn to_protobuf(&self, ctx: &Ctx) -> models::Player {
+
+
+        // let stream_item = ctx.streams.items.get(StreamsItemKey { meta_id: self.selected.map(|selected| selected.meta_request.and_then) ), video_id: () });
+        
+        // let streaming_server_url = match ctx.streaming_server.base_url.clone() {
+        //     Loadable::Ready(url) => Some(url),
+        //     _ => None,
+        // };
+        // let meta_item_id = self.meta_item.map(|meta_item| meta_item.request.path.id.clone());
+        // let meta_item_id = self.vi.and_then(|meta_item| meta_item.request.path.id.clone());
+        // let stream_item = ctx.streams.items.get(StreamsItemKey { meta_id: self., video_id: () });
+
+
         models::Player {
             selected: self.selected.to_protobuf(ctx),
+            video_params: self.video_params.to_protobuf(&()),
             meta_item: self.meta_item.as_ref().to_protobuf(&(
                 ctx,
                 self.library_item.as_ref(),
@@ -71,7 +84,7 @@ impl ToProtobuf<models::Player, Ctx> for Player {
                 None,
             )),
             series_info: self.series_info.to_protobuf(&()),
-            library_item: self.library_item.to_protobuf(&()),
+            library_item: todo!(), //self.library_item.to_protobuf(&()),
         }
     }
 }

@@ -17,6 +17,7 @@ impl FromProtobuf<Selected> for models::meta_details::Selected {
         Selected {
             meta_path: self.meta_path.from_protobuf(),
             stream_path: self.stream_path.from_protobuf(),
+            guess_stream: self.guess_stream,
         }
     }
 }
@@ -26,6 +27,7 @@ impl ToProtobuf<models::meta_details::Selected, ()> for Selected {
         models::meta_details::Selected {
             meta_path: self.meta_path.to_protobuf(&()),
             stream_path: self.stream_path.to_protobuf(&()),
+            guess_stream: self.guess_stream,
         }
     }
 }
@@ -35,6 +37,15 @@ impl ToProtobuf<types::video::SeriesInfo, ()> for SeriesInfo {
         types::video::SeriesInfo {
             season: self.season as i64,
             episode: self.episode as i64,
+        }
+    }
+}
+
+impl FromProtobuf<SeriesInfo> for types::video::SeriesInfo {
+    fn from_protobuf(&self) -> SeriesInfo {
+        SeriesInfo {
+            season: self.season.unsigned_abs() as u32,
+            episode: self.episode.unsigned_abs() as u32,
         }
     }
 }
@@ -65,6 +76,8 @@ impl
             thumbnail: self.thumbnail.clone(),
             streams: self.streams.to_protobuf(&(None, *addon_name, None, None)),
             series_info: self.series_info.to_protobuf(&()),
+            // trailer_streams: self.trailer_streams.to_protobuf(&()),
+            trailer_streams: todo!(),
             upcoming: self
                 .released
                 .map(|released| released > AndroidEnv::now())
@@ -76,6 +89,23 @@ impl
                 .and_then(|library_item| library_item.state.video_id.to_owned())
                 .map(|current_video_id| current_video_id == self.id)
                 .unwrap_or_default(),
+        }
+    }
+}
+
+impl FromProtobuf<Video> for types::Video {
+    fn from_protobuf(&self) -> Video {
+        Video {
+            id: self.id.to_owned(),
+            title: self.title.to_owned(),
+            released: self.released.to_owned().from_protobuf(),
+            overview: self.overview.to_owned(),
+            thumbnail: self.thumbnail.to_owned(),
+            streams: self.streams.to_owned().from_protobuf(),
+            series_info: self.series_info.to_owned().from_protobuf(),
+            // trailer_streams: self.trailer_streams.to_owned(),
+            // TODO: implement trailer streams!
+            trailer_streams: vec![],
         }
     }
 }

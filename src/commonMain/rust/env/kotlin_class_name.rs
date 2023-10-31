@@ -1,7 +1,6 @@
-use std::convert::TryFrom;
-use std::hash::Hash;
-use strum::IntoEnumIterator;
-use strum_macros::EnumIter;
+use std::{convert::TryFrom, hash::Hash};
+
+use strum::{EnumIter, IntoEnumIterator};
 
 #[derive(Clone, PartialEq, Eq, Hash, EnumIter)]
 #[allow(non_camel_case_types)]

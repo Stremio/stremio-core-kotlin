@@ -9,7 +9,8 @@ use crate::protobuf::stremio::core::models;
 impl FromProtobuf<Selected> for models::library_by_type::Selected {
     fn from_protobuf(&self) -> Selected {
         Selected {
-            sort: models::library_with_filters::Sort::from_i32(self.sort)
+            sort: models::library_with_filters::Sort::try_from(self.sort)
+                .ok()
                 .from_protobuf()
                 .unwrap_or(Sort::LastWatched),
         }
@@ -46,7 +47,7 @@ impl ToProtobuf<models::LibraryCatalog, ()> for Catalog {
         let items = self
             .iter()
             .flatten()
-            .map(|item| item.to_protobuf(&()))
+            .map(|item| item.to_protobuf(todo!("Args")))
             .collect::<Vec<_>>();
         let r#type = items.first().map(|item| item.r#type.to_owned());
         models::LibraryCatalog { r#type, items }
