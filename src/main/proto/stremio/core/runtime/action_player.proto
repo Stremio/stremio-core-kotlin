@@ -6,16 +6,23 @@ option java_package = "com.stremio.core.runtime.msg";
 
 import "google/protobuf/empty.proto";
 
+import "stremio/core/models/player.proto";
+
 message ActionPlayer {
   oneof args {
-    PlayerItemState time_changed = 1;
-    bool paused_changed = 2;
-    google.protobuf.Empty ended = 3;
+    VideoParamsChanged video_params_changed = 1;
+    PlayerItemState time_changed = 2;
+    bool paused_changed = 3;
+    google.protobuf.Empty ended = 4;
   }
 
   message PlayerItemState {
     required uint64 time = 1;
     required uint64 duration = 2;
     required string device = 3;
+  }
+
+  message VideoParamsChanged {
+    optional stremio.core.models.Player.VideoParams video_param = 1;
   }
 }
