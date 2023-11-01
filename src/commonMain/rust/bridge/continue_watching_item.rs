@@ -9,13 +9,23 @@ use crate::protobuf::stremio::core::types;
 
 use super::ToProtobuf;
 
-impl ToProtobuf<models::ContinueWatchingItem, (Option<&StreamsItem>, Option<&Url>, &Settings)> for Item {
-    fn to_protobuf(&self, args: &(Option<&StreamsItem>, Option<&Url>, &Settings)) -> models::ContinueWatchingItem {
-        // Option<&StreamsItem>,
-        // Option<&Url>,
-        // &Settings,
-
-        let deep_links = LibraryItemDeepLinks::from((&self.library_item, args.0, args.1, args.2));
+impl ToProtobuf<models::ContinueWatchingItem, (Option<&StreamsItem>, Option<&Url>, &Settings)>
+    for Item
+{
+    fn to_protobuf(
+        &self,
+        (streams_item, streaming_server_url, settings): &(
+            Option<&StreamsItem>,
+            Option<&Url>,
+            &Settings,
+        ),
+    ) -> models::ContinueWatchingItem {
+        let deep_links = LibraryItemDeepLinks::from((
+            &self.library_item,
+            *streams_item,
+            *streaming_server_url,
+            *settings,
+        ));
         models::ContinueWatchingItem {
             id: self.library_item.id.to_string(),
             r#type: self.library_item.r#type.to_string(),

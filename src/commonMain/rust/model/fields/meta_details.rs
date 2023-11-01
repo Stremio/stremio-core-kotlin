@@ -76,8 +76,6 @@ impl
             thumbnail: self.thumbnail.clone(),
             streams: self.streams.to_protobuf(&(None, *addon_name, None, None)),
             series_info: self.series_info.to_protobuf(&()),
-            // trailer_streams: self.trailer_streams.to_protobuf(&()),
-            trailer_streams: todo!(),
             upcoming: self
                 .released
                 .map(|released| released > AndroidEnv::now())
