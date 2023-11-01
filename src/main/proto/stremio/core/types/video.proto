@@ -15,11 +15,9 @@ message Video {
   optional string thumbnail = 5;
   repeated Stream streams = 6;
   optional SeriesInfo seriesInfo = 7;
-  // TODO: Add trailer streams
-  repeated Stream trailer_streams = 8;
-  required bool upcoming = 9;
-  required bool watched = 10;
-  required bool current_video = 11;
+  required bool upcoming = 8;
+  required bool watched = 9;
+  required bool current_video = 10;
 
   message SeriesInfo {
     required int64 season = 1;
