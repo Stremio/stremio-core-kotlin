@@ -13,15 +13,17 @@ use stremio_core::models::streaming_server::StreamingServer;
 use stremio_core::runtime::Effects;
 use stremio_core::types::api::LinkAuthKey;
 use stremio_core::types::library::LibraryBucket;
+use stremio_core::types::notifications::NotificationsBucket;
 use stremio_core::types::profile::Profile;
 use stremio_core::types::resource::MetaItemPreview;
-use stremio_derive::Model;
+use stremio_core::types::streams::StreamsBucket;
+use stremio_core::Model;
 
 use crate::bridge::ToProtobuf;
 use crate::env::AndroidEnv;
 use crate::model::AddonsWithFilters;
 
-#[derive(Model)]
+#[derive(Model, Clone)]
 #[model(AndroidEnv)]
 pub struct AndroidModel {
     pub ctx: Ctx,
@@ -40,12 +42,20 @@ pub struct AndroidModel {
 }
 
 impl AndroidModel {
-    pub fn new(profile: Profile, library: LibraryBucket) -> (AndroidModel, Effects) {
-        let ctx = Ctx::new(profile, library);
+    pub fn new(
+        profile: Profile,
+        library: LibraryBucket,
+        streams: StreamsBucket,
+        notifications: NotificationsBucket,
+    ) -> (AndroidModel, Effects) {
         let (continue_watching_preview, continue_watching_preview_effects) =
-            ContinueWatchingPreview::new(&ctx.library);
+            ContinueWatchingPreview::new(&library, &notifications);
+
+        let ctx = Ctx::new(profile, library, streams, notifications);
+
         let (discover, discover_effects) = CatalogWithFilters::<MetaItemPreview>::new(&ctx.profile);
-        let (library_, library_effects) = LibraryWithFilters::<NotRemovedFilter>::new(&ctx.library);
+        let (library_, library_effects) =
+            LibraryWithFilters::<NotRemovedFilter>::new(&ctx.library, &ctx.notifications);
         let (library_by_type, library_by_type_effects) = LibraryByType::<NotRemovedFilter>::new();
         let (addons, addons_effects) = AddonsWithFilters::new(&ctx.profile);
         let (streaming_server, streaming_server_effects) =
@@ -82,11 +92,11 @@ impl AndroidModel {
             AndroidModelField::AuthLink => self.auth_link.to_protobuf(&()).encode_to_vec(),
             AndroidModelField::ContinueWatchingPreview => self
                 .continue_watching_preview
-                .to_protobuf(&())
+                .to_protobuf(&self.ctx)
                 .encode_to_vec(),
-            AndroidModelField::Library => self.library.to_protobuf(&()).encode_to_vec(),
+            AndroidModelField::Library => self.library.to_protobuf(&self.ctx).encode_to_vec(),
             AndroidModelField::LibraryByType => {
-                self.library_by_type.to_protobuf(&()).encode_to_vec()
+                self.library_by_type.to_protobuf(&self.ctx).encode_to_vec()
             }
             AndroidModelField::Board => self.board.to_protobuf(&self.ctx).encode_to_vec(),
             AndroidModelField::Search => self.search.to_protobuf(&self.ctx).encode_to_vec(),

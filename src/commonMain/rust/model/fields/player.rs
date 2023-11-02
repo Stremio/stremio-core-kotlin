@@ -11,7 +11,6 @@ impl FromProtobuf<Selected> for models::player::Selected {
             stream_request: self.stream_request.from_protobuf(),
             meta_request: self.meta_request.from_protobuf(),
             subtitles_path: self.subtitles_path.from_protobuf(),
-            video_params: self.video_params.from_protobuf(),
         }
     }
 }
@@ -50,7 +49,6 @@ impl ToProtobuf<models::player::Selected, Ctx> for Selected {
             stream_request: self.stream_request.to_protobuf(&()),
             meta_request: self.meta_request.to_protobuf(&()),
             subtitles_path: self.subtitles_path.to_protobuf(&()),
-            video_params: self.video_params.to_protobuf(&()),
         }
     }
 }
@@ -59,6 +57,7 @@ impl ToProtobuf<models::Player, Ctx> for Player {
     fn to_protobuf(&self, ctx: &Ctx) -> models::Player {
         models::Player {
             selected: self.selected.to_protobuf(ctx),
+            video_params: self.video_params.to_protobuf(&()),
             meta_item: self.meta_item.as_ref().to_protobuf(&(
                 ctx,
                 self.library_item.as_ref(),
@@ -71,7 +70,7 @@ impl ToProtobuf<models::Player, Ctx> for Player {
                 None,
             )),
             series_info: self.series_info.to_protobuf(&()),
-            library_item: self.library_item.to_protobuf(&()),
+            library_item: self.library_item.to_protobuf(ctx),
         }
     }
 }

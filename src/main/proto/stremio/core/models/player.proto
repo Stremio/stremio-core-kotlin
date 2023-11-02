@@ -15,11 +15,12 @@ import "stremio/core/types/video.proto";
 
 message Player {
   optional Selected selected = 1;
-  optional LoadableMetaItem meta_item = 2;
-  repeated LoadableSubtitles subtitles = 3;
-  optional stremio.core.types.Video next_video = 4;
-  optional stremio.core.types.Video.SeriesInfo series_info = 5;
-  optional stremio.core.types.LibraryItem library_item = 6;
+  optional VideoParams video_params = 2;
+  optional LoadableMetaItem meta_item = 3;
+  repeated LoadableSubtitles subtitles = 4;
+  optional stremio.core.types.Video next_video = 5;
+  optional stremio.core.types.Video.SeriesInfo series_info = 6;
+  optional stremio.core.types.LibraryItem library_item = 7;
 
   message VideoParams {
     optional string hash = 1;
@@ -30,7 +31,6 @@ message Player {
     optional stremio.core.types.ResourceRequest stream_request = 2;
     optional stremio.core.types.ResourceRequest meta_request = 3;
     optional stremio.core.types.ResourcePath subtitles_path = 4;
-    optional VideoParams video_params = 5;
   }
 }
 

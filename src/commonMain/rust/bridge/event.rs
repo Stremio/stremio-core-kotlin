@@ -18,6 +18,14 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     runtime::event::LibraryItemsPushedToStorage { ids: ids.clone() },
                 )
             }
+            Event::StreamsPushedToStorage { uid } => runtime::event::Type::StreamsPushedToStorage(
+                runtime::event::StreamsPushedToStorage { uid: uid.clone() },
+            ),
+            Event::NotificationsPushedToStorage { ids } => {
+                runtime::event::Type::NotificationsPushedToStorage(
+                    runtime::event::NotificationsPushedToStorage { ids: ids.clone() },
+                )
+            }
             Event::UserPulledFromAPI { uid } => {
                 runtime::event::Type::UserPulledFromApi(runtime::event::UserPulledFromApi {
                     uid: uid.clone(),
@@ -96,6 +104,14 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     id: id.to_owned(),
                 })
             }
+            Event::LibraryItemNotificationsToggled { id } => {
+                runtime::event::Type::LibraryItemNotificationsToggled(
+                    runtime::event::LibraryItemNotificationsToggled { id: id.clone() },
+                )
+            }
+            Event::NotificationsDismissed { id } => runtime::event::Type::NotificationsDismissed(
+                runtime::event::NotificationsDismissed { id: id.clone() },
+            ),
             Event::LibrarySyncWithAPIPlanned { uid, plan } => {
                 runtime::event::Type::LibrarySyncWithApiPlanned(
                     runtime::event::LibrarySyncWithApiPlanned {
@@ -170,7 +186,7 @@ impl ToProtobuf<runtime::Event, ()> for Event {
 impl ToProtobuf<runtime::RuntimeEvent, ()> for RuntimeEvent<AndroidEnv, AndroidModel> {
     fn to_protobuf(&self, _args: &()) -> runtime::RuntimeEvent {
         let event = match self {
-            RuntimeEvent::NewState(fields) => {
+            RuntimeEvent::NewState(fields, ..) => {
                 runtime::runtime_event::Event::NewState(runtime::runtime_event::NewState {
                     fields: fields
                         .to_protobuf(&())

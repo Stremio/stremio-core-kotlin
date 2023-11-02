@@ -1,3 +1,4 @@
+use stremio_core::models::ctx::Ctx;
 use stremio_core::models::library_by_type::{
     Catalog, LibraryByType, Selectable, SelectableSort, Selected,
 };
@@ -9,7 +10,8 @@ use crate::protobuf::stremio::core::models;
 impl FromProtobuf<Selected> for models::library_by_type::Selected {
     fn from_protobuf(&self) -> Selected {
         Selected {
-            sort: models::library_with_filters::Sort::from_i32(self.sort)
+            sort: models::library_with_filters::Sort::try_from(self.sort)
+                .ok()
                 .from_protobuf()
                 .unwrap_or(Sort::LastWatched),
         }
@@ -41,24 +43,24 @@ impl ToProtobuf<models::library_by_type::Selectable, ()> for Selectable {
     }
 }
 
-impl ToProtobuf<models::LibraryCatalog, ()> for Catalog {
-    fn to_protobuf(&self, _args: &()) -> models::LibraryCatalog {
+impl ToProtobuf<models::LibraryCatalog, Ctx> for Catalog {
+    fn to_protobuf(&self, ctx: &Ctx) -> models::LibraryCatalog {
         let items = self
             .iter()
             .flatten()
-            .map(|item| item.to_protobuf(&()))
+            .map(|item| item.to_protobuf(ctx))
             .collect::<Vec<_>>();
         let r#type = items.first().map(|item| item.r#type.to_owned());
         models::LibraryCatalog { r#type, items }
     }
 }
 
-impl<F> ToProtobuf<models::LibraryByType, ()> for LibraryByType<F> {
-    fn to_protobuf(&self, _args: &()) -> models::LibraryByType {
+impl<F> ToProtobuf<models::LibraryByType, Ctx> for LibraryByType<F> {
+    fn to_protobuf(&self, ctx: &Ctx) -> models::LibraryByType {
         models::LibraryByType {
             selected: self.selected.to_protobuf(&()),
             selectable: self.selectable.to_protobuf(&()),
-            catalogs: self.catalogs.to_protobuf(&()),
+            catalogs: self.catalogs.to_protobuf(ctx),
         }
     }
 }

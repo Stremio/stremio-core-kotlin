@@ -1,12 +1,22 @@
 use stremio_core::deep_links::LibraryItemDeepLinks;
+use stremio_core::models::ctx::Ctx;
 use stremio_core::types::library::LibraryItem;
 
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::types;
 
-impl ToProtobuf<types::LibraryItem, ()> for LibraryItem {
-    fn to_protobuf(&self, _args: &()) -> types::LibraryItem {
-        let deep_links = LibraryItemDeepLinks::from(self);
+impl ToProtobuf<types::LibraryItem, Ctx> for LibraryItem {
+    fn to_protobuf(&self, ctx: &Ctx) -> types::LibraryItem {
+        let notifications = ctx
+            .notifications
+            .items
+            .get(&self.id)
+            .map(|notifs| notifs.len())
+            .unwrap_or_default();
+        let settings = &ctx.profile.settings;
+        let streaming_server_url = &settings.streaming_server_url;
+        let deep_links =
+            LibraryItemDeepLinks::from((self, None, Some(streaming_server_url), settings));
         types::LibraryItem {
             id: self.id.to_string(),
             r#type: self.r#type.to_string(),
@@ -24,12 +34,9 @@ impl ToProtobuf<types::LibraryItem, ()> for LibraryItem {
                 meta_details_streams: deep_links.meta_details_streams,
                 player: deep_links.player,
             },
-            progress: if self.state.time_offset > 0 && self.state.duration > 0 {
-                Some(self.state.time_offset as f64 / self.state.duration as f64)
-            } else {
-                None
-            },
+            progress: self.progress(),
             watched: self.state.times_watched > 0,
+            notifications: notifications as u64,
         }
     }
 }
