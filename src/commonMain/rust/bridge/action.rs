@@ -159,9 +159,9 @@ impl FromProtobuf<Action> for runtime::Action {
                 }
             }
             Some(runtime::action::Type::Player(action_player)) => match &action_player.args {
-                Some(action_player::Args::VideoParamsChanged(video_params_changed)) => {
+                Some(action_player::Args::VideoParamsChanged(video_params)) => {
                     Action::Player(ActionPlayer::VideoParamsChanged {
-                        video_params: video_params_changed.video_param.from_protobuf(),
+                        video_params: Some(video_params.from_protobuf()),
                     })
                 }
                 Some(action_player::Args::TimeChanged(item_state)) => {

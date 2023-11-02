@@ -17,7 +17,7 @@ impl FromProtobuf<Selected> for models::meta_details::Selected {
         Selected {
             meta_path: self.meta_path.from_protobuf(),
             stream_path: self.stream_path.from_protobuf(),
-            guess_stream: self.guess_stream,
+            guess_stream: self.guess_stream_path,
         }
     }
 }
@@ -27,7 +27,7 @@ impl ToProtobuf<models::meta_details::Selected, ()> for Selected {
         models::meta_details::Selected {
             meta_path: self.meta_path.to_protobuf(&()),
             stream_path: self.stream_path.to_protobuf(&()),
-            guess_stream: self.guess_stream,
+            guess_stream_path: self.guess_stream,
         }
     }
 }

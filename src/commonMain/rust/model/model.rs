@@ -92,11 +92,11 @@ impl AndroidModel {
             AndroidModelField::AuthLink => self.auth_link.to_protobuf(&()).encode_to_vec(),
             AndroidModelField::ContinueWatchingPreview => self
                 .continue_watching_preview
-                .to_protobuf(&())
+                .to_protobuf(&self.ctx)
                 .encode_to_vec(),
-            AndroidModelField::Library => self.library.to_protobuf(&()).encode_to_vec(),
+            AndroidModelField::Library => self.library.to_protobuf(&self.ctx).encode_to_vec(),
             AndroidModelField::LibraryByType => {
-                self.library_by_type.to_protobuf(&()).encode_to_vec()
+                self.library_by_type.to_protobuf(&self.ctx).encode_to_vec()
             }
             AndroidModelField::Board => self.board.to_protobuf(&self.ctx).encode_to_vec(),
             AndroidModelField::Search => self.search.to_protobuf(&self.ctx).encode_to_vec(),

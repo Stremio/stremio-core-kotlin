@@ -1,6 +1,7 @@
 use std::cmp;
 use std::convert::TryFrom;
 use std::num::NonZeroUsize;
+use stremio_core::models::ctx::Ctx;
 
 use stremio_core::models::library_with_filters::{
     LibraryRequest, LibraryRequestPage, LibraryWithFilters, Selectable, SelectablePage,
@@ -110,12 +111,12 @@ impl ToProtobuf<models::library_with_filters::Selectable, ()> for Selectable {
     }
 }
 
-impl<F> ToProtobuf<models::LibraryWithFilters, ()> for LibraryWithFilters<F> {
-    fn to_protobuf(&self, _args: &()) -> models::LibraryWithFilters {
+impl<F> ToProtobuf<models::LibraryWithFilters, Ctx> for LibraryWithFilters<F> {
+    fn to_protobuf(&self, ctx: &Ctx) -> models::LibraryWithFilters {
         models::LibraryWithFilters {
             selected: self.selected.to_protobuf(&()),
             selectable: self.selectable.to_protobuf(&()),
-            catalog: self.catalog.to_protobuf(todo!("Args")),
+            catalog: self.catalog.to_protobuf(ctx),
         }
     }
 }

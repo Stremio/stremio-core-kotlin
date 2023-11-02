@@ -186,7 +186,7 @@ impl ToProtobuf<runtime::Event, ()> for Event {
 impl ToProtobuf<runtime::RuntimeEvent, ()> for RuntimeEvent<AndroidEnv, AndroidModel> {
     fn to_protobuf(&self, _args: &()) -> runtime::RuntimeEvent {
         let event = match self {
-            RuntimeEvent::NewState(fields) => {
+            RuntimeEvent::NewState(fields, ..) => {
                 runtime::runtime_event::Event::NewState(runtime::runtime_event::NewState {
                     fields: fields
                         .to_protobuf(&())
