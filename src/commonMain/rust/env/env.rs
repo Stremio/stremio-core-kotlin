@@ -7,7 +7,10 @@ use std::{
 use chrono::{DateTime, Utc};
 use futures::{Future, TryFutureExt};
 use http::Request;
-use jni::{objects::{GlobalRef, JObject}, JNIEnv};
+use jni::{
+    objects::{GlobalRef, JObject},
+    JNIEnv,
+};
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
