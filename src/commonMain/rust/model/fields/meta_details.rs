@@ -1,5 +1,6 @@
 use boolinator::Boolinator;
 use stremio_core::deep_links::MetaItemDeepLinks;
+use stremio_core::models::common::Loadable;
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::meta_details::{MetaDetails, Selected};
 use stremio_core::runtime::Env;
@@ -217,6 +218,23 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
                     })
                     .unwrap_or_else(|| meta_item.preview.name.to_owned())
             });
+        let suggested_stream_request =
+            self.suggested_stream.as_ref().and_then(|suggested_stream| {
+                streams
+                    .iter()
+                    .find(|resource| match &resource.content {
+                        Some(Loadable::Ready(streams)) => streams.contains(suggested_stream),
+                        _ => false,
+                    })
+                    .map(|resource| &resource.request)
+            });
+        let suggested_stream_addon_name = suggested_stream_request.and_then(|stream_request| {
+            ctx.profile
+                .addons
+                .iter()
+                .find(|addon| addon.transport_url == stream_request.base)
+                .map(|addon| &addon.manifest.name)
+        });
         models::MetaDetails {
             selected: self.selected.to_protobuf(&()),
             title,
@@ -226,6 +244,12 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
                 self.watched.as_ref(),
             )),
             streams: streams.to_protobuf(&(ctx, meta_request)),
+            suggested_stream: self.suggested_stream.to_protobuf(&(
+                Some(ctx),
+                suggested_stream_addon_name,
+                suggested_stream_request,
+                meta_request,
+            )),
         }
     }
 }

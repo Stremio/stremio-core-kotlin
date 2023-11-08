@@ -14,6 +14,7 @@ message MetaDetails {
   optional string title = 2;
   optional LoadableMetaItem meta_item = 3;
   repeated LoadableStreams streams = 4;
+  optional stremio.core.types.Stream suggested_stream = 5;
 
   message Selected {
     required stremio.core.types.ResourcePath meta_path = 1;

@@ -1776,7 +1776,7 @@ checksum = "8bdf592881d821b83d471f8af290226c8d51402259e9bb5be7f9f8bdebbb11ac"
 dependencies = [
  "bytes",
  "heck 0.4.1",
- "itertools 0.11.0",
+ "itertools 0.10.3",
  "log",
  "multimap",
  "once_cell",
@@ -1797,7 +1797,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "265baba7fabd416cf5078179f7d2cbeca4ce7a9041111900675ea7c4cb8a4c32"
 dependencies = [
  "anyhow",
- "itertools 0.11.0",
+ "itertools 0.10.3",
  "proc-macro2",
  "quote",
  "syn 2.0.18",
@@ -2329,7 +2329,7 @@ dependencies = [
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#8c6fcd0bab1aa918107775938ccd67a73e5c6b25"
+source = "git+https://github.com/Stremio/stremio-core?branch=implement-stream-state-management#26593fe6af789505bdfcb64f931e3546ec1e18bc"
 dependencies = [
  "anyhow",
  "base64 0.21.0",
@@ -2415,7 +2415,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#8c6fcd0bab1aa918107775938ccd67a73e5c6b25"
+source = "git+https://github.com/Stremio/stremio-core?branch=implement-stream-state-management#26593fe6af789505bdfcb64f931e3546ec1e18bc"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2445,7 +2445,7 @@ dependencies = [
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#8c6fcd0bab1aa918107775938ccd67a73e5c6b25"
+source = "git+https://github.com/Stremio/stremio-core?branch=implement-stream-state-management#26593fe6af789505bdfcb64f931e3546ec1e18bc"
 dependencies = [
  "base64 0.13.0",
  "flate2",

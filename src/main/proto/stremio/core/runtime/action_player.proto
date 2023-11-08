@@ -10,9 +10,10 @@ import "stremio/core/models/player.proto";
 message ActionPlayer {
   oneof args {
     stremio.core.models.Player.VideoParams video_params_changed = 1;
-    PlayerItemState time_changed = 2;
-    bool paused_changed = 3;
-    google.protobuf.Empty ended = 4;
+    stremio.core.models.Player.StreamState stream_state_changed = 2;
+    PlayerItemState time_changed = 3;
+    bool paused_changed = 4;
+    google.protobuf.Empty ended = 5;
   }
 
   message PlayerItemState {

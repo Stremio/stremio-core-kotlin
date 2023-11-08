@@ -164,6 +164,11 @@ impl FromProtobuf<Action> for runtime::Action {
                         video_params: Some(video_params.from_protobuf()),
                     })
                 }
+                Some(action_player::Args::StreamStateChanged(stream_state)) => {
+                    Action::Player(ActionPlayer::StreamStateChanged {
+                        state: stream_state.from_protobuf(),
+                    })
+                }
                 Some(action_player::Args::TimeChanged(item_state)) => {
                     Action::Player(ActionPlayer::TimeChanged {
                         time: item_state.time,

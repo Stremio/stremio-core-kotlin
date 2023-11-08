@@ -16,13 +16,13 @@ lto = true
 opt-level = 3
 
 [dependencies]
-stremio-core = { git = "https://github.com/Stremio/stremio-core", branch = "development", features = [
+stremio-core = { git = "https://github.com/Stremio/stremio-core", branch = "implement-stream-state-management", features = [
     "derive",
     "analytics",
     "env-future-send",
 ] }
 
-stremio-watched-bitfield = { git = "https://github.com/Stremio/stremio-core", branch = "development" }
+stremio-watched-bitfield = { git = "https://github.com/Stremio/stremio-core", branch = "implement-stream-state-management" }
 serde = "1.0.*"
 serde_json = "1.0.*"
 futures = "0.3.*"
