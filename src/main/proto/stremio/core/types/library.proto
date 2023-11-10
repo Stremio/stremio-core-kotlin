@@ -24,4 +24,5 @@ message LibraryItemState {
   required uint64 time_offset = 1;
   required uint64 duration = 2;
   optional string video_id = 3;
+  required bool no_notif = 4;
 }

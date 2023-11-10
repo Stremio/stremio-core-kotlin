@@ -27,6 +27,7 @@ impl ToProtobuf<types::LibraryItem, Ctx> for LibraryItem {
                 time_offset: self.state.time_offset,
                 duration: self.state.duration,
                 video_id: self.state.video_id.clone(),
+                no_notif: self.state.no_notif,
             },
             behavior_hints: self.behavior_hints.to_protobuf(&()),
             deep_links: types::MetaItemDeepLinks {
