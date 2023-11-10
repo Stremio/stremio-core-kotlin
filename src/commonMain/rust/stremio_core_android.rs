@@ -21,6 +21,7 @@ use stremio_core::types::library::LibraryBucket;
 use stremio_core::types::notifications::NotificationsBucket;
 use stremio_core::types::profile::Profile;
 use stremio_core::types::resource::Stream;
+use stremio_core::types::search_history::SearchHistoryBucket;
 use stremio_core::types::streams::StreamsBucket;
 
 use crate::bridge::{FromProtobuf, ToJNIByteArray, ToProtobuf};
@@ -81,8 +82,9 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                     >(
                         profile.uid(), vec![]
                     ));
+                    let search_history = SearchHistoryBucket::new(profile.uid());
                     let (model, effects) =
-                        AndroidModel::new(profile, library, streams, notifications);
+                        AndroidModel::new(profile, library, streams, notifications, search_history);
                     let (runtime, rx) = Runtime::<AndroidEnv, _>::new(
                         model,
                         effects.into_iter().collect::<Vec<_>>(),

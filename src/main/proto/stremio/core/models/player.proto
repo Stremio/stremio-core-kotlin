@@ -26,16 +26,24 @@ message Player {
   message VideoParams {
     optional string hash = 1;
     optional int64 size = 2;
+    optional string filename = 3;
   }
   message StreamState {
-    optional string subtitle_track_id = 1;
-    optional string subtitle_language = 2;
-    optional int64 subtitle_delay = 3;
-    optional string audio_track_id = 4;
-    optional string audio_language = 5;
-    optional int64 audio_delay = 6;
-    optional float playback_speed = 7;
-    optional string player_type = 8;
+    optional SubtitleTrack subtitle_track = 1;
+    optional int64 subtitle_delay = 2;
+    optional AudioTrack audio_track = 3;
+    optional int64 audio_delay = 4;
+    optional float playback_speed = 5;
+    optional string player_type = 6;
+  }
+  message SubtitleTrack {
+    required string id = 1;
+    required bool embedded = 2;
+    optional string language = 3;
+  }
+  message AudioTrack {
+    required string id = 1;
+    optional string language = 2;
   }
   message Selected {
     required stremio.core.types.Stream stream = 1;

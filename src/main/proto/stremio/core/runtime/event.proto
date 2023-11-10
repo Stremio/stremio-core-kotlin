@@ -12,36 +12,37 @@ message Event {
     ProfilePushedToStorage profile_pushed_to_storage = 1;
     LibraryItemsPushedToStorage library_items_pushed_to_storage = 2;
     StreamsPushedToStorage streams_pushed_to_storage = 3;
-    NotificationsPushedToStorage notifications_pushed_to_storage = 4;
-    UserPulledFromAPI user_pulled_from_api = 5;
-    UserPushedToAPI user_pushed_to_api = 6;
-    AddonsPulledFromAPI addons_pulled_from_api = 7;
-    AddonsPushedToAPI addons_pushed_to_api = 8;
-    LibrarySyncWithAPIPlanned library_sync_with_api_planned = 9;
-    LibraryItemsPushedToAPI library_items_pushed_to_api = 10;
-    LibraryItemsPulledFromAPI library_items_pulled_from_api = 11;
-    UserAuthenticated user_authenticated = 12;
-    UserLoggedOut user_logged_out = 13;
-    SessionDeleted session_deleted = 14;
-    TraktAddonFetched trakt_addon_fetched = 15;
-    TraktLoggedOut trakt_logged_out = 16;
-    AddonInstalled addon_installed = 17;
-    AddonUpgraded addon_upgraded = 18;
-    AddonUninstalled addon_uninstalled = 19;
-    SettingsUpdated settings_updated = 20;
-    LibraryItemAdded library_item_added = 21;
-    LibraryItemRemoved library_item_removed = 22;
-    LibraryItemRewinded library_item_rewinded = 23;
-    LibraryItemNotificationsToggled library_item_notifications_toggled = 24;
-    NotificationsDismissed notifications_dismissed = 25;
-    PlayerPlaying player_playing = 26;
-    PlayerStopped player_stopped = 27;
-    PlayerEnded player_ended = 28;
-    TraktPlaying trakt_playing = 29;
-    TraktPaused trakt_paused = 30;
-    MagnetParsed magnet_parsed = 31;
-    TorrentParsed torrent_parsed = 32;
-    PlayingOnDevice playing_on_device = 33;
+    SearchHistoryPushedToStorage search_history_pushed_to_storage = 4;
+    NotificationsPushedToStorage notifications_pushed_to_storage = 5;
+    UserPulledFromAPI user_pulled_from_api = 6;
+    UserPushedToAPI user_pushed_to_api = 7;
+    AddonsPulledFromAPI addons_pulled_from_api = 8;
+    AddonsPushedToAPI addons_pushed_to_api = 9;
+    LibrarySyncWithAPIPlanned library_sync_with_api_planned = 10;
+    LibraryItemsPushedToAPI library_items_pushed_to_api = 11;
+    LibraryItemsPulledFromAPI library_items_pulled_from_api = 12;
+    UserAuthenticated user_authenticated = 13;
+    UserLoggedOut user_logged_out = 14;
+    SessionDeleted session_deleted = 15;
+    TraktAddonFetched trakt_addon_fetched = 16;
+    TraktLoggedOut trakt_logged_out = 17;
+    AddonInstalled addon_installed = 18;
+    AddonUpgraded addon_upgraded = 19;
+    AddonUninstalled addon_uninstalled = 20;
+    SettingsUpdated settings_updated = 21;
+    LibraryItemAdded library_item_added = 22;
+    LibraryItemRemoved library_item_removed = 23;
+    LibraryItemRewinded library_item_rewinded = 24;
+    LibraryItemNotificationsToggled library_item_notifications_toggled = 25;
+    NotificationsDismissed notifications_dismissed = 26;
+    PlayerPlaying player_playing = 27;
+    PlayerStopped player_stopped = 28;
+    PlayerEnded player_ended = 29;
+    TraktPlaying trakt_playing = 30;
+    TraktPaused trakt_paused = 31;
+    MagnetParsed magnet_parsed = 32;
+    TorrentParsed torrent_parsed = 33;
+    PlayingOnDevice playing_on_device = 34;
     Error error = 100;
   }
 
@@ -52,6 +53,9 @@ message Event {
     repeated string ids = 1;
   }
   message StreamsPushedToStorage {
+    optional string uid = 1;
+  }
+  message SearchHistoryPushedToStorage {
     optional string uid = 1;
   }
   message NotificationsPushedToStorage {
