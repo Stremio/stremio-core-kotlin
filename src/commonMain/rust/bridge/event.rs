@@ -21,6 +21,11 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             Event::StreamsPushedToStorage { uid } => runtime::event::Type::StreamsPushedToStorage(
                 runtime::event::StreamsPushedToStorage { uid: uid.clone() },
             ),
+            Event::SearchHistoryPushedToStorage { uid } => {
+                runtime::event::Type::SearchHistoryPushedToStorage(
+                    runtime::event::SearchHistoryPushedToStorage { uid: uid.clone() },
+                )
+            }
             Event::NotificationsPushedToStorage { ids } => {
                 runtime::event::Type::NotificationsPushedToStorage(
                     runtime::event::NotificationsPushedToStorage { ids: ids.clone() },

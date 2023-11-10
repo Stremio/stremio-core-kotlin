@@ -36,6 +36,7 @@ message Profile {
     optional string player_type = 23;
     required FrameRateMatchingStrategy frame_rate_matching_strategy = 24;
     required int64 next_video_notification_duration = 25;
+    required bool surround_sound = 26;
   }
 
   enum FrameRateMatchingStrategy {

@@ -90,6 +90,7 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             seek_short_time_duration: u32::try_from(cmp::max(self.seek_time_duration, 0))
                 .unwrap_or(u32::MAX),
             pause_on_minimize: self.pause_on_minimize,
+            surround_sound: self.surround_sound,
             streaming_server_warning_dismissed: None,
         }
     }
@@ -175,6 +176,7 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             player_type: self.player_type.clone(),
             frame_rate_matching_strategy: self.frame_rate_matching_strategy.to_protobuf(&()) as i32,
             next_video_notification_duration: self.next_video_notification_duration as i64,
+            surround_sound: self.surround_sound,
         }
     }
 }
