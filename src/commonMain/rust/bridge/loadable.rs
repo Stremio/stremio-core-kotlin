@@ -99,6 +99,40 @@ impl
     }
 }
 
+impl
+    ToProtobuf<
+        models::loadable_stream::Content,
+        (&Ctx, &String, &ResourceRequest, Option<&ResourceRequest>),
+    > for Loadable<Option<Stream>, ResourceError>
+{
+    fn to_protobuf(
+        &self,
+        (ctx, addon_name, stream_request, meta_request): &(
+            &Ctx,
+            &String,
+            &ResourceRequest,
+            Option<&ResourceRequest>,
+        ),
+    ) -> models::loadable_stream::Content {
+        match &self {
+            Loadable::Ready(ready) => {
+                models::loadable_stream::Content::Ready(models::OptionStream {
+                    stream: ready.to_protobuf(&(
+                        Some(*ctx),
+                        Some(*addon_name),
+                        Some(*stream_request),
+                        *meta_request,
+                    )),
+                })
+            }
+            Loadable::Err(error) => models::loadable_stream::Content::Error(models::Error {
+                message: error.to_string(),
+            }),
+            Loadable::Loading => models::loadable_stream::Content::Loading(models::Loading {}),
+        }
+    }
+}
+
 impl ToProtobuf<models::loadable_subtitles::Content, Option<&String>>
     for Loadable<Vec<Subtitles>, ResourceError>
 {
