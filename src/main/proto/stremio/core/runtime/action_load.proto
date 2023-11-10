@@ -25,5 +25,8 @@ message ActionLoad {
     stremio.core.models.MetaDetails.Selected meta_details = 7;
     stremio.core.models.Player.Selected player = 8;
     google.protobuf.Empty link = 9;
+    google.protobuf.Empty data_export = 10;
+    google.protobuf.Empty notifications = 11;
+    google.protobuf.Empty local_search = 12;
   }
 }

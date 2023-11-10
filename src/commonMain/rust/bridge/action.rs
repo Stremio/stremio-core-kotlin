@@ -31,6 +31,7 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_ctx::Args::InstallTraktAddon(_args)) => {
                     Action::Ctx(ActionCtx::InstallTraktAddon)
                 }
+                Some(action_ctx::Args::LogoutTrakt(_args)) => Action::Ctx(ActionCtx::LogoutTrakt),
                 Some(action_ctx::Args::UpgradeAddon(descriptor)) => {
                     Action::Ctx(ActionCtx::UpgradeAddon(descriptor.from_protobuf()))
                 }
@@ -49,6 +50,12 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_ctx::Args::RewindLibraryItem(id)) => {
                     Action::Ctx(ActionCtx::RewindLibraryItem(id.to_owned()))
                 }
+                Some(action_ctx::Args::ToggleLibraryItemNotifications(args)) => Action::Ctx(
+                    ActionCtx::ToggleLibraryItemNotifications(args.id.to_owned(), args.toggle),
+                ),
+                Some(action_ctx::Args::DismissNotificationItem(id)) => {
+                    Action::Ctx(ActionCtx::DismissNotificationItem(id.to_owned()))
+                }
                 Some(action_ctx::Args::PushUserToApi(_args)) => {
                     Action::Ctx(ActionCtx::PushUserToAPI)
                 }
@@ -63,6 +70,9 @@ impl FromProtobuf<Action> for runtime::Action {
                 }
                 Some(action_ctx::Args::SyncLibraryWithApi(_args)) => {
                     Action::Ctx(ActionCtx::SyncLibraryWithAPI)
+                }
+                Some(action_ctx::Args::PullNotifications(_args)) => {
+                    Action::Ctx(ActionCtx::PullNotifications)
                 }
                 None => unimplemented!("ActionCtx missing"),
             },
@@ -211,6 +221,13 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Load(ActionLoad::Player(Box::new(selected.from_protobuf())))
                 }
                 Some(action_load::Args::Link(_args)) => Action::Load(ActionLoad::Link),
+                Some(action_load::Args::DataExport(_args)) => Action::Load(ActionLoad::DataExport),
+                Some(action_load::Args::Notifications(_args)) => {
+                    Action::Load(ActionLoad::Notifications)
+                }
+                Some(action_load::Args::LocalSearch(_args)) => {
+                    Action::Load(ActionLoad::LocalSearch)
+                }
                 None => unimplemented!("ActionLoad missing"),
             },
             Some(runtime::action::Type::Unload(_args)) => Action::Unload,

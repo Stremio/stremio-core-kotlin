@@ -14,7 +14,7 @@ message MetaDetails {
   optional string title = 2;
   optional LoadableMetaItem meta_item = 3;
   repeated LoadableStreams streams = 4;
-  optional stremio.core.types.Stream suggested_stream = 5;
+  optional LoadableStream suggested_stream = 5;
 
   message Selected {
     required stremio.core.types.ResourcePath meta_path = 1;
@@ -45,4 +45,17 @@ message LoadableStreams {
 
 message Streams {
   repeated stremio.core.types.Stream streams = 1;
+}
+
+message LoadableStream {
+  required stremio.core.types.ResourceRequest request = 1;
+  oneof content {
+    Loading loading = 2;
+    Error error = 3;
+    OptionStream ready = 4;
+  }
+}
+
+message OptionStream {
+  optional stremio.core.types.Stream stream = 1;
 }
