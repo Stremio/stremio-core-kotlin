@@ -6,7 +6,8 @@ use crate::protobuf::stremio::core::{models, types};
 
 impl ToProtobuf<types::LibraryItem, Ctx> for Item {
     fn to_protobuf(&self, ctx: &Ctx) -> types::LibraryItem {
-        self.library_item.to_protobuf(ctx)
+        self.library_item
+            .to_protobuf(&(ctx, Some(self.notifications)))
     }
 }
 

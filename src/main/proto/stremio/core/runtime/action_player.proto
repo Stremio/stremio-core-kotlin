@@ -13,7 +13,8 @@ message ActionPlayer {
     stremio.core.models.Player.StreamState stream_state_changed = 2;
     PlayerItemState time_changed = 3;
     bool paused_changed = 4;
-    google.protobuf.Empty ended = 5;
+    google.protobuf.Empty next_video = 5;
+    google.protobuf.Empty ended = 6;
   }
 
   message PlayerItemState {

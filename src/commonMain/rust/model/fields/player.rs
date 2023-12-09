@@ -137,7 +137,7 @@ impl ToProtobuf<models::Player, Ctx> for Player {
                 None,
             )),
             series_info: self.series_info.to_protobuf(&()),
-            library_item: self.library_item.to_protobuf(ctx),
+            library_item: self.library_item.to_protobuf(&(ctx, None)),
             stream_state: self.stream_state.to_protobuf(&()),
         }
     }

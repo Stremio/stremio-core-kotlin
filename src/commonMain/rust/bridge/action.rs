@@ -74,6 +74,7 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_ctx::Args::PullNotifications(_args)) => {
                     Action::Ctx(ActionCtx::PullNotifications)
                 }
+                Some(action_ctx::Args::GetEvents(_args)) => Action::Ctx(ActionCtx::GetEvents),
                 None => unimplemented!("ActionCtx missing"),
             },
             Some(runtime::action::Type::Link(action_link)) => match &action_link.args {
@@ -188,6 +189,9 @@ impl FromProtobuf<Action> for runtime::Action {
                 }
                 Some(action_player::Args::PausedChanged(paused)) => {
                     Action::Player(ActionPlayer::PausedChanged { paused: *paused })
+                }
+                Some(action_player::Args::NextVideo(_args)) => {
+                    Action::Player(ActionPlayer::NextVideo {})
                 }
                 Some(action_player::Args::Ended(_args)) => Action::Player(ActionPlayer::Ended {}),
                 None => unimplemented!("ActionLink missing"),

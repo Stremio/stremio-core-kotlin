@@ -37,12 +37,13 @@ message Event {
     NotificationsDismissed notifications_dismissed = 26;
     PlayerPlaying player_playing = 27;
     PlayerStopped player_stopped = 28;
-    PlayerEnded player_ended = 29;
-    TraktPlaying trakt_playing = 30;
-    TraktPaused trakt_paused = 31;
-    MagnetParsed magnet_parsed = 32;
-    TorrentParsed torrent_parsed = 33;
-    PlayingOnDevice playing_on_device = 34;
+    PlayerNextVideo player_next_video = 29;
+    PlayerEnded player_ended = 30;
+    TraktPlaying trakt_playing = 31;
+    TraktPaused trakt_paused = 32;
+    MagnetParsed magnet_parsed = 33;
+    TorrentParsed torrent_parsed = 34;
+    PlayingOnDevice playing_on_device = 35;
     Error error = 100;
   }
 
@@ -132,6 +133,9 @@ message Event {
     // Empty
   }
   message PlayerStopped {
+    // Empty
+  }
+  message PlayerNextVideo {
     // Empty
   }
   message PlayerEnded {

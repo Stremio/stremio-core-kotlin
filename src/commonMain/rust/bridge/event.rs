@@ -146,6 +146,9 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             Event::PlayerStopped { .. } => {
                 runtime::event::Type::PlayerStopped(runtime::event::PlayerStopped {})
             }
+            Event::PlayerNextVideo { .. } => {
+                runtime::event::Type::PlayerNextVideo(runtime::event::PlayerNextVideo {})
+            }
             Event::PlayerEnded { .. } => {
                 runtime::event::Type::PlayerEnded(runtime::event::PlayerEnded {})
             }

@@ -48,7 +48,7 @@ impl ToProtobuf<models::LibraryCatalog, Ctx> for Catalog {
         let items = self
             .iter()
             .flatten()
-            .map(|item| item.to_protobuf(ctx))
+            .map(|item| item.to_protobuf(&(ctx, None)))
             .collect::<Vec<_>>();
         let r#type = items.first().map(|item| item.r#type.to_owned());
         models::LibraryCatalog { r#type, items }

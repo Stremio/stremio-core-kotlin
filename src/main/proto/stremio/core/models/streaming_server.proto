@@ -9,11 +9,12 @@ import "stremio/core/types/meta_item.proto";
 
 message StreamingServer {
   required Selected selected = 1;
-  required LoadableSettings settings = 2;
-  required LoadableBaseUrl base_url = 3;
-  optional LoadableTorrent torrent = 4;
-  required LoadablePlaybackDevices playback_devices = 5;
-  optional LoadableStatistics statistics = 6;
+  optional string base_url = 2;
+  optional string remote_url = 3;
+  required LoadableSettings settings = 4;
+  optional LoadableTorrent torrent = 5;
+  required LoadablePlaybackDevices playback_devices = 6;
+  optional LoadableStatistics statistics = 7;
 
   message Selected {
     required string transport_url = 1;
@@ -26,13 +27,14 @@ message StreamingServer {
     required string app_path = 1;
     required string cache_root = 2;
     required string server_version = 3;
-    optional double cache_size = 4;
-    required uint64 bt_max_connections = 5;
-    required uint64 bt_handshake_timeout = 6;
-    required uint64 bt_request_timeout = 7;
-    required double bt_download_speed_soft_limit = 8;
-    required double bt_download_speed_hard_limit = 9;
-    required uint64 bt_min_peers_for_stable = 10;
+    optional string remote_https = 4;
+    optional double cache_size = 5;
+    required uint64 bt_max_connections = 6;
+    required uint64 bt_handshake_timeout = 7;
+    required uint64 bt_request_timeout = 8;
+    required double bt_download_speed_soft_limit = 9;
+    required double bt_download_speed_hard_limit = 10;
+    required uint64 bt_min_peers_for_stable = 11;
   }
   message Statistics {
     required string name = 1;

@@ -16,6 +16,9 @@ pub use env_error::*;
 mod event;
 pub use event::*;
 
+mod events;
+pub use events::*;
+
 mod extra_value;
 pub use extra_value::*;
 
