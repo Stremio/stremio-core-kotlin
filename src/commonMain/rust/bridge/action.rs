@@ -31,6 +31,7 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_ctx::Args::InstallTraktAddon(_args)) => {
                     Action::Ctx(ActionCtx::InstallTraktAddon)
                 }
+                Some(action_ctx::Args::LogoutTrakt(_args)) => Action::Ctx(ActionCtx::LogoutTrakt),
                 Some(action_ctx::Args::UpgradeAddon(descriptor)) => {
                     Action::Ctx(ActionCtx::UpgradeAddon(descriptor.from_protobuf()))
                 }
@@ -49,6 +50,12 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_ctx::Args::RewindLibraryItem(id)) => {
                     Action::Ctx(ActionCtx::RewindLibraryItem(id.to_owned()))
                 }
+                Some(action_ctx::Args::ToggleLibraryItemNotifications(args)) => Action::Ctx(
+                    ActionCtx::ToggleLibraryItemNotifications(args.id.to_owned(), args.toggle),
+                ),
+                Some(action_ctx::Args::DismissNotificationItem(id)) => {
+                    Action::Ctx(ActionCtx::DismissNotificationItem(id.to_owned()))
+                }
                 Some(action_ctx::Args::PushUserToApi(_args)) => {
                     Action::Ctx(ActionCtx::PushUserToAPI)
                 }
@@ -63,6 +70,13 @@ impl FromProtobuf<Action> for runtime::Action {
                 }
                 Some(action_ctx::Args::SyncLibraryWithApi(_args)) => {
                     Action::Ctx(ActionCtx::SyncLibraryWithAPI)
+                }
+                Some(action_ctx::Args::PullNotifications(_args)) => {
+                    Action::Ctx(ActionCtx::PullNotifications)
+                }
+                Some(action_ctx::Args::GetEvents(_args)) => Action::Ctx(ActionCtx::GetEvents),
+                Some(action_ctx::Args::DismissEvent(id)) => {
+                    Action::Ctx(ActionCtx::DismissEvent(id.to_owned()))
                 }
                 None => unimplemented!("ActionCtx missing"),
             },
@@ -164,6 +178,11 @@ impl FromProtobuf<Action> for runtime::Action {
                         video_params: Some(video_params.from_protobuf()),
                     })
                 }
+                Some(action_player::Args::StreamStateChanged(stream_state)) => {
+                    Action::Player(ActionPlayer::StreamStateChanged {
+                        state: stream_state.from_protobuf(),
+                    })
+                }
                 Some(action_player::Args::TimeChanged(item_state)) => {
                     Action::Player(ActionPlayer::TimeChanged {
                         time: item_state.time,
@@ -173,6 +192,9 @@ impl FromProtobuf<Action> for runtime::Action {
                 }
                 Some(action_player::Args::PausedChanged(paused)) => {
                     Action::Player(ActionPlayer::PausedChanged { paused: *paused })
+                }
+                Some(action_player::Args::NextVideo(_args)) => {
+                    Action::Player(ActionPlayer::NextVideo {})
                 }
                 Some(action_player::Args::Ended(_args)) => Action::Player(ActionPlayer::Ended {}),
                 None => unimplemented!("ActionLink missing"),
@@ -206,6 +228,10 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Load(ActionLoad::Player(Box::new(selected.from_protobuf())))
                 }
                 Some(action_load::Args::Link(_args)) => Action::Load(ActionLoad::Link),
+                Some(action_load::Args::DataExport(_args)) => Action::Load(ActionLoad::DataExport),
+                Some(action_load::Args::LocalSearch(_args)) => {
+                    Action::Load(ActionLoad::LocalSearch)
+                }
                 None => unimplemented!("ActionLoad missing"),
             },
             Some(runtime::action::Type::Unload(_args)) => Action::Unload,

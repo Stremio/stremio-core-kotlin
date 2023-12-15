@@ -12,10 +12,12 @@ use stremio_core::models::player::Player;
 use stremio_core::models::streaming_server::StreamingServer;
 use stremio_core::runtime::Effects;
 use stremio_core::types::api::LinkAuthKey;
+use stremio_core::types::events::DismissedEventsBucket;
 use stremio_core::types::library::LibraryBucket;
 use stremio_core::types::notifications::NotificationsBucket;
 use stremio_core::types::profile::Profile;
 use stremio_core::types::resource::MetaItemPreview;
+use stremio_core::types::search_history::SearchHistoryBucket;
 use stremio_core::types::streams::StreamsBucket;
 use stremio_core::Model;
 
@@ -47,11 +49,20 @@ impl AndroidModel {
         library: LibraryBucket,
         streams: StreamsBucket,
         notifications: NotificationsBucket,
+        search_history: SearchHistoryBucket,
+        dismissed_events: DismissedEventsBucket,
     ) -> (AndroidModel, Effects) {
         let (continue_watching_preview, continue_watching_preview_effects) =
             ContinueWatchingPreview::new(&library, &notifications);
 
-        let ctx = Ctx::new(profile, library, streams, notifications);
+        let ctx = Ctx::new(
+            profile,
+            library,
+            streams,
+            notifications,
+            search_history,
+            dismissed_events,
+        );
 
         let (discover, discover_effects) = CatalogWithFilters::<MetaItemPreview>::new(&ctx.profile);
         let (library_, library_effects) =

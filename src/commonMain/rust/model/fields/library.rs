@@ -116,7 +116,7 @@ impl<F> ToProtobuf<models::LibraryWithFilters, Ctx> for LibraryWithFilters<F> {
         models::LibraryWithFilters {
             selected: self.selected.to_protobuf(&()),
             selectable: self.selectable.to_protobuf(&()),
-            catalog: self.catalog.to_protobuf(ctx),
+            catalog: self.catalog.to_protobuf(&(ctx, None)),
         }
     }
 }

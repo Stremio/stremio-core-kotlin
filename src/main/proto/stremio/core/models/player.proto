@@ -21,10 +21,29 @@ message Player {
   optional stremio.core.types.Video next_video = 5;
   optional stremio.core.types.Video.SeriesInfo series_info = 6;
   optional stremio.core.types.LibraryItem library_item = 7;
+  optional StreamState stream_state = 8;
 
   message VideoParams {
     optional string hash = 1;
     optional int64 size = 2;
+    optional string filename = 3;
+  }
+  message StreamState {
+    optional SubtitleTrack subtitle_track = 1;
+    optional int64 subtitle_delay = 2;
+    optional AudioTrack audio_track = 3;
+    optional int64 audio_delay = 4;
+    optional float playback_speed = 5;
+    optional string player_type = 6;
+  }
+  message SubtitleTrack {
+    required string id = 1;
+    required bool embedded = 2;
+    optional string language = 3;
+  }
+  message AudioTrack {
+    required string id = 1;
+    optional string language = 2;
   }
   message Selected {
     required stremio.core.types.Stream stream = 1;

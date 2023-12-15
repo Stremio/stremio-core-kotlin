@@ -2,13 +2,15 @@ use stremio_core::deep_links::MetaItemDeepLinks;
 use stremio_core::models::common::{Loadable, ResourceError};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::link::LinkError;
-use stremio_core::models::streaming_server::{PlaybackDevice, Settings};
+use stremio_core::models::streaming_server::PlaybackDevice;
 use stremio_core::runtime::EnvError;
 use stremio_core::types::addon::{Descriptor, DescriptorPreview, ResourcePath, ResourceRequest};
-use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
+use stremio_core::types::api::{
+    GetModalResponse, GetNotificationResponse, LinkAuthKey, LinkCodeResponse,
+};
 use stremio_core::types::library::LibraryItem;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
-use stremio_core::types::streaming_server::Statistics;
+use stremio_core::types::streaming_server::{Settings, Statistics};
 use stremio_watched_bitfield::WatchedBitField;
 use url::Url;
 
@@ -95,6 +97,40 @@ impl
                 message: error.to_string(),
             }),
             Loadable::Loading => models::loadable_streams::Content::Loading(models::Loading {}),
+        }
+    }
+}
+
+impl
+    ToProtobuf<
+        models::loadable_stream::Content,
+        (&Ctx, &String, &ResourceRequest, Option<&ResourceRequest>),
+    > for Loadable<Option<Stream>, ResourceError>
+{
+    fn to_protobuf(
+        &self,
+        (ctx, addon_name, stream_request, meta_request): &(
+            &Ctx,
+            &String,
+            &ResourceRequest,
+            Option<&ResourceRequest>,
+        ),
+    ) -> models::loadable_stream::Content {
+        match &self {
+            Loadable::Ready(ready) => {
+                models::loadable_stream::Content::Ready(models::OptionStream {
+                    stream: ready.to_protobuf(&(
+                        Some(*ctx),
+                        Some(*addon_name),
+                        Some(*stream_request),
+                        *meta_request,
+                    )),
+                })
+            }
+            Loadable::Err(error) => models::loadable_stream::Content::Error(models::Error {
+                message: error.to_string(),
+            }),
+            Loadable::Loading => models::loadable_stream::Content::Loading(models::Loading {}),
         }
     }
 }
@@ -269,6 +305,38 @@ impl ToProtobuf<models::loadable_descriptor::Content, Ctx> for Loadable<Descript
                 message: error.to_string(),
             }),
             Loadable::Loading => models::loadable_descriptor::Content::Loading(models::Loading {}),
+        }
+    }
+}
+
+impl ToProtobuf<models::loadable_modal::Content, ()> for Loadable<GetModalResponse, EnvError> {
+    fn to_protobuf(&self, _args: &()) -> models::loadable_modal::Content {
+        match &self {
+            Loadable::Ready(ready) => {
+                models::loadable_modal::Content::Ready(ready.to_protobuf(&()))
+            }
+            Loadable::Err(error) => models::loadable_modal::Content::Error(models::Error {
+                message: error.to_string(),
+            }),
+            Loadable::Loading => models::loadable_modal::Content::Loading(models::Loading {}),
+        }
+    }
+}
+
+impl ToProtobuf<models::loadable_notification::Content, ()>
+    for Loadable<GetNotificationResponse, EnvError>
+{
+    fn to_protobuf(&self, _args: &()) -> models::loadable_notification::Content {
+        match &self {
+            Loadable::Ready(ready) => {
+                models::loadable_notification::Content::Ready(ready.to_protobuf(&()))
+            }
+            Loadable::Err(error) => models::loadable_notification::Content::Error(models::Error {
+                message: error.to_string(),
+            }),
+            Loadable::Loading => {
+                models::loadable_notification::Content::Loading(models::Loading {})
+            }
         }
     }
 }

@@ -158,6 +158,9 @@ impl
                 }
             }),
             in_library: library_item.map(|item| !item.removed).unwrap_or_default(),
+            receive_notifications: library_item
+                .map(|item| !item.state.no_notif)
+                .unwrap_or_default(),
         }
     }
 }
@@ -226,6 +229,7 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
                 self.watched.as_ref(),
             )),
             streams: streams.to_protobuf(&(ctx, meta_request)),
+            suggested_stream: self.suggested_stream.to_protobuf(&(ctx, meta_request)),
         }
     }
 }

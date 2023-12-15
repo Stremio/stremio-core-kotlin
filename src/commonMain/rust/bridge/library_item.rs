@@ -5,13 +5,18 @@ use stremio_core::types::library::LibraryItem;
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::types;
 
-impl ToProtobuf<types::LibraryItem, Ctx> for LibraryItem {
-    fn to_protobuf(&self, ctx: &Ctx) -> types::LibraryItem {
-        let notifications = ctx
-            .notifications
-            .items
-            .get(&self.id)
-            .map(|notifs| notifs.len())
+impl ToProtobuf<types::LibraryItem, (&Ctx, Option<usize>)> for LibraryItem {
+    fn to_protobuf(
+        &self,
+        (ctx, maybe_notifications): &(&Ctx, Option<usize>),
+    ) -> types::LibraryItem {
+        let notifications = maybe_notifications
+            .or_else(|| {
+                ctx.notifications
+                    .items
+                    .get(&self.id)
+                    .map(|notifs| notifs.len())
+            })
             .unwrap_or_default();
         let settings = &ctx.profile.settings;
         let streaming_server_url = &settings.streaming_server_url;
@@ -27,6 +32,7 @@ impl ToProtobuf<types::LibraryItem, Ctx> for LibraryItem {
                 time_offset: self.state.time_offset,
                 duration: self.state.duration,
                 video_id: self.state.video_id.clone(),
+                no_notif: self.state.no_notif,
             },
             behavior_hints: self.behavior_hints.to_protobuf(&()),
             deep_links: types::MetaItemDeepLinks {

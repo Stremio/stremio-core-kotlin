@@ -1,18 +1,18 @@
 use stremio_core::models::streaming_server::{
-    PlaybackDevice, Selected as StreamingServerSelected, Settings as StreamingServerSettings,
-    StatisticsRequest, StreamingServer,
+    PlaybackDevice, Selected as StreamingServerSelected, StatisticsRequest, StreamingServer,
 };
-use stremio_core::types::streaming_server::Statistics;
+use stremio_core::types::streaming_server::{Settings, Statistics};
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::models;
 
-impl FromProtobuf<StreamingServerSettings> for models::streaming_server::Settings {
-    fn from_protobuf(&self) -> StreamingServerSettings {
-        StreamingServerSettings {
+impl FromProtobuf<Settings> for models::streaming_server::Settings {
+    fn from_protobuf(&self) -> Settings {
+        Settings {
             app_path: self.app_path.to_owned(),
             cache_root: self.cache_root.to_owned(),
             server_version: self.server_version.to_owned(),
+            remote_https: self.remote_https.clone(),
             cache_size: self.cache_size.to_owned(),
             bt_max_connections: self.bt_max_connections,
             bt_handshake_timeout: self.bt_handshake_timeout,
@@ -76,12 +76,13 @@ impl ToProtobuf<models::streaming_server::Statistics, ()> for Statistics {
     }
 }
 
-impl ToProtobuf<models::streaming_server::Settings, ()> for StreamingServerSettings {
+impl ToProtobuf<models::streaming_server::Settings, ()> for Settings {
     fn to_protobuf(&self, _args: &()) -> models::streaming_server::Settings {
         models::streaming_server::Settings {
             app_path: self.app_path.to_string(),
             cache_root: self.cache_root.to_string(),
             server_version: self.server_version.to_string(),
+            remote_https: self.remote_https.clone(),
             cache_size: self.cache_size,
             bt_max_connections: self.bt_max_connections,
             bt_handshake_timeout: self.bt_handshake_timeout,
@@ -99,6 +100,7 @@ impl ToProtobuf<models::StreamingServer, ()> for StreamingServer {
             selected: self.selected.to_protobuf(&()),
             settings: self.settings.to_protobuf(&()),
             base_url: self.base_url.to_protobuf(&()),
+            remote_url: self.remote_url.to_protobuf(&()),
             torrent: self
                 .torrent
                 .to_owned()

@@ -1,5 +1,6 @@
 use stremio_core::models::ctx::Ctx;
 use stremio_core::models::player::{Player, Selected, VideoParams};
+use stremio_core::types::streams::{AudioTrack, StreamItemState, SubtitleTrack};
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::models;
@@ -15,11 +16,44 @@ impl FromProtobuf<Selected> for models::player::Selected {
     }
 }
 
+impl FromProtobuf<StreamItemState> for models::player::StreamState {
+    fn from_protobuf(&self) -> StreamItemState {
+        StreamItemState {
+            subtitle_track: self.subtitle_track.from_protobuf(),
+            subtitle_delay: self.subtitle_delay.to_owned(),
+            audio_track: self.audio_track.from_protobuf(),
+            audio_delay: self.audio_delay.to_owned(),
+            playback_speed: self.playback_speed.to_owned(),
+            player_type: self.player_type.to_owned(),
+        }
+    }
+}
+
+impl FromProtobuf<SubtitleTrack> for models::player::SubtitleTrack {
+    fn from_protobuf(&self) -> SubtitleTrack {
+        SubtitleTrack {
+            id: self.id.to_owned(),
+            embedded: self.embedded,
+            language: self.language.to_owned(),
+        }
+    }
+}
+
+impl FromProtobuf<AudioTrack> for models::player::AudioTrack {
+    fn from_protobuf(&self) -> AudioTrack {
+        AudioTrack {
+            id: self.id.to_owned(),
+            language: self.language.to_owned(),
+        }
+    }
+}
+
 impl FromProtobuf<VideoParams> for models::player::VideoParams {
     fn from_protobuf(&self) -> VideoParams {
         VideoParams {
             hash: self.hash.to_owned(),
             size: self.size.map(|x| x as u64).to_owned(),
+            filename: self.filename.to_owned(),
         }
     }
 }
@@ -29,6 +63,39 @@ impl ToProtobuf<models::player::VideoParams, ()> for VideoParams {
         models::player::VideoParams {
             hash: self.hash.to_owned(),
             size: self.size.map(|x| x as i64).to_owned(),
+            filename: self.filename.to_owned(),
+        }
+    }
+}
+
+impl ToProtobuf<models::player::StreamState, ()> for StreamItemState {
+    fn to_protobuf(&self, _args: &()) -> models::player::StreamState {
+        models::player::StreamState {
+            subtitle_track: self.subtitle_track.to_protobuf(&()),
+            subtitle_delay: self.subtitle_delay.to_owned(),
+            audio_track: self.audio_track.to_protobuf(&()),
+            audio_delay: self.audio_delay.to_owned(),
+            playback_speed: self.playback_speed.to_owned(),
+            player_type: self.player_type.to_owned(),
+        }
+    }
+}
+
+impl ToProtobuf<models::player::SubtitleTrack, ()> for SubtitleTrack {
+    fn to_protobuf(&self, _args: &()) -> models::player::SubtitleTrack {
+        models::player::SubtitleTrack {
+            id: self.id.to_owned(),
+            embedded: self.embedded,
+            language: self.language.to_owned(),
+        }
+    }
+}
+
+impl ToProtobuf<models::player::AudioTrack, ()> for AudioTrack {
+    fn to_protobuf(&self, _args: &()) -> models::player::AudioTrack {
+        models::player::AudioTrack {
+            id: self.id.to_owned(),
+            language: self.language.to_owned(),
         }
     }
 }
@@ -70,7 +137,8 @@ impl ToProtobuf<models::Player, Ctx> for Player {
                 None,
             )),
             series_info: self.series_info.to_protobuf(&()),
-            library_item: self.library_item.to_protobuf(ctx),
+            library_item: self.library_item.to_protobuf(&(ctx, None)),
+            stream_state: self.stream_state.to_protobuf(&()),
         }
     }
 }

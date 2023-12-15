@@ -16,16 +16,27 @@ message ActionCtx {
     google.protobuf.Empty logout = 2;
     stremio.core.types.Descriptor install_addon = 3;
     google.protobuf.Empty install_trakt_addon = 4;
-    stremio.core.types.Descriptor upgrade_addon = 5;
-    stremio.core.types.Descriptor uninstall_addon = 6;
-    stremio.core.types.Profile.Settings update_settings = 7;
-    stremio.core.types.MetaItemPreview add_to_library = 8;
-    string remove_from_library = 9;
-    string rewind_library_item = 10;
-    google.protobuf.Empty push_user_to_api = 11;
-    google.protobuf.Empty pull_user_from_api = 12;
-    google.protobuf.Empty push_addons_to_api = 13;
-    google.protobuf.Empty pull_addons_from_api = 14;
-    google.protobuf.Empty sync_library_with_api = 15;
+    google.protobuf.Empty logout_trakt = 5;
+    stremio.core.types.Descriptor upgrade_addon = 6;
+    stremio.core.types.Descriptor uninstall_addon = 7;
+    stremio.core.types.Profile.Settings update_settings = 8;
+    stremio.core.types.MetaItemPreview add_to_library = 9;
+    string remove_from_library = 10;
+    string rewind_library_item = 11;
+    LibraryItemToggle toggle_library_item_notifications = 12;
+    string dismiss_notification_item = 13;
+    google.protobuf.Empty push_user_to_api = 14;
+    google.protobuf.Empty pull_user_from_api = 15;
+    google.protobuf.Empty push_addons_to_api = 16;
+    google.protobuf.Empty pull_addons_from_api = 17;
+    google.protobuf.Empty sync_library_with_api = 18;
+    google.protobuf.Empty pull_notifications = 19;
+    google.protobuf.Empty get_events = 20;
+    string dismiss_event = 21;
+  }
+
+  message LibraryItemToggle {
+    required string id = 1;
+    required bool toggle = 2;
   }
 }

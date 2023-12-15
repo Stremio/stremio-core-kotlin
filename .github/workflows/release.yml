@@ -19,7 +19,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
       - name: Setup Android NDK
-        run: yes | sdkmanager "ndk;21.0.6113669" >/dev/null
+        run: yes | sdkmanager "ndk;21.4.7075529" >/dev/null
       - name: Set default rust toolchain
         run: rustup default 1.67.1
       - name: Install rustfmt

@@ -21,9 +21,19 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             Event::StreamsPushedToStorage { uid } => runtime::event::Type::StreamsPushedToStorage(
                 runtime::event::StreamsPushedToStorage { uid: uid.clone() },
             ),
+            Event::SearchHistoryPushedToStorage { uid } => {
+                runtime::event::Type::SearchHistoryPushedToStorage(
+                    runtime::event::SearchHistoryPushedToStorage { uid: uid.clone() },
+                )
+            }
             Event::NotificationsPushedToStorage { ids } => {
                 runtime::event::Type::NotificationsPushedToStorage(
                     runtime::event::NotificationsPushedToStorage { ids: ids.clone() },
+                )
+            }
+            Event::DismissedEventsPushedToStorage { uid } => {
+                runtime::event::Type::DismissedEventsPushedToStorage(
+                    runtime::event::DismissedEventsPushedToStorage { uid: uid.clone() },
                 )
             }
             Event::UserPulledFromAPI { uid } => {
@@ -140,6 +150,9 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             }
             Event::PlayerStopped { .. } => {
                 runtime::event::Type::PlayerStopped(runtime::event::PlayerStopped {})
+            }
+            Event::PlayerNextVideo { .. } => {
+                runtime::event::Type::PlayerNextVideo(runtime::event::PlayerNextVideo {})
             }
             Event::PlayerEnded { .. } => {
                 runtime::event::Type::PlayerEnded(runtime::event::PlayerEnded {})

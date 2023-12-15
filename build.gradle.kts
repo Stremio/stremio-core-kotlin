@@ -69,7 +69,7 @@ kotlin {
 
 android {
     compileSdk = 33
-    ndkVersion = "21.0.6113669"
+    ndkVersion = "21.4.7075529"
 
     defaultConfig {
         minSdk = 21
