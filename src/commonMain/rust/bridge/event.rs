@@ -31,6 +31,11 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     runtime::event::NotificationsPushedToStorage { ids: ids.clone() },
                 )
             }
+            Event::DismissedEventsPushedToStorage { uid } => {
+                runtime::event::Type::DismissedEventsPushedToStorage(
+                    runtime::event::DismissedEventsPushedToStorage { uid: uid.clone() },
+                )
+            }
             Event::UserPulledFromAPI { uid } => {
                 runtime::event::Type::UserPulledFromApi(runtime::event::UserPulledFromApi {
                     uid: uid.clone(),

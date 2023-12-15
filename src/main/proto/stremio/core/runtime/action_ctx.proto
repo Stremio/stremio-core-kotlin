@@ -32,6 +32,7 @@ message ActionCtx {
     google.protobuf.Empty sync_library_with_api = 18;
     google.protobuf.Empty pull_notifications = 19;
     google.protobuf.Empty get_events = 20;
+    string dismiss_event = 21;
   }
 
   message LibraryItemToggle {

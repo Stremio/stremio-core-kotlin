@@ -75,6 +75,9 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Ctx(ActionCtx::PullNotifications)
                 }
                 Some(action_ctx::Args::GetEvents(_args)) => Action::Ctx(ActionCtx::GetEvents),
+                Some(action_ctx::Args::DismissEvent(id)) => {
+                    Action::Ctx(ActionCtx::DismissEvent(id.to_owned()))
+                }
                 None => unimplemented!("ActionCtx missing"),
             },
             Some(runtime::action::Type::Link(action_link)) => match &action_link.args {
