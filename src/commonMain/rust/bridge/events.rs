@@ -7,8 +7,8 @@ use crate::protobuf::stremio::core::models;
 impl ToProtobuf<models::Events, ()> for Events {
     fn to_protobuf(&self, _args: &()) -> models::Events {
         models::Events {
-            modal: Default::default(),
-            notification: Default::default(),
+            modal: self.modal.to_protobuf(&()),
+            notification: self.notification.to_protobuf(&()),
         }
     }
 }

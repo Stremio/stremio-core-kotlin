@@ -42,14 +42,22 @@ message LoadableModal {
   oneof content {
     Loading loading = 1;
     Error error = 2;
-    EventModal ready = 3;
+    LoadedModal ready = 3;
   }
+}
+
+message LoadedModal {
+  optional EventModal modal = 1;
 }
 
 message LoadableNotification {
   oneof content {
     Loading loading = 1;
     Error error = 2;
-    EventNotification ready = 3;
+    LoadedNotification ready = 3;
   }
+}
+
+message LoadedNotification {
+  optional EventNotification notification = 1;
 }

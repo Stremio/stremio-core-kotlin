@@ -1,6 +1,6 @@
 use stremio_core::deep_links::MetaItemDeepLinks;
 use stremio_core::models::common::{Loadable, ResourceError};
-use stremio_core::models::ctx::Ctx;
+use stremio_core::models::ctx::{Ctx, CtxError};
 use stremio_core::models::link::LinkError;
 use stremio_core::models::streaming_server::PlaybackDevice;
 use stremio_core::runtime::EnvError;
@@ -16,7 +16,7 @@ use url::Url;
 
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
-use crate::protobuf::stremio::core::models::PlaybackDevices;
+use crate::protobuf::stremio::core::models::{LoadedModal, LoadedNotification, PlaybackDevices};
 
 impl ToProtobuf<models::loadable_page::Content, (&Ctx, &ResourceRequest)>
     for Loadable<Vec<MetaItemPreview>, ResourceError>
@@ -309,34 +309,50 @@ impl ToProtobuf<models::loadable_descriptor::Content, Ctx> for Loadable<Descript
     }
 }
 
-impl ToProtobuf<models::loadable_modal::Content, ()> for Loadable<GetModalResponse, EnvError> {
-    fn to_protobuf(&self, _args: &()) -> models::loadable_modal::Content {
-        match &self {
-            Loadable::Ready(ready) => {
-                models::loadable_modal::Content::Ready(ready.to_protobuf(&()))
-            }
+impl ToProtobuf<models::LoadableModal, ()> for Loadable<Option<GetModalResponse>, CtxError> {
+    fn to_protobuf(&self, _args: &()) -> models::LoadableModal {
+        let content = match &self {
+            Loadable::Ready(ready) => models::loadable_modal::Content::Ready(LoadedModal {
+                modal: ready.to_protobuf(&()),
+            }),
             Loadable::Err(error) => models::loadable_modal::Content::Error(models::Error {
-                message: error.to_string(),
+                message: match error {
+                    CtxError::API(error) => error.message.to_owned(),
+                    CtxError::Env(error) => error.message(),
+                    CtxError::Other(error) => error.message(),
+                },
             }),
             Loadable::Loading => models::loadable_modal::Content::Loading(models::Loading {}),
+        };
+        models::LoadableModal {
+            content: Some(content),
         }
     }
 }
 
-impl ToProtobuf<models::loadable_notification::Content, ()>
-    for Loadable<GetNotificationResponse, EnvError>
+impl ToProtobuf<models::LoadableNotification, ()>
+    for Loadable<Option<GetNotificationResponse>, CtxError>
 {
-    fn to_protobuf(&self, _args: &()) -> models::loadable_notification::Content {
-        match &self {
+    fn to_protobuf(&self, _args: &()) -> models::LoadableNotification {
+        let content = match &self {
             Loadable::Ready(ready) => {
-                models::loadable_notification::Content::Ready(ready.to_protobuf(&()))
+                models::loadable_notification::Content::Ready(LoadedNotification {
+                    notification: ready.to_protobuf(&()),
+                })
             }
             Loadable::Err(error) => models::loadable_notification::Content::Error(models::Error {
-                message: error.to_string(),
+                message: match error {
+                    CtxError::API(error) => error.message.to_owned(),
+                    CtxError::Env(error) => error.message(),
+                    CtxError::Other(error) => error.message(),
+                },
             }),
             Loadable::Loading => {
                 models::loadable_notification::Content::Loading(models::Loading {})
             }
+        };
+        models::LoadableNotification {
+            content: Some(content),
         }
     }
 }
