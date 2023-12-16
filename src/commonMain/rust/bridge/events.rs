@@ -17,8 +17,8 @@ impl ToProtobuf<models::EventModal, ()> for GetModalResponse {
     fn to_protobuf(&self, _args: &()) -> models::EventModal {
         models::EventModal {
             id: self.id.to_owned(),
-            title: self.id.to_owned(),
-            message: self.id.to_owned(),
+            title: self.title.to_owned(),
+            message: self.message.to_owned(),
             image_url: self.image_url.to_protobuf(&()),
             addon: self
                 .addon
@@ -36,8 +36,8 @@ impl ToProtobuf<models::EventNotification, ()> for GetNotificationResponse {
     fn to_protobuf(&self, _args: &()) -> models::EventNotification {
         models::EventNotification {
             id: self.id.to_owned(),
-            title: self.id.to_owned(),
-            message: self.id.to_owned(),
+            title: self.title.to_owned(),
+            message: self.message.to_owned(),
             external_url: self.external_url.to_protobuf(&()),
         }
     }
