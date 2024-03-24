@@ -15,8 +15,11 @@ impl FromProtobuf<Sort> for models::library_with_filters::Sort {
     fn from_protobuf(&self) -> Sort {
         match self {
             models::library_with_filters::Sort::LastWatched => Sort::LastWatched,
+            models::library_with_filters::Sort::NameReverse => Sort::NameReverse,
             models::library_with_filters::Sort::Name => Sort::Name,
             models::library_with_filters::Sort::TimesWatched => Sort::TimesWatched,
+            models::library_with_filters::Sort::Watched => Sort::Watched,
+            models::library_with_filters::Sort::NotWatched => Sort::NotWatched,
         }
     }
 }
@@ -49,7 +52,10 @@ impl ToProtobuf<models::library_with_filters::Sort, ()> for Sort {
         match self {
             Sort::LastWatched => models::library_with_filters::Sort::LastWatched,
             Sort::Name => models::library_with_filters::Sort::Name,
+            Sort::NameReverse => models::library_with_filters::Sort::NameReverse,
             Sort::TimesWatched => models::library_with_filters::Sort::TimesWatched,
+            Sort::Watched => models::library_with_filters::Sort::Watched,
+            Sort::NotWatched => models::library_with_filters::Sort::NotWatched,
         }
     }
 }
@@ -105,7 +111,6 @@ impl ToProtobuf<models::library_with_filters::Selectable, ()> for Selectable {
         models::library_with_filters::Selectable {
             types: self.types.to_protobuf(&()),
             sorts: self.sorts.to_protobuf(&()),
-            prev_page: self.prev_page.to_protobuf(&()),
             next_page: self.next_page.to_protobuf(&()),
         }
     }

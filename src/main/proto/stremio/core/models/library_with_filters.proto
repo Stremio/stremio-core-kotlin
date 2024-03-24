@@ -22,13 +22,15 @@ message LibraryWithFilters {
   enum Sort {
     LastWatched = 0;
     Name = 1;
-    TimesWatched = 2;
+    NameReverse = 2;
+    TimesWatched = 3;
+    Watched = 4;
+    NotWatched = 5;
   }
   message Selectable {
     repeated SelectableType types = 1;
     repeated SelectableSort sorts = 2;
-    optional SelectablePage prev_page = 3;
-    optional SelectablePage next_page = 4;
+    optional SelectablePage next_page = 3;
   }
   message SelectableType {
     optional string type = 1;

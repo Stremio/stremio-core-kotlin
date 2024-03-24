@@ -50,6 +50,12 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_ctx::Args::RewindLibraryItem(id)) => {
                     Action::Ctx(ActionCtx::RewindLibraryItem(id.to_owned()))
                 }
+                Some(action_ctx::Args::LibraryItemMarkAsWatched(args)) => {
+                    Action::Ctx(ActionCtx::LibraryItemMarkAsWatched {
+                        id: args.id.to_owned(),
+                        is_watched: args.is_watched,
+                    })
+                }
                 Some(action_ctx::Args::ToggleLibraryItemNotifications(args)) => Action::Ctx(
                     ActionCtx::ToggleLibraryItemNotifications(args.id.to_owned(), args.toggle),
                 ),
