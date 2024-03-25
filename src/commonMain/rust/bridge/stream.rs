@@ -169,7 +169,7 @@ impl
             deep_links: types::StreamDeepLinks {
                 player: deep_links.player,
                 external_player: types::stream_deep_links::ExternalPlayerLink {
-                    href: deep_links.external_player.href,
+                    download: deep_links.external_player.download,
                     streaming: deep_links.external_player.streaming,
                 },
             },

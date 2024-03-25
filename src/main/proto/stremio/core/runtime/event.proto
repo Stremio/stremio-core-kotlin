@@ -23,28 +23,31 @@ message Event {
     LibraryItemsPushedToAPI library_items_pushed_to_api = 12;
     LibraryItemsPulledFromAPI library_items_pulled_from_api = 13;
     UserAuthenticated user_authenticated = 14;
-    UserLoggedOut user_logged_out = 15;
-    SessionDeleted session_deleted = 16;
-    TraktAddonFetched trakt_addon_fetched = 17;
-    TraktLoggedOut trakt_logged_out = 18;
-    AddonInstalled addon_installed = 19;
-    AddonUpgraded addon_upgraded = 20;
-    AddonUninstalled addon_uninstalled = 21;
-    SettingsUpdated settings_updated = 22;
-    LibraryItemAdded library_item_added = 23;
-    LibraryItemRemoved library_item_removed = 24;
-    LibraryItemRewinded library_item_rewinded = 25;
-    LibraryItemNotificationsToggled library_item_notifications_toggled = 26;
-    NotificationsDismissed notifications_dismissed = 27;
-    PlayerPlaying player_playing = 28;
-    PlayerStopped player_stopped = 29;
-    PlayerNextVideo player_next_video = 30;
-    PlayerEnded player_ended = 31;
-    TraktPlaying trakt_playing = 32;
-    TraktPaused trakt_paused = 33;
-    MagnetParsed magnet_parsed = 34;
-    TorrentParsed torrent_parsed = 35;
-    PlayingOnDevice playing_on_device = 36;
+    UserAddonsLocked user_addons_locked = 15;
+    UserLibraryMissing user_library_missing = 16;
+    UserLoggedOut user_logged_out = 17;
+    SessionDeleted session_deleted = 18;
+    TraktAddonFetched trakt_addon_fetched = 19;
+    TraktLoggedOut trakt_logged_out = 20;
+    AddonInstalled addon_installed = 21;
+    AddonUpgraded addon_upgraded = 22;
+    AddonUninstalled addon_uninstalled = 23;
+    SettingsUpdated settings_updated = 24;
+    LibraryItemAdded library_item_added = 25;
+    LibraryItemRemoved library_item_removed = 26;
+    LibraryItemRewinded library_item_rewinded = 27;
+    LibraryItemNotificationsToggled library_item_notifications_toggled = 28;
+    LibraryItemMarkedAsWatched library_item_marked_as_watched = 29;
+    NotificationsDismissed notifications_dismissed = 30;
+    PlayerPlaying player_playing = 31;
+    PlayerStopped player_stopped = 32;
+    PlayerNextVideo player_next_video = 33;
+    PlayerEnded player_ended = 34;
+    TraktPlaying trakt_playing = 35;
+    TraktPaused trakt_paused = 36;
+    MagnetParsed magnet_parsed = 37;
+    TorrentParsed torrent_parsed = 38;
+    PlayingOnDevice playing_on_device = 39;
     Error error = 100;
   }
 
@@ -91,6 +94,12 @@ message Event {
   message UserAuthenticated {
     required stremio.core.types.AuthRequest auth_request = 1;
   }
+  message UserAddonsLocked {
+    required bool addons_locked = 1;
+  }
+  message UserLibraryMissing {
+    required bool library_missing = 1;
+  }
   message UserLoggedOut {
     optional string uid = 1;
   }
@@ -129,6 +138,10 @@ message Event {
   }
   message LibraryItemNotificationsToggled {
     required string id = 1;
+  }
+  message LibraryItemMarkedAsWatched {
+    required string id = 1;
+    required bool is_watched = 2;
   }
   message NotificationsDismissed {
     required string id = 1;

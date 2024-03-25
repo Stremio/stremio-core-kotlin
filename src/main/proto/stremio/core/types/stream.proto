@@ -62,7 +62,7 @@ message StreamDeepLinks {
   required ExternalPlayerLink external_player = 2;
 
   message ExternalPlayerLink {
-    optional string href = 1;
+    optional string download = 1;
     optional string streaming = 2;
   }
 }

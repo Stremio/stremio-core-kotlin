@@ -23,20 +23,26 @@ message ActionCtx {
     stremio.core.types.MetaItemPreview add_to_library = 9;
     string remove_from_library = 10;
     string rewind_library_item = 11;
-    LibraryItemToggle toggle_library_item_notifications = 12;
-    string dismiss_notification_item = 13;
-    google.protobuf.Empty push_user_to_api = 14;
-    google.protobuf.Empty pull_user_from_api = 15;
-    google.protobuf.Empty push_addons_to_api = 16;
-    google.protobuf.Empty pull_addons_from_api = 17;
-    google.protobuf.Empty sync_library_with_api = 18;
-    google.protobuf.Empty pull_notifications = 19;
-    google.protobuf.Empty get_events = 20;
-    string dismiss_event = 21;
+    LibraryItemMarkAsWatched library_item_mark_as_watched = 12;
+    LibraryItemToggle toggle_library_item_notifications = 13;
+    string dismiss_notification_item = 14;
+    google.protobuf.Empty push_user_to_api = 15;
+    google.protobuf.Empty pull_user_from_api = 16;
+    google.protobuf.Empty push_addons_to_api = 17;
+    google.protobuf.Empty pull_addons_from_api = 18;
+    google.protobuf.Empty sync_library_with_api = 19;
+    google.protobuf.Empty pull_notifications = 20;
+    google.protobuf.Empty get_events = 21;
+    string dismiss_event = 22;
   }
 
   message LibraryItemToggle {
     required string id = 1;
     required bool toggle = 2;
+  }
+
+  message LibraryItemMarkAsWatched {
+    required string id = 1;
+    required bool is_watched = 2;
   }
 }

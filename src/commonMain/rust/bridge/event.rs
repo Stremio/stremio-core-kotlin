@@ -61,6 +61,16 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     auth_request: auth_request.to_protobuf(&()),
                 })
             }
+            Event::UserAddonsLocked { addons_locked } => {
+                runtime::event::Type::UserAddonsLocked(runtime::event::UserAddonsLocked {
+                    addons_locked: *addons_locked,
+                })
+            }
+            Event::UserLibraryMissing { library_missing } => {
+                runtime::event::Type::UserLibraryMissing(runtime::event::UserLibraryMissing {
+                    library_missing: *library_missing,
+                })
+            }
             Event::UserLoggedOut { uid } => {
                 runtime::event::Type::UserLoggedOut(runtime::event::UserLoggedOut {
                     uid: uid.clone(),
@@ -117,6 +127,14 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             Event::LibraryItemNotificationsToggled { id } => {
                 runtime::event::Type::LibraryItemNotificationsToggled(
                     runtime::event::LibraryItemNotificationsToggled { id: id.clone() },
+                )
+            }
+            Event::LibraryItemMarkedAsWatched { id, is_watched } => {
+                runtime::event::Type::LibraryItemMarkedAsWatched(
+                    runtime::event::LibraryItemMarkedAsWatched {
+                        id: id.clone(),
+                        is_watched: *is_watched,
+                    },
                 )
             }
             Event::NotificationsDismissed { id } => runtime::event::Type::NotificationsDismissed(
