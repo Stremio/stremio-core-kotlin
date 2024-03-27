@@ -51,14 +51,6 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
     }
 }
 
-impl ToProtobuf<models::DiscoverDeepLinks, ()> for DiscoverDeepLinks {
-    fn to_protobuf(&self, _args: &()) -> models::DiscoverDeepLinks {
-        models::DiscoverDeepLinks {
-            discover: self.discover.clone(),
-        }
-    }
-}
-
 impl ToProtobuf<models::LoadableMetaItem, (&Ctx, Option<&LibraryItem>, Option<&WatchedBitField>)>
     for &ResourceLoadable<MetaItem>
 {

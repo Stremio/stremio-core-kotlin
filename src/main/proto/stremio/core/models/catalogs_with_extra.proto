@@ -7,6 +7,7 @@ option java_package = "com.stremio.core.models";
 import "stremio/core/models/loadable.proto";
 import "stremio/core/types/addon.proto";
 import "stremio/core/types/meta_item_preview.proto";
+import "stremio/core/deep_links/deep_links.proto";
 
 message CatalogsWithExtra {
   optional Selected selected = 1;
@@ -30,13 +31,9 @@ message LoadablePage {
     Error error = 4;
     Page ready = 5;
   }
-  required DiscoverDeepLinks deep_links = 6;
+  required stremio.core.deep_links.DiscoverDeepLinks deep_links = 6;
 }
 
 message Page {
   repeated stremio.core.types.MetaItemPreview meta_items = 1;
-}
-
-message DiscoverDeepLinks {
-  required string discover = 1;
 }

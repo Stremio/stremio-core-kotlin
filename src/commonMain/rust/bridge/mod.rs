@@ -10,6 +10,9 @@ pub use auth_request::*;
 mod date;
 pub use date::*;
 
+mod deep_links;
+pub use deep_links::*;
+
 mod env_error;
 pub use env_error::*;
 

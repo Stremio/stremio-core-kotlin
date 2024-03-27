@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package stremio.core.deep_links;
+
+option java_package = "com.stremio.core.deep_links";
+
+message DiscoverDeepLinks {
+  required string discover = 1;
+}
+
+message LibraryDeepLinks {
+  required string library = 1;
+}
