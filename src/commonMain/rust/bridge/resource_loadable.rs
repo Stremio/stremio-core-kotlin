@@ -1,4 +1,5 @@
 use inflector::Inflector;
+use stremio_core::deep_links::DiscoverDeepLinks;
 use stremio_core::models::common::{DescriptorLoadable, ResourceLoadable};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::{DescriptorPreview, ResourceRequest};
@@ -40,10 +41,12 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
                 )
             })
             .unwrap_or_default();
+        let deep_links = DiscoverDeepLinks::from(&self.request).to_protobuf(&());
         models::LoadablePage {
             title,
             request: self.request.to_protobuf(&()),
             content: self.content.to_protobuf(&(ctx, &self.request)),
+            deep_links,
         }
     }
 }

@@ -30,8 +30,13 @@ message LoadablePage {
     Error error = 4;
     Page ready = 5;
   }
+  required DiscoverDeepLinks deep_links = 6;
 }
 
 message Page {
   repeated stremio.core.types.MetaItemPreview meta_items = 1;
+}
+
+message DiscoverDeepLinks {
+  required string discover = 1;
 }

@@ -1,3 +1,4 @@
+use stremio_core::deep_links::DiscoverDeepLinks;
 use stremio_core::models::catalog_with_filters::Catalog;
 use stremio_core::models::catalogs_with_extra::{CatalogsWithExtra, Selected};
 use stremio_core::models::ctx::Ctx;
@@ -37,6 +38,14 @@ impl ToProtobuf<models::CatalogsWithExtra, Ctx> for CatalogsWithExtra {
         models::CatalogsWithExtra {
             selected: self.selected.to_protobuf(&()),
             catalogs: self.catalogs.to_protobuf(ctx),
+        }
+    }
+}
+
+impl ToProtobuf<models::DiscoverDeepLinks, ()> for DiscoverDeepLinks {
+    fn to_protobuf(&self, _args: &()) -> models::DiscoverDeepLinks {
+        models::DiscoverDeepLinks {
+            discover: self.discover.clone(),
         }
     }
 }
