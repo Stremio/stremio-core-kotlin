@@ -1,8 +1,8 @@
 syntax = "proto2";
 
-package stremio.core.deepLinks;
+package stremio.core.deeplinks;
 
-option java_package = "com.stremio.core.deepLinks";
+option java_package = "com.stremio.core.deeplinks";
 
 message DiscoverDeepLinks {
   required string discover = 1;
