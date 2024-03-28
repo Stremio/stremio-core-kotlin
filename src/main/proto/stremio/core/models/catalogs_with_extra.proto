@@ -31,7 +31,7 @@ message LoadablePage {
     Error error = 4;
     Page ready = 5;
   }
-  required stremio.core.deep_links.DiscoverDeepLinks deep_links = 6;
+  required stremio.core.deepLinks.DiscoverDeepLinks deep_links = 6;
 }
 
 message Page {
