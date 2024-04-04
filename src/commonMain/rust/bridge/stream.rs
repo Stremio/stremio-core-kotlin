@@ -23,6 +23,7 @@ impl FromProtobuf<StreamSource> for types::stream::Source {
                     .expect("Stream.info_hash parse failed"),
                 file_idx: source.file_idx.map(|idx| idx as u16),
                 announce: source.announce.clone(),
+                file_must_include: source.file_must_include.to_owned(),
             },
             types::stream::Source::External(source) => StreamSource::External {
                 external_url: source.external_url.from_protobuf(),
@@ -32,6 +33,16 @@ impl FromProtobuf<StreamSource> for types::stream::Source {
             },
             types::stream::Source::PlayerFrame(source) => StreamSource::PlayerFrame {
                 player_frame_url: source.player_frame_url.from_protobuf(),
+            },
+            types::stream::Source::Rar(source) => StreamSource::Rar {
+                rar_urls: source.rar_urls.from_protobuf(),
+                file_idx: source.file_idx.map(|idx| idx as u16),
+                file_must_include: source.file_must_include.to_owned(),
+            },
+            types::stream::Source::Zip(source) => StreamSource::Zip {
+                zip_urls: source.zip_urls.from_protobuf(),
+                file_idx: source.file_idx.map(|idx| idx as u16),
+                file_must_include: source.file_must_include.to_owned(),
             },
         }
     }
@@ -59,6 +70,9 @@ impl FromProtobuf<Stream> for types::Stream {
                 binge_group: self.behavior_hints.binge_group.to_owned(),
                 country_whitelist: Some(self.behavior_hints.country_whitelist.to_owned()),
                 proxy_headers: self.behavior_hints.proxy_headers.from_protobuf(),
+                filename: self.behavior_hints.filename.to_owned(),
+                video_hash: self.behavior_hints.video_hash.to_owned(),
+                video_size: self.behavior_hints.video_size,
                 other: Default::default(),
             },
         }
@@ -80,10 +94,12 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
                 info_hash,
                 file_idx,
                 announce,
+                file_must_include,
             } => types::stream::Source::Torrent(types::stream::Torrent {
                 info_hash: hex::encode(info_hash),
                 file_idx: file_idx.map(|idx| idx as i32),
                 announce: announce.clone(),
+                file_must_include: file_must_include.to_owned(),
             }),
             StreamSource::External {
                 external_url,
@@ -98,6 +114,24 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
                     player_frame_url: player_frame_url.to_string(),
                 })
             }
+            StreamSource::Rar {
+                rar_urls,
+                file_idx,
+                file_must_include,
+            } => types::stream::Source::Rar(types::stream::Rar {
+                rar_urls: rar_urls.to_protobuf(&()),
+                file_idx: file_idx.map(|idx| idx as i32),
+                file_must_include: file_must_include.to_owned(),
+            }),
+            StreamSource::Zip {
+                zip_urls,
+                file_idx,
+                file_must_include,
+            } => types::stream::Source::Zip(types::stream::Zip {
+                zip_urls: zip_urls.to_protobuf(&()),
+                file_idx: file_idx.map(|idx| idx as i32),
+                file_must_include: file_must_include.to_owned(),
+            }),
         }
     }
 }
@@ -165,6 +199,9 @@ impl
                     .to_owned()
                     .unwrap_or_default(),
                 proxy_headers: self.behavior_hints.proxy_headers.to_protobuf(&()),
+                filename: self.behavior_hints.filename.to_owned(),
+                video_hash: self.behavior_hints.video_hash.to_owned(),
+                video_size: self.behavior_hints.video_size,
             },
             deep_links: types::StreamDeepLinks {
                 player: deep_links.player,

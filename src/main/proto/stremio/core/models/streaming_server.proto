@@ -28,13 +28,14 @@ message StreamingServer {
     required string cache_root = 2;
     required string server_version = 3;
     optional string remote_https = 4;
-    optional double cache_size = 5;
-    required uint64 bt_max_connections = 6;
-    required uint64 bt_handshake_timeout = 7;
-    required uint64 bt_request_timeout = 8;
-    required double bt_download_speed_soft_limit = 9;
-    required double bt_download_speed_hard_limit = 10;
-    required uint64 bt_min_peers_for_stable = 11;
+    optional string transcode_profile = 5;
+    optional double cache_size = 6;
+    required uint64 bt_max_connections = 7;
+    required uint64 bt_handshake_timeout = 8;
+    required uint64 bt_request_timeout = 9;
+    required double bt_download_speed_soft_limit = 10;
+    required double bt_download_speed_hard_limit = 11;
+    required uint64 bt_min_peers_for_stable = 12;
   }
   message Statistics {
     required string name = 1;
