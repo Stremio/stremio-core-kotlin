@@ -114,20 +114,24 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
                     player_frame_url: player_frame_url.to_string(),
                 })
             }
-            StreamSource::Rar { rar_urls, file_idx, file_must_include } => {
-                types::stream::Source::Rar(types::stream::Rar {
-                    rar_urls: rar_urls.to_protobuf(&()),
-                    file_idx: file_idx.map(|idx| idx as i32),
-                    file_must_include: file_must_include.to_owned(),
-                })
-            },
-            StreamSource::Zip { zip_urls, file_idx, file_must_include } => {
-                types::stream::Source::Zip(types::stream::Zip {
-                    zip_urls: zip_urls.to_protobuf(&()),
-                    file_idx: file_idx.map(|idx| idx as i32),
-                    file_must_include: file_must_include.to_owned(),
-                })
-            },
+            StreamSource::Rar {
+                rar_urls,
+                file_idx,
+                file_must_include,
+            } => types::stream::Source::Rar(types::stream::Rar {
+                rar_urls: rar_urls.to_protobuf(&()),
+                file_idx: file_idx.map(|idx| idx as i32),
+                file_must_include: file_must_include.to_owned(),
+            }),
+            StreamSource::Zip {
+                zip_urls,
+                file_idx,
+                file_must_include,
+            } => types::stream::Source::Zip(types::stream::Zip {
+                zip_urls: zip_urls.to_protobuf(&()),
+                file_idx: file_idx.map(|idx| idx as i32),
+                file_must_include: file_must_include.to_owned(),
+            }),
         }
     }
 }
