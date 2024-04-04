@@ -13,13 +13,15 @@ message Stream {
     Torrent torrent = 3;
     External external = 4;
     PlayerFrame player_frame = 5;
+    Rar rar = 6;
+    Zip zip = 7;
   }
-  optional string name = 6;
-  optional string description = 7;
-  optional string thumbnail = 8;
-  repeated Subtitle subtitles = 9;
-  required StreamBehaviorHints behavior_hints = 10;
-  required StreamDeepLinks deep_links = 11;
+  optional string name = 8;
+  optional string description = 9;
+  optional string thumbnail = 10;
+  repeated Subtitle subtitles = 11;
+  required StreamBehaviorHints behavior_hints = 12;
+  required StreamDeepLinks deep_links = 13;
 
   message Url {
     required string url = 1;
@@ -33,6 +35,7 @@ message Stream {
     required string info_hash = 1;
     optional int32 file_idx = 2;
     repeated string announce = 3;
+    repeated string file_must_include = 4;
   }
 
   message External {
@@ -43,6 +46,18 @@ message Stream {
   message PlayerFrame {
     required string player_frame_url = 1;
   }
+
+  message Rar {
+    repeated string rar_urls = 1;
+    optional int32 file_idx = 2;
+    repeated string file_must_include = 3;
+  }
+
+  message Zip {
+    repeated string zip_urls = 1;
+    optional int32 file_idx = 2;
+    repeated string file_must_include = 3;
+  }
 }
 
 message StreamBehaviorHints {
@@ -50,6 +65,9 @@ message StreamBehaviorHints {
   optional string binge_group = 2;
   repeated string country_whitelist = 3;
   optional StreamProxyHeaders proxy_headers = 4;
+  optional string filename = 5;
+  optional string video_hash = 6;
+  optional uint64 video_size = 7;
 }
 
 message StreamProxyHeaders {
