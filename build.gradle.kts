@@ -2,7 +2,7 @@ import com.google.protobuf.gradle.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "com.github.Stremio"
-version = "1.2.3"
+version = "1.2.4"
 
 allprojects {
     repositories {
