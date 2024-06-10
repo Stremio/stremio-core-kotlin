@@ -11,7 +11,8 @@ message AuthRequest {
   oneof type {
     Login login = 1;
     LoginWithToken login_with_token = 2;
-    Register register = 3;
+    Facebook facebook = 3;
+    Register register = 4;
   }
 
   message Login {
@@ -21,6 +22,10 @@ message AuthRequest {
   }
 
   message LoginWithToken {
+    required string token = 1;
+  }
+
+  message Facebook {
     required string token = 1;
   }
 
