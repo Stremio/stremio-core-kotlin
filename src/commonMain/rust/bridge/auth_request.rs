@@ -16,6 +16,9 @@ impl FromProtobuf<AuthRequest> for types::AuthRequest {
                     token: login_with_token.token.to_owned(),
                 }
             }
+            Some(types::auth_request::Type::Facebook(facebook)) => AuthRequest::Facebook {
+                token: facebook.token.to_owned(),
+            },
             Some(types::auth_request::Type::Register(register)) => AuthRequest::Register {
                 email: register.email.to_owned(),
                 password: register.password.to_owned(),
@@ -40,6 +43,11 @@ impl ToProtobuf<types::AuthRequest, ()> for AuthRequest {
             }),
             AuthRequest::LoginWithToken { token } => {
                 types::auth_request::Type::LoginWithToken(types::auth_request::LoginWithToken {
+                    token: token.to_owned(),
+                })
+            }
+            AuthRequest::Facebook { token } => {
+                types::auth_request::Type::Facebook(types::auth_request::Facebook {
                     token: token.to_owned(),
                 })
             }
