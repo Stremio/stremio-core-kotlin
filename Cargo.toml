@@ -1,6 +1,6 @@
 [package]
 name = "stremio-core-android"
-version = "1.2.5"
+version = "1.2.6"
 authors = ["Smart Code OOD"]
 edition = "2021"
 resolver = "2"
