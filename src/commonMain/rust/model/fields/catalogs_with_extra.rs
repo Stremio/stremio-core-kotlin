@@ -7,6 +7,23 @@ use stremio_core::types::resource::MetaItemPreview;
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::models;
 
+// impl<'a> From<stremio_core_web::model::CatalogsWithExtra<'a>> for CatalogsWithExtra {
+//     fn from(model: stremio_core_web::model::CatalogsWithExtra<'a>) -> Self {
+//         CatalogsWithExtra {
+//             selected: model.selected,
+//             catalogs: model.catalogs,
+//         }
+//     }
+// }
+
+// impl<'a> SerializeModel<wasm_bindgen::JsValue> for CatalogsWithExtra<'a> {
+//     type Error = serde_json::Error;
+
+//     fn serialize_model(&self) -> Result<wasm_bindgen::JsValue, Self::Error> {
+//         wasm_bindgen::JsValue::try_from(self)
+//     }
+// }
+
 impl FromProtobuf<Selected> for models::catalogs_with_extra::Selected {
     fn from_protobuf(&self) -> Selected {
         Selected {

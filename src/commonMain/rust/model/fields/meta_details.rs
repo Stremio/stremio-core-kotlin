@@ -6,7 +6,7 @@ use stremio_core::runtime::Env;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::library::LibraryItem;
 use stremio_core::types::resource::{MetaItem, SeriesInfo, Video};
-use stremio_watched_bitfield::WatchedBitField;
+use stremio_core::types::watched_bitfield::WatchedBitField;
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::env::AndroidEnv;

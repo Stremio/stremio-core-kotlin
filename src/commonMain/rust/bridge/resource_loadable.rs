@@ -5,7 +5,7 @@ use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::{DescriptorPreview, ResourceRequest};
 use stremio_core::types::library::LibraryItem;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
-use stremio_watched_bitfield::WatchedBitField;
+use stremio_core::types::watched_bitfield::WatchedBitField;
 use url::Url;
 
 use crate::bridge::ToProtobuf;

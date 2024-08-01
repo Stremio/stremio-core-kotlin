@@ -7,3 +7,6 @@
 !/**/rust/protobuf/README.md
 /.idea/
 /local.properties
+
+/stremio-core-protobuf/src/protobuf/*
+!/stremio-core-protobuf/src/protobuf//README.md

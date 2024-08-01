@@ -30,12 +30,13 @@ message StreamingServer {
     optional string remote_https = 4;
     optional string transcode_profile = 5;
     optional double cache_size = 6;
-    required uint64 bt_max_connections = 7;
-    required uint64 bt_handshake_timeout = 8;
-    required uint64 bt_request_timeout = 9;
-    required double bt_download_speed_soft_limit = 10;
-    required double bt_download_speed_hard_limit = 11;
-    required uint64 bt_min_peers_for_stable = 12;
+    required bool proxy_streams_enabled = 7;
+    required uint64 bt_max_connections = 8;
+    required uint64 bt_handshake_timeout = 9;
+    required uint64 bt_request_timeout = 10;
+    required double bt_download_speed_soft_limit = 11;
+    required double bt_download_speed_hard_limit = 12;
+    required uint64 bt_min_peers_for_stable = 13;
   }
   message Statistics {
     required string name = 1;

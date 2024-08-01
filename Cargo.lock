@@ -2527,7 +2527,7 @@ dependencies = [
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#212584dd9409600bb60f55ebc84139319b4642e2"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#64d55209d343dbe444b334d0fbf1fbfff9c30dcd"
 dependencies = [
  "anyhow",
  "base64 0.21.5",
@@ -2606,6 +2606,7 @@ dependencies = [
  "serde_json",
  "serde_path_to_error",
  "stremio-core",
+ "stremio-core-protobuf",
  "stremio-core-web",
  "strum 0.22.0",
  "tokio",
@@ -2613,9 +2614,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "stremio-core-protobuf"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "glob",
+ "prost",
+ "prost-build",
+ "prost-types",
+ "protox",
+]
+
+[[package]]
 name = "stremio-core-web"
 version = "0.47.7"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#212584dd9409600bb60f55ebc84139319b4642e2"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#64d55209d343dbe444b334d0fbf1fbfff9c30dcd"
 dependencies = [
  "Inflector",
  "boolinator",
@@ -2641,7 +2654,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#212584dd9409600bb60f55ebc84139319b4642e2"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#64d55209d343dbe444b334d0fbf1fbfff9c30dcd"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2675,7 +2688,7 @@ dependencies = [
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#212584dd9409600bb60f55ebc84139319b4642e2"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#64d55209d343dbe444b334d0fbf1fbfff9c30dcd"
 dependencies = [
  "base64 0.13.1",
  "flate2",

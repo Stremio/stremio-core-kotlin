@@ -1,18 +1,21 @@
+use url::Url;
+
 use stremio_core::deep_links::MetaItemDeepLinks;
 use stremio_core::models::common::{Loadable, ResourceError};
 use stremio_core::models::ctx::{Ctx, CtxError};
 use stremio_core::models::link::LinkError;
 use stremio_core::models::streaming_server::PlaybackDevice;
 use stremio_core::runtime::EnvError;
-use stremio_core::types::addon::{Descriptor, DescriptorPreview, ResourcePath, ResourceRequest};
-use stremio_core::types::api::{
-    GetModalResponse, GetNotificationResponse, LinkAuthKey, LinkCodeResponse,
+
+use stremio_core::types::{
+    addon::{Descriptor, DescriptorPreview, ResourcePath, ResourceRequest},
+    api::{GetModalResponse, GetNotificationResponse, LinkAuthKey, LinkCodeResponse},
+    library::LibraryItem,
+    resource::{MetaItem, MetaItemPreview, Stream, Subtitles},
+    streaming_server::{Settings, Statistics},
+    watched_bitfield::WatchedBitField,
 };
-use stremio_core::types::library::LibraryItem;
-use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
-use stremio_core::types::streaming_server::{Settings, Statistics};
-use stremio_watched_bitfield::WatchedBitField;
-use url::Url;
+
 
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;

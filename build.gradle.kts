@@ -90,7 +90,7 @@ android {
 }
 
 protobuf {
-  generatedFilesBaseDir = "$projectDir/src"
+  generatedFilesBaseDir = "$projectDir/stremio-core-protobuf/proto"
 
   protoc {
     artifact = "com.google.protobuf:protoc:${protobufVersion}"

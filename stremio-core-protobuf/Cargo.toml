@@ -1,0 +1,16 @@
+[package]
+name = "stremio-core-protobuf"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+# Bytes / Protobuf 
+bytes = "1.1.0"
+prost = "0.12"
+prost-types = "0.12"
+
+[build-dependencies]
+prost-build = "0.12"
+protox = "0.5"
+glob = "0.3.0"
