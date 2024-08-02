@@ -10,7 +10,6 @@ fn main() {
                 eprintln!("Glob error: {err}");
             }
 
-
             result.ok()
         })
         .collect::<Vec<_>>();

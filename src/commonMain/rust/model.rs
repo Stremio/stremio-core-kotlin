@@ -1,5 +1,5 @@
-mod fields;
 mod addons;
+mod fields;
 pub use addons::*;
 
 mod model;

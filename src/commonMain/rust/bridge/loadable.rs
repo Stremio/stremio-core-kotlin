@@ -16,7 +16,6 @@ use stremio_core::types::{
     watched_bitfield::WatchedBitField,
 };
 
-
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
 use crate::protobuf::stremio::core::models::{LoadedModal, LoadedNotification, PlaybackDevices};

@@ -1,6 +1,6 @@
 //! This module contains all the bridge impls which take [`stremio_core`] types
 //! and allow `FromProtobuf` and `ToProtobuf` for Protobuf generates structs and enums.
-//! 
+//!
 //! # Bridge
 
 mod action;

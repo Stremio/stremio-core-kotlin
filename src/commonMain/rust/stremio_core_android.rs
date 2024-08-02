@@ -1,3 +1,6 @@
+// TODO: Add safety docs and remove suppression of linter!
+#![allow(clippy::missing_safety_doc)]
+
 use std::io::Cursor;
 use std::os::raw::c_void;
 #[cfg(debug_assertions)]
