@@ -2622,7 +2622,6 @@ dependencies = [
 name = "stremio-core-protobuf"
 version = "0.1.0"
 dependencies = [
- "bytes",
  "glob",
  "prost",
  "prost-build",
