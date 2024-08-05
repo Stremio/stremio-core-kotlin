@@ -9,7 +9,7 @@ import "stremio/core/types/manifest.proto";
 
 message AddonDetails {
   optional Selected selected = 1;
-  optional stremio.core.types.Descriptor local_addon = 2;
+  optional stremio.core.types.Descriptor__ local_addon = 2;
   optional LoadableDescriptor remote_addon = 3;
 
   message Selected {
@@ -22,6 +22,6 @@ message LoadableDescriptor {
   oneof content {
     Loading loading = 2;
     Error error = 3;
-    stremio.core.types.Descriptor ready = 4;
+    stremio.core.types.Descriptor__ ready = 4;
   }
 }
