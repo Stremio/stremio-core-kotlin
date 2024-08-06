@@ -2622,11 +2622,18 @@ dependencies = [
 name = "stremio-core-protobuf"
 version = "0.1.0"
 dependencies = [
+ "Inflector",
+ "boolinator",
+ "chrono",
  "glob",
+ "hex 0.4.3",
  "prost",
  "prost-build",
  "prost-types",
  "protox",
+ "semver",
+ "stremio-core",
+ "url",
 ]
 
 [[package]]

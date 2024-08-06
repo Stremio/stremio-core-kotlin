@@ -4,10 +4,20 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+stremio-core.workspace = true
 
 # Protobuf 
 prost.workspace = true
 prost-types.workspace = true
+
+# Utils
+semver = { version = "1", features = ["serde"] }
+chrono = "0.4.*"
+boolinator = "2.4.*"
+Inflector = "0.11.*"
+
+hex = "0.4.*"
+url = { version = "2.4", features = ["serde"] }
 
 [build-dependencies]
 prost-build.workspace = true
