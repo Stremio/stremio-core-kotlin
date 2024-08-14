@@ -2632,6 +2632,7 @@ dependencies = [
  "protox",
  "semver",
  "stremio-core",
+ "stremio-core-web",
  "url",
 ]
 

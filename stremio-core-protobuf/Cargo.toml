@@ -3,8 +3,15 @@ name = "stremio-core-protobuf"
 version = "0.1.0"
 edition = "2021"
 
+authors = ["Smart Code OOD", "Lachezar Lechev <lachezar@ambire.com>"]
+
+[features]
+default = ["model-deser"]
+model-deser = ["dep:stremio-core-web"]
+
 [dependencies]
 stremio-core.workspace = true
+stremio-core-web = { workspace = true, optional = true }
 
 # Protobuf 
 prost.workspace = true
