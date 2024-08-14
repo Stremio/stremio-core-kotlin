@@ -2,6 +2,18 @@ use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::model::AndroidModelField;
 use crate::protobuf::stremio::core::runtime::Field;
 
+impl From<Field> for AndroidModelField {
+    fn from(android_field: Field) -> Self {
+        android_field.from_protobuf()
+    }
+}
+
+impl From<AndroidModelField> for Field {
+    fn from(field: AndroidModelField) -> Self {
+        field.to_protobuf(&())
+    }
+}
+
 impl FromProtobuf<AndroidModelField> for Field {
     fn from_protobuf(&self) -> AndroidModelField {
         match self {
