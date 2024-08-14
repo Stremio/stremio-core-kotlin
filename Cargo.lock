@@ -2532,7 +2532,7 @@ dependencies = [
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#652fad29302a7cd280ef596fda134b70269c3eed"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#990c11e5e639312839b9ace4ad9bc92528f3666a"
 dependencies = [
  "anyhow",
  "base64 0.21.5",
@@ -2639,24 +2639,18 @@ dependencies = [
 [[package]]
 name = "stremio-core-web"
 version = "0.47.7"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#652fad29302a7cd280ef596fda134b70269c3eed"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#990c11e5e639312839b9ace4ad9bc92528f3666a"
 dependencies = [
- "Inflector",
  "boolinator",
- "cfg-if 1.0.0",
  "chrono",
  "either",
  "enclose",
  "futures",
- "hex 0.4.3",
- "http",
  "itertools 0.10.5",
  "lazy_static",
- "regex",
  "semver",
  "serde",
  "serde_json",
- "serde_path_to_error",
  "stremio-core",
  "tracing",
  "url",
@@ -2665,7 +2659,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#652fad29302a7cd280ef596fda134b70269c3eed"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#990c11e5e639312839b9ace4ad9bc92528f3666a"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2699,7 +2693,7 @@ dependencies = [
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#652fad29302a7cd280ef596fda134b70269c3eed"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#990c11e5e639312839b9ace4ad9bc92528f3666a"
 dependencies = [
  "base64 0.13.1",
  "flate2",
