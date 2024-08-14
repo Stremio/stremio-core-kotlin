@@ -28,11 +28,16 @@ mod stream;
 mod string;
 mod subtitle;
 
-mod to_protobuf;
-pub use to_protobuf::*;
+// pub use stremio_core_protobuf::{FromProtobuf, ToProtobuf};
 
-mod from_protobuf;
-pub use from_protobuf::*;
+pub trait ToProtobuf<T, A> {
+    fn to_protobuf(&self, args: &A) -> T;
+}
+
+pub trait FromProtobuf<T> {
+    #[allow(clippy::wrong_self_convention)]
+    fn from_protobuf(&self) -> T;
+}
 
 mod to_jni_byte_array;
 pub use to_jni_byte_array::*;

@@ -6,6 +6,7 @@ pub use stremio_core_android::*;
 
 #[cfg(feature = "kotlin")]
 pub mod bridge;
+
 #[cfg(feature = "kotlin")]
 /// Contains all android (kotlin) related implementations for the bridge between
 /// Rust and Kotlin.
