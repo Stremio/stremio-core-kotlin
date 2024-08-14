@@ -2585,7 +2585,6 @@ dependencies = [
  "bytes",
  "cfg-if 0.1.10",
  "chrono",
- "either",
  "enclose",
  "flate2",
  "futures",
