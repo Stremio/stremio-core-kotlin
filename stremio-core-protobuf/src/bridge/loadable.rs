@@ -140,7 +140,10 @@ impl
 impl ToProtobuf<models::loadable_subtitles::Content, Option<&String>>
     for Loadable<Vec<Subtitles>, ResourceError>
 {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, addon_name: &Option<&String>) -> models::loadable_subtitles::Content {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        addon_name: &Option<&String>,
+    ) -> models::loadable_subtitles::Content {
         match &self {
             Loadable::Ready(ready) => {
                 models::loadable_subtitles::Content::Ready(models::Subtitles {
@@ -156,7 +159,10 @@ impl ToProtobuf<models::loadable_subtitles::Content, Option<&String>>
 }
 
 impl ToProtobuf<models::LoadableSettings, ()> for Loadable<Settings, EnvError> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::LoadableSettings {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::LoadableSettings {
         let content = match &self {
             Loadable::Ready(ready) => {
                 models::loadable_settings::Content::Ready(ready.to_protobuf::<E>(&()))
@@ -173,7 +179,10 @@ impl ToProtobuf<models::LoadableSettings, ()> for Loadable<Settings, EnvError> {
 }
 
 impl ToProtobuf<models::LoadableBaseUrl, ()> for Loadable<Url, EnvError> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::LoadableBaseUrl {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::LoadableBaseUrl {
         let content = match &self {
             Loadable::Ready(ready) => models::loadable_base_url::Content::Ready(ready.to_string()),
             Loadable::Err(error) => models::loadable_base_url::Content::Error(models::Error {
@@ -188,9 +197,14 @@ impl ToProtobuf<models::LoadableBaseUrl, ()> for Loadable<Url, EnvError> {
 }
 
 impl ToProtobuf<models::LoadableCode, ()> for Loadable<LinkCodeResponse, LinkError> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::LoadableCode {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::LoadableCode {
         let content = match &self {
-            Loadable::Ready(ready) => models::loadable_code::Content::Ready(ready.to_protobuf::<E>(&())),
+            Loadable::Ready(ready) => {
+                models::loadable_code::Content::Ready(ready.to_protobuf::<E>(&()))
+            }
             Loadable::Err(error) => models::loadable_code::Content::Error(models::Error {
                 message: error.to_string(),
             }),
@@ -203,7 +217,10 @@ impl ToProtobuf<models::LoadableCode, ()> for Loadable<LinkCodeResponse, LinkErr
 }
 
 impl ToProtobuf<models::LoadableAuthKey, ()> for Loadable<LinkAuthKey, LinkError> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::LoadableAuthKey {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::LoadableAuthKey {
         let content = match &self {
             Loadable::Ready(ready) => {
                 models::loadable_auth_key::Content::Ready(ready.to_protobuf::<E>(&()))
@@ -220,7 +237,10 @@ impl ToProtobuf<models::LoadableAuthKey, ()> for Loadable<LinkAuthKey, LinkError
 }
 
 impl ToProtobuf<models::LoadableTorrent, ()> for Loadable<ResourcePath, EnvError> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::LoadableTorrent {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::LoadableTorrent {
         let content = match &self {
             Loadable::Ready(ready) => {
                 let deeplinks = MetaItemDeepLinks::from(ready).to_protobuf::<E>(&());
@@ -238,7 +258,10 @@ impl ToProtobuf<models::LoadableTorrent, ()> for Loadable<ResourcePath, EnvError
 }
 
 impl ToProtobuf<models::LoadablePlaybackDevices, ()> for Loadable<Vec<PlaybackDevice>, EnvError> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::LoadablePlaybackDevices {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::LoadablePlaybackDevices {
         let content = match &self {
             Loadable::Ready(ready) => {
                 models::loadable_playback_devices::Content::Ready(PlaybackDevices {
@@ -261,7 +284,10 @@ impl ToProtobuf<models::LoadablePlaybackDevices, ()> for Loadable<Vec<PlaybackDe
 }
 
 impl ToProtobuf<models::LoadableStatistics, ()> for Loadable<Statistics, EnvError> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::LoadableStatistics {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::LoadableStatistics {
         let content = match &self {
             Loadable::Ready(ready) => {
                 models::loadable_statistics::Content::Ready(ready.to_protobuf::<E>(&()))
@@ -280,7 +306,10 @@ impl ToProtobuf<models::LoadableStatistics, ()> for Loadable<Statistics, EnvErro
 impl ToProtobuf<models::loadable_addon_catalog::Content, Ctx>
     for Loadable<Vec<DescriptorPreview>, ResourceError>
 {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::loadable_addon_catalog::Content {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::loadable_addon_catalog::Content {
         match &self {
             Loadable::Ready(ready) => {
                 models::loadable_addon_catalog::Content::Ready(models::Addons {
@@ -298,7 +327,10 @@ impl ToProtobuf<models::loadable_addon_catalog::Content, Ctx>
 }
 
 impl ToProtobuf<models::loadable_descriptor::Content, Ctx> for Loadable<Descriptor, EnvError> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::loadable_descriptor::Content {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::loadable_descriptor::Content {
         match &self {
             Loadable::Ready(ready) => {
                 models::loadable_descriptor::Content::Ready(ready.to_protobuf::<E>(ctx))
@@ -312,7 +344,10 @@ impl ToProtobuf<models::loadable_descriptor::Content, Ctx> for Loadable<Descript
 }
 
 impl ToProtobuf<models::LoadableModal, ()> for Loadable<Option<GetModalResponse>, CtxError> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::LoadableModal {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::LoadableModal {
         let content = match &self {
             Loadable::Ready(ready) => models::loadable_modal::Content::Ready(LoadedModal {
                 modal: ready.to_protobuf::<E>(&()),
@@ -335,7 +370,10 @@ impl ToProtobuf<models::LoadableModal, ()> for Loadable<Option<GetModalResponse>
 impl ToProtobuf<models::LoadableNotification, ()>
     for Loadable<Option<GetNotificationResponse>, CtxError>
 {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::LoadableNotification {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::LoadableNotification {
         let content = match &self {
             Loadable::Ready(ready) => {
                 models::loadable_notification::Content::Ready(LoadedNotification {

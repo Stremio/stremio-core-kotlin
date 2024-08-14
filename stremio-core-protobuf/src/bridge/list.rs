@@ -8,6 +8,8 @@ impl<T: FromProtobuf<U>, U> FromProtobuf<Vec<U>> for Vec<T> {
 
 impl<T: ToProtobuf<U, A>, U, A> ToProtobuf<Vec<U>, A> for Vec<T> {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, args: &A) -> Vec<U> {
-        self.iter().map(|item| item.to_protobuf::<E>(args)).collect()
+        self.iter()
+            .map(|item| item.to_protobuf::<E>(args))
+            .collect()
     }
 }

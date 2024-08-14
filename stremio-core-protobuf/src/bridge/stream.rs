@@ -80,7 +80,10 @@ impl FromProtobuf<Stream> for types::Stream {
 }
 
 impl ToProtobuf<types::stream::Source, ()> for StreamSource {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::stream::Source {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::stream::Source {
         match self {
             StreamSource::Url { url } => types::stream::Source::Url(types::stream::Url {
                 url: url.to_string(),
@@ -137,7 +140,10 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
 }
 
 impl ToProtobuf<types::StreamProxyHeaders, ()> for StreamProxyHeaders {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::StreamProxyHeaders {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::StreamProxyHeaders {
         types::StreamProxyHeaders {
             request: self.request.to_owned(),
             response: self.response.to_owned(),

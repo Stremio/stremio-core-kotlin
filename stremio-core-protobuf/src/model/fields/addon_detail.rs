@@ -12,7 +12,10 @@ impl FromProtobuf<Selected> for models::addon_details::Selected {
 }
 
 impl ToProtobuf<models::addon_details::Selected, ()> for Selected {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::addon_details::Selected {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::addon_details::Selected {
         models::addon_details::Selected {
             transport_url: self.transport_url.to_string(),
         }
@@ -20,7 +23,10 @@ impl ToProtobuf<models::addon_details::Selected, ()> for Selected {
 }
 
 impl ToProtobuf<models::AddonDetails, Ctx> for AddonDetails {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::AddonDetails {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::AddonDetails {
         models::AddonDetails {
             selected: self.selected.to_protobuf::<E>(&()),
             local_addon: self.local_addon.to_protobuf::<E>(ctx),

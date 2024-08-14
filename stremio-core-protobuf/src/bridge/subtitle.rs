@@ -13,7 +13,10 @@ impl FromProtobuf<Subtitles> for types::Subtitle {
 }
 
 impl ToProtobuf<types::Subtitle, Option<&String>> for Subtitles {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, addon_name: &Option<&String>) -> types::Subtitle {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        addon_name: &Option<&String>,
+    ) -> types::Subtitle {
         types::Subtitle {
             lang: self.lang.to_string(),
             url: self.url.to_string(),

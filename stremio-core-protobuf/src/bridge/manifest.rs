@@ -139,7 +139,10 @@ impl ToProtobuf<types::ExtraProp, ()> for ExtraProp {
 }
 
 impl ToProtobuf<types::ManifestBehaviorHints, ()> for ManifestBehaviorHints {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::ManifestBehaviorHints {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::ManifestBehaviorHints {
         types::ManifestBehaviorHints {
             adult: self.adult,
             p2p: self.p2p,
@@ -150,7 +153,10 @@ impl ToProtobuf<types::ManifestBehaviorHints, ()> for ManifestBehaviorHints {
 }
 
 impl ToProtobuf<types::manifest_extra::Extra, ()> for ManifestExtra {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::manifest_extra::Extra {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::manifest_extra::Extra {
         match self {
             ManifestExtra::Full { props } => {
                 types::manifest_extra::Extra::Full(types::FullManifestExtra {
@@ -169,7 +175,10 @@ impl ToProtobuf<types::manifest_extra::Extra, ()> for ManifestExtra {
 }
 
 impl ToProtobuf<types::ManifestCatalog, ()> for ManifestCatalog {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::ManifestCatalog {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::ManifestCatalog {
         types::ManifestCatalog {
             id: self.id.to_owned(),
             r#type: self.r#type.to_owned(),
@@ -182,7 +191,10 @@ impl ToProtobuf<types::ManifestCatalog, ()> for ManifestCatalog {
 }
 
 impl ToProtobuf<types::ManifestResource, ()> for ManifestResource {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::ManifestResource {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::ManifestResource {
         match self {
             ManifestResource::Short(name) => types::ManifestResource {
                 name: name.to_owned(),
@@ -203,7 +215,10 @@ impl ToProtobuf<types::ManifestResource, ()> for ManifestResource {
 }
 
 impl ToProtobuf<types::ManifestPreview, ()> for ManifestPreview {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::ManifestPreview {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::ManifestPreview {
         types::ManifestPreview {
             id: self.id.to_owned(),
             version: self.version.to_string(),
@@ -238,7 +253,10 @@ impl ToProtobuf<types::Manifest, ()> for Manifest {
 }
 
 impl ToProtobuf<types::DescriptorFlags, ()> for DescriptorFlags {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::DescriptorFlags {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::DescriptorFlags {
         types::DescriptorFlags {
             official: self.official,
             protected: self.protected,
@@ -247,7 +265,10 @@ impl ToProtobuf<types::DescriptorFlags, ()> for DescriptorFlags {
 }
 
 impl ToProtobuf<types::DescriptorPreview, Ctx> for DescriptorPreview {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> types::DescriptorPreview {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> types::DescriptorPreview {
         types::DescriptorPreview {
             manifest: self.manifest.to_protobuf::<E>(&()),
             transport_url: self.transport_url.to_protobuf::<E>(&()),

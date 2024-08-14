@@ -14,7 +14,10 @@ impl FromProtobuf<PosterShape> for types::PosterShape {
 }
 
 impl ToProtobuf<types::PosterShape, ()> for PosterShape {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::PosterShape {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::PosterShape {
         match self {
             PosterShape::Poster => types::PosterShape::Poster,
             PosterShape::Landscape => types::PosterShape::Landscape,

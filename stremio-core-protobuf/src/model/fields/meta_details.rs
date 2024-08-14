@@ -22,7 +22,7 @@ impl FromProtobuf<Selected> for models::meta_details::Selected {
 }
 
 impl ToProtobuf<models::meta_details::Selected, ()> for Selected {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::meta_details::Selected {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> models::meta_details::Selected {
         models::meta_details::Selected {
             meta_path: self.meta_path.to_protobuf::<E>(&()),
             stream_path: self.stream_path.to_protobuf::<E>(&()),
@@ -32,7 +32,7 @@ impl ToProtobuf<models::meta_details::Selected, ()> for Selected {
 }
 
 impl ToProtobuf<types::video::SeriesInfo, ()> for SeriesInfo {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::video::SeriesInfo {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> types::video::SeriesInfo {
         types::video::SeriesInfo {
             season: self.season as i64,
             episode: self.episode as i64,
@@ -59,7 +59,7 @@ impl
         ),
     > for Video
 {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+    fn to_protobuf<E: Env + 'static>(
         &self,
         (library_item, watched, addon_name): &(
             Option<&LibraryItem>,
@@ -73,7 +73,9 @@ impl
             released: self.released.to_protobuf::<E>(&()),
             overview: self.overview.clone(),
             thumbnail: self.thumbnail.clone(),
-            streams: self.streams.to_protobuf::<E>(&(None, *addon_name, None, None)),
+            streams: self
+                .streams
+                .to_protobuf::<E>(&(None, *addon_name, None, None)),
             series_info: self.series_info.to_protobuf::<E>(&()),
             upcoming: self
                 .released
@@ -118,7 +120,7 @@ impl
         ),
     > for MetaItem
 {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+    fn to_protobuf<E: Env + 'static>(
         &self,
         (library_item, watched, addon_name, meta_request): &(
             Option<&LibraryItem>,
@@ -165,7 +167,7 @@ impl
 }
 
 impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::MetaDetails {
+    fn to_protobuf<E: Env + 'static>(&self, ctx: &Ctx) -> models::MetaDetails {
         let meta_item = self
             .meta_items
             .iter()

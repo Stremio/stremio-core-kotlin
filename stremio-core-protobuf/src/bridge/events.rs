@@ -14,7 +14,10 @@ impl ToProtobuf<models::Events, ()> for Events {
 }
 
 impl ToProtobuf<models::EventModal, ()> for GetModalResponse {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::EventModal {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::EventModal {
         models::EventModal {
             id: self.id.to_owned(),
             title: self.title.to_owned(),
@@ -33,7 +36,10 @@ impl ToProtobuf<models::EventModal, ()> for GetModalResponse {
 }
 
 impl ToProtobuf<models::EventNotification, ()> for GetNotificationResponse {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::EventNotification {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::EventNotification {
         models::EventNotification {
             id: self.id.to_owned(),
             title: self.title.to_owned(),

@@ -19,7 +19,10 @@ impl FromProtobuf<Selected> for models::library_by_type::Selected {
 }
 
 impl ToProtobuf<models::library_by_type::Selected, ()> for Selected {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::library_by_type::Selected {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::library_by_type::Selected {
         models::library_by_type::Selected {
             sort: self.sort.to_protobuf::<E>(&()) as i32,
         }
@@ -27,7 +30,10 @@ impl ToProtobuf<models::library_by_type::Selected, ()> for Selected {
 }
 
 impl ToProtobuf<models::library_by_type::SelectableSort, ()> for SelectableSort {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::library_by_type::SelectableSort {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::library_by_type::SelectableSort {
         models::library_by_type::SelectableSort {
             sort: self.sort.to_protobuf::<E>(&()) as i32,
             selected: self.selected,
@@ -36,7 +42,10 @@ impl ToProtobuf<models::library_by_type::SelectableSort, ()> for SelectableSort 
 }
 
 impl ToProtobuf<models::library_by_type::Selectable, ()> for Selectable {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::library_by_type::Selectable {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::library_by_type::Selectable {
         models::library_by_type::Selectable {
             sorts: self.sorts.to_protobuf::<E>(&()),
         }
@@ -44,7 +53,10 @@ impl ToProtobuf<models::library_by_type::Selectable, ()> for Selectable {
 }
 
 impl ToProtobuf<models::LibraryCatalog, Ctx> for Catalog {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::LibraryCatalog {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::LibraryCatalog {
         let items = self
             .iter()
             .flatten()
@@ -56,7 +68,10 @@ impl ToProtobuf<models::LibraryCatalog, Ctx> for Catalog {
 }
 
 impl<F> ToProtobuf<models::LibraryByType, Ctx> for LibraryByType<F> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::LibraryByType {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::LibraryByType {
         models::LibraryByType {
             selected: self.selected.to_protobuf::<E>(&()),
             selectable: self.selectable.to_protobuf::<E>(&()),

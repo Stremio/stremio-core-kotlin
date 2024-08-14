@@ -26,7 +26,10 @@ impl FromProtobuf<FrameRateMatchingStrategy> for types::profile::FrameRateMatchi
 }
 
 impl ToProtobuf<types::profile::FrameRateMatchingStrategy, ()> for FrameRateMatchingStrategy {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::profile::FrameRateMatchingStrategy {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::profile::FrameRateMatchingStrategy {
         match self {
             FrameRateMatchingStrategy::Disabled => {
                 types::profile::FrameRateMatchingStrategy::Disabled
@@ -98,7 +101,10 @@ impl FromProtobuf<Settings> for types::profile::Settings {
 }
 
 impl ToProtobuf<types::LinkAuthKey, ()> for LinkAuthKey {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::LinkAuthKey {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::LinkAuthKey {
         types::LinkAuthKey {
             auth_key: self.auth_key.to_string(),
         }
@@ -106,7 +112,10 @@ impl ToProtobuf<types::LinkAuthKey, ()> for LinkAuthKey {
 }
 
 impl ToProtobuf<types::LinkCodeResponse, ()> for LinkCodeResponse {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::LinkCodeResponse {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::LinkCodeResponse {
         types::LinkCodeResponse {
             code: self.code.to_string(),
             link: self.link.to_string(),
@@ -116,7 +125,10 @@ impl ToProtobuf<types::LinkCodeResponse, ()> for LinkCodeResponse {
 }
 
 impl ToProtobuf<types::GdprConsent, ()> for GDPRConsent {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::GdprConsent {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::GdprConsent {
         types::GdprConsent {
             tos: self.tos,
             privacy: self.privacy,
@@ -151,7 +163,10 @@ impl ToProtobuf<types::Auth, ()> for Auth {
 }
 
 impl ToProtobuf<types::profile::Settings, ()> for Settings {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::profile::Settings {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::profile::Settings {
         types::profile::Settings {
             interface_language: self.interface_language.to_string(),
             streaming_server_url: self.streaming_server_url.to_string(),
@@ -176,7 +191,8 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             secondary_audio_language: self.secondary_audio_language.clone(),
             secondary_subtitles_language: self.secondary_subtitles_language.clone(),
             player_type: self.player_type.clone(),
-            frame_rate_matching_strategy: self.frame_rate_matching_strategy.to_protobuf::<E>(&()) as i32,
+            frame_rate_matching_strategy: self.frame_rate_matching_strategy.to_protobuf::<E>(&())
+                as i32,
             next_video_notification_duration: self.next_video_notification_duration as i64,
             surround_sound: self.surround_sound,
         }

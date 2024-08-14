@@ -30,7 +30,10 @@ impl FromProtobuf<AuthRequest> for types::AuthRequest {
 }
 
 impl ToProtobuf<types::AuthRequest, ()> for AuthRequest {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::AuthRequest {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::AuthRequest {
         let request = match self {
             AuthRequest::Login {
                 email,

@@ -36,7 +36,10 @@ impl FromProtobuf<StatisticsRequest> for models::streaming_server::StatisticsReq
 }
 
 impl ToProtobuf<models::streaming_server::Selected, ()> for StreamingServerSelected {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::streaming_server::Selected {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::streaming_server::Selected {
         models::streaming_server::Selected {
             transport_url: self.transport_url.to_string(),
         }
@@ -44,7 +47,10 @@ impl ToProtobuf<models::streaming_server::Selected, ()> for StreamingServerSelec
 }
 
 impl ToProtobuf<models::streaming_server::PlaybackDevice, ()> for PlaybackDevice {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::streaming_server::PlaybackDevice {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::streaming_server::PlaybackDevice {
         models::streaming_server::PlaybackDevice {
             id: self.id.to_string(),
             name: self.id.to_string(),
@@ -54,7 +60,10 @@ impl ToProtobuf<models::streaming_server::PlaybackDevice, ()> for PlaybackDevice
 }
 
 impl ToProtobuf<models::streaming_server::Statistics, ()> for Statistics {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::streaming_server::Statistics {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::streaming_server::Statistics {
         models::streaming_server::Statistics {
             name: self.name.to_string(),
             info_hash: self.info_hash.to_string(),
@@ -79,7 +88,10 @@ impl ToProtobuf<models::streaming_server::Statistics, ()> for Statistics {
 }
 
 impl ToProtobuf<models::streaming_server::Settings, ()> for Settings {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::streaming_server::Settings {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::streaming_server::Settings {
         models::streaming_server::Settings {
             app_path: self.app_path.to_string(),
             cache_root: self.cache_root.to_string(),
@@ -99,7 +111,10 @@ impl ToProtobuf<models::streaming_server::Settings, ()> for Settings {
 }
 
 impl ToProtobuf<models::StreamingServer, ()> for StreamingServer {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::StreamingServer {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::StreamingServer {
         models::StreamingServer {
             selected: self.selected.to_protobuf::<E>(&()),
             settings: self.settings.to_protobuf::<E>(&()),

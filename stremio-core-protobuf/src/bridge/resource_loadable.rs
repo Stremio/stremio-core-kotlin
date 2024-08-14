@@ -1,4 +1,6 @@
 use inflector::Inflector;
+use url::Url;
+
 use stremio_core::deep_links::DiscoverDeepLinks;
 use stremio_core::models::common::{DescriptorLoadable, ResourceLoadable};
 use stremio_core::models::ctx::Ctx;
@@ -6,13 +8,36 @@ use stremio_core::types::addon::{DescriptorPreview, ResourceRequest};
 use stremio_core::types::library::LibraryItem;
 use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
 use stremio_core::types::watched_bitfield::WatchedBitField;
-use url::Url;
 
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::models;
+// use crate::stremio_core_models::types::ResourcePath;
+
+// impl<'a> ToProtobuf<models::LoadablePage, Ctx> for stremio_core_web::model::serialize_catalogs_with_extra::ResourceLoadable<'a> {
+//     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::LoadablePage {
+//         let deep_links = DiscoverDeepLinks::from(&self.request).to_protobuf::<E>(&());
+//         models::LoadablePage {
+//             title: self.name.to_string(),
+//             request: crate::protobuf::stremio::core::types::ResourceRequest {
+//                 base: "todo".into(),
+//                 path: ResourcePath {
+//                     resource: "todo".to_string(),
+//                     r#type: "todo".into(),
+//                     id: "todo".into(),
+//                     extra: vec![],
+//                 },
+//             },
+//             content: self.content.to_protobuf::<E>(&(ctx, &self.request)),
+//             deep_links,
+//         }
+//     }
+// }
 
 impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPreview>> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::LoadablePage {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::LoadablePage {
         let title = ctx
             .profile
             .addons
@@ -83,9 +108,12 @@ impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
         models::LoadableStreams {
             title: addon_name.to_owned(),
             request: self.request.to_protobuf::<E>(&()),
-            content: self
-                .content
-                .to_protobuf::<E>(&(ctx, &addon_name, &self.request, *meta_request)),
+            content: self.content.to_protobuf::<E>(&(
+                ctx,
+                &addon_name,
+                &self.request,
+                *meta_request,
+            )),
         }
     }
 }
@@ -100,15 +128,21 @@ impl ToProtobuf<models::LoadableStream, (&Ctx, Option<&ResourceRequest>)>
         let addon_name = get_addon_name(ctx, &self.request.base);
         models::LoadableStream {
             request: self.request.to_protobuf::<E>(&()),
-            content: self
-                .content
-                .to_protobuf::<E>(&(ctx, &addon_name, &self.request, *meta_request)),
+            content: self.content.to_protobuf::<E>(&(
+                ctx,
+                &addon_name,
+                &self.request,
+                *meta_request,
+            )),
         }
     }
 }
 
 impl ToProtobuf<models::LoadableSubtitles, Ctx> for ResourceLoadable<Vec<Subtitles>> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::LoadableSubtitles {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::LoadableSubtitles {
         let addon_name = get_addon_name(ctx, &self.request.base);
         models::LoadableSubtitles {
             title: addon_name.to_owned(),
@@ -119,7 +153,10 @@ impl ToProtobuf<models::LoadableSubtitles, Ctx> for ResourceLoadable<Vec<Subtitl
 }
 
 impl ToProtobuf<models::LoadableAddonCatalog, Ctx> for &ResourceLoadable<Vec<DescriptorPreview>> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::LoadableAddonCatalog {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::LoadableAddonCatalog {
         models::LoadableAddonCatalog {
             request: self.request.to_protobuf::<E>(&()),
             content: self.content.to_protobuf::<E>(ctx),
@@ -128,7 +165,10 @@ impl ToProtobuf<models::LoadableAddonCatalog, Ctx> for &ResourceLoadable<Vec<Des
 }
 
 impl ToProtobuf<models::LoadableDescriptor, Ctx> for DescriptorLoadable {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::LoadableDescriptor {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::LoadableDescriptor {
         models::LoadableDescriptor {
             transport_url: self.transport_url.to_string(),
             content: Some(self.content.to_protobuf::<E>(ctx)),

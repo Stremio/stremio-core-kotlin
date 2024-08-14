@@ -25,7 +25,10 @@ impl FromProtobuf<installed_addons_with_filters::Selected>
 }
 
 impl ToProtobuf<types::ResourceRequest, ()> for InstalledAddonsRequest {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::ResourceRequest {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::ResourceRequest {
         types::ResourceRequest {
             base: "".to_string(),
             path: types::ResourcePath {
@@ -41,7 +44,10 @@ impl ToProtobuf<types::ResourceRequest, ()> for InstalledAddonsRequest {
 impl ToProtobuf<models::addons_with_filters::Selected, ()>
     for installed_addons_with_filters::Selected
 {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::addons_with_filters::Selected {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::addons_with_filters::Selected {
         models::addons_with_filters::Selected {
             request: self.request.to_protobuf::<E>(&()),
         }
@@ -49,7 +55,10 @@ impl ToProtobuf<models::addons_with_filters::Selected, ()>
 }
 
 impl ToProtobuf<models::AddonsWithFilters, Ctx> for AddonsWithFilters {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::AddonsWithFilters {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::AddonsWithFilters {
         models::AddonsWithFilters {
             selected: self
                 .remote_addons

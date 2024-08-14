@@ -22,7 +22,10 @@ impl FromProtobuf<InstalledAddonsRequest> for types::ResourceRequest {
 }
 
 impl ToProtobuf<types::ResourceRequest, ()> for ResourceRequest {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::ResourceRequest {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::ResourceRequest {
         types::ResourceRequest {
             base: self.base.to_string(),
             path: self.path.to_protobuf::<E>(&()),

@@ -5,7 +5,6 @@ use prost_build::Config;
 
 pub const CARGO_MANIFEST_DIR: &str = env!("CARGO_MANIFEST_DIR");
 fn main() {
-
     let proto_dir = PathBuf::from(CARGO_MANIFEST_DIR).join("proto");
 
     let proto_paths = glob(format!("{}/**/*.proto", proto_dir.display()).as_str())

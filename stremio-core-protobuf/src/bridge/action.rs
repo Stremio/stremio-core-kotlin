@@ -258,8 +258,6 @@ impl FromProtobuf<Action> for runtime::Action {
 //     }
 // }
 
-
-
 // impl<E, M> FromProtobuf<RuntimeAction<E, M>> for runtime::RuntimeAction
 impl<E, M, F> FromProtobuf<RuntimeAction<E, M>> for runtime::RuntimeAction
 where
@@ -273,7 +271,7 @@ where
             field: self
                 .field
                 .and_then(|value| Field::try_from(value).ok().map(Into::into)),
-                // .from_protobuf(),
+            // .from_protobuf(),
             action: self.action.from_protobuf(),
         }
     }

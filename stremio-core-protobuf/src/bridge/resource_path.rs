@@ -15,7 +15,10 @@ impl FromProtobuf<ResourcePath> for types::ResourcePath {
 }
 
 impl ToProtobuf<types::ResourcePath, ()> for ResourcePath {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::ResourcePath {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::ResourcePath {
         types::ResourcePath {
             resource: self.resource.to_owned(),
             r#type: self.r#type.to_owned(),

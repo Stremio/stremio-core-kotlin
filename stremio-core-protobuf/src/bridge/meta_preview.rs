@@ -1,4 +1,5 @@
 use chrono::Duration;
+
 use stremio_core::deep_links::MetaItemDeepLinks;
 use stremio_core::models::ctx::Ctx;
 use stremio_core::runtime::Env;
@@ -6,7 +7,6 @@ use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{MetaItemBehaviorHints, MetaItemPreview, PosterShape};
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
-// use crate::env::AndroidEnv;
 use crate::protobuf::stremio::core::types;
 
 impl FromProtobuf<MetaItemBehaviorHints> for types::MetaItemBehaviorHints {
@@ -45,7 +45,7 @@ impl FromProtobuf<MetaItemPreview> for types::MetaItemPreview {
 }
 
 impl ToProtobuf<types::MetaItemBehaviorHints, ()> for MetaItemBehaviorHints {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::MetaItemBehaviorHints {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> types::MetaItemBehaviorHints {
         types::MetaItemBehaviorHints {
             default_video_id: self.default_video_id.clone(),
             featured_video_id: self.featured_video_id.clone(),
@@ -55,7 +55,7 @@ impl ToProtobuf<types::MetaItemBehaviorHints, ()> for MetaItemBehaviorHints {
 }
 
 impl ToProtobuf<types::MetaItemDeepLinks, ()> for MetaItemDeepLinks {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::MetaItemDeepLinks {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> types::MetaItemDeepLinks {
         types::MetaItemDeepLinks {
             meta_details_videos: self.meta_details_videos.clone(),
             meta_details_streams: self.meta_details_streams.clone(),
@@ -65,7 +65,7 @@ impl ToProtobuf<types::MetaItemDeepLinks, ()> for MetaItemDeepLinks {
 }
 
 impl ToProtobuf<types::MetaItemPreview, (&Ctx, &ResourceRequest)> for MetaItemPreview {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+    fn to_protobuf<E: Env + 'static>(
         &self,
         (ctx, meta_request): &(&Ctx, &ResourceRequest),
     ) -> types::MetaItemPreview {

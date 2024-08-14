@@ -59,7 +59,10 @@ impl FromProtobuf<VideoParams> for models::player::VideoParams {
 }
 
 impl ToProtobuf<models::player::VideoParams, ()> for VideoParams {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::player::VideoParams {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::player::VideoParams {
         models::player::VideoParams {
             hash: self.hash.to_owned(),
             size: self.size.map(|x| x as i64).to_owned(),
@@ -69,7 +72,10 @@ impl ToProtobuf<models::player::VideoParams, ()> for VideoParams {
 }
 
 impl ToProtobuf<models::player::StreamState, ()> for StreamItemState {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::player::StreamState {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::player::StreamState {
         models::player::StreamState {
             subtitle_track: self.subtitle_track.to_protobuf::<E>(&()),
             subtitle_delay: self.subtitle_delay.to_owned(),
@@ -82,7 +88,10 @@ impl ToProtobuf<models::player::StreamState, ()> for StreamItemState {
 }
 
 impl ToProtobuf<models::player::SubtitleTrack, ()> for SubtitleTrack {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::player::SubtitleTrack {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::player::SubtitleTrack {
         models::player::SubtitleTrack {
             id: self.id.to_owned(),
             embedded: self.embedded,
@@ -92,7 +101,10 @@ impl ToProtobuf<models::player::SubtitleTrack, ()> for SubtitleTrack {
 }
 
 impl ToProtobuf<models::player::AudioTrack, ()> for AudioTrack {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::player::AudioTrack {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::player::AudioTrack {
         models::player::AudioTrack {
             id: self.id.to_owned(),
             language: self.language.to_owned(),
@@ -101,7 +113,10 @@ impl ToProtobuf<models::player::AudioTrack, ()> for AudioTrack {
 }
 
 impl ToProtobuf<models::player::Selected, Ctx> for Selected {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::player::Selected {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::player::Selected {
         let addon_name = self.stream_request.as_ref().and_then(|request| {
             ctx.profile
                 .addons

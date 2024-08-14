@@ -48,7 +48,10 @@ impl FromProtobuf<Selected> for models::library_with_filters::Selected {
 }
 
 impl ToProtobuf<models::library_with_filters::Sort, ()> for Sort {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::library_with_filters::Sort {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::library_with_filters::Sort {
         match self {
             Sort::LastWatched => models::library_with_filters::Sort::LastWatched,
             Sort::Name => models::library_with_filters::Sort::Name,
@@ -61,7 +64,10 @@ impl ToProtobuf<models::library_with_filters::Sort, ()> for Sort {
 }
 
 impl ToProtobuf<models::library_with_filters::LibraryRequest, ()> for LibraryRequest {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::library_with_filters::LibraryRequest {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::library_with_filters::LibraryRequest {
         models::library_with_filters::LibraryRequest {
             r#type: self.r#type.clone(),
             sort: self.sort.to_protobuf::<E>(&()) as i32,
@@ -71,7 +77,10 @@ impl ToProtobuf<models::library_with_filters::LibraryRequest, ()> for LibraryReq
 }
 
 impl ToProtobuf<models::library_with_filters::Selected, ()> for Selected {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::library_with_filters::Selected {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::library_with_filters::Selected {
         models::library_with_filters::Selected {
             request: self.request.to_protobuf::<E>(&()),
         }
@@ -79,7 +88,10 @@ impl ToProtobuf<models::library_with_filters::Selected, ()> for Selected {
 }
 
 impl ToProtobuf<models::library_with_filters::SelectableType, ()> for SelectableType {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::library_with_filters::SelectableType {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::library_with_filters::SelectableType {
         models::library_with_filters::SelectableType {
             r#type: self.r#type.clone(),
             selected: self.selected,
@@ -89,7 +101,10 @@ impl ToProtobuf<models::library_with_filters::SelectableType, ()> for Selectable
 }
 
 impl ToProtobuf<models::library_with_filters::SelectableSort, ()> for SelectableSort {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::library_with_filters::SelectableSort {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::library_with_filters::SelectableSort {
         models::library_with_filters::SelectableSort {
             sort: self.sort.to_protobuf::<E>(&()) as i32,
             selected: self.selected,
@@ -99,7 +114,10 @@ impl ToProtobuf<models::library_with_filters::SelectableSort, ()> for Selectable
 }
 
 impl ToProtobuf<models::library_with_filters::SelectablePage, ()> for SelectablePage {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::library_with_filters::SelectablePage {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::library_with_filters::SelectablePage {
         models::library_with_filters::SelectablePage {
             request: self.request.to_protobuf::<E>(&()),
         }
@@ -107,7 +125,10 @@ impl ToProtobuf<models::library_with_filters::SelectablePage, ()> for Selectable
 }
 
 impl ToProtobuf<models::library_with_filters::Selectable, ()> for Selectable {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> models::library_with_filters::Selectable {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::library_with_filters::Selectable {
         models::library_with_filters::Selectable {
             types: self.types.to_protobuf::<E>(&()),
             sorts: self.sorts.to_protobuf::<E>(&()),
@@ -117,7 +138,10 @@ impl ToProtobuf<models::library_with_filters::Selectable, ()> for Selectable {
 }
 
 impl<F> ToProtobuf<models::LibraryWithFilters, Ctx> for LibraryWithFilters<F> {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::LibraryWithFilters {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::LibraryWithFilters {
         models::LibraryWithFilters {
             selected: self.selected.to_protobuf::<E>(&()),
             selectable: self.selectable.to_protobuf::<E>(&()),
