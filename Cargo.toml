@@ -9,12 +9,15 @@ rust-version = "1.67.1"
 [features]
 default = ["kotlin"]
 kotlin = [
+    # for fetch (making requests):
     "dep:http",
     "dep:reqwest",
     "dep:openssl",
     "dep:http-cache-reqwest",
     "dep:reqwest-middleware",
+    # executors
     "dep:tokio",
+    # java bindings
     "dep:jni",
     "dep:getrandom",
 ]
@@ -45,6 +48,13 @@ prost-types = "0.12"
 prost-build = "0.12"
 protox = "0.5"
 glob = "0.3.0"
+
+# Http Request handling
+http = { version = "0.2.*" }
+reqwest = { version = "0.11" }
+openssl = { version = "=0.10.40" }
+http-cache-reqwest = { version = "0.4.5" }
+reqwest-middleware = { version = "0.1.6" }
 
 [profile.release]
 lto = true
@@ -91,11 +101,11 @@ tokio = { version = "1", features = ["rt", "rt-multi-thread"], optional = true }
 futures = "0.3.*"
 
 # Http Request handling
-http = { version = "0.2.*", optional = true }
-reqwest = { version = "0.11", features = ["json", "rustls-tls"], optional = true }
-openssl = { version = "=0.10.40", features = ["vendored"], optional = true }
-http-cache-reqwest = { version = "0.4.5", optional = true }
-reqwest-middleware = { version = "0.1.6", optional = true }
+http = { workspace = true, optional = true }
+reqwest = { workspace = true, features = ["json", "rustls-tls"], optional = true }
+openssl = { workspace = true, features = ["vendored"], optional = true }
+http-cache-reqwest = { workspace = true, optional = true }
+reqwest-middleware = { workspace = true, optional = true }
 
 # Bytes / Protobuf 
 bytes = "1.1.0"
