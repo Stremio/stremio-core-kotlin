@@ -86,15 +86,17 @@ impl AndroidEnv {
             load_kotlin_classes(env).expect("kotlin classes load failed");
         *STORAGE.write().expect("STORAGE write failed") =
             Some(Storage::new(env, storage).expect("Create Storage failed"));
-        AndroidEnv::migrate_storage_schema()
-            .and_then(|_| async {
-                let installation_id = get_installation_id().await?;
-                *INSTALLATION_ID
-                    .write()
-                    .expect("INSTALLATION_ID write failed") = Some(installation_id);
-                Ok(())
-            })
-            .boxed_env()
+
+        async {
+            Self::migrate_storage_schema().await?;
+
+            let installation_id = get_installation_id().await?;
+            *INSTALLATION_ID
+                .write()
+                .expect("INSTALLATION_ID write failed") = Some(installation_id);
+            Ok(())
+        }
+        .boxed_env()
     }
     pub fn kotlin_classes<'a>(
     ) -> LockResult<RwLockReadGuard<'a, HashMap<KotlinClassName, GlobalRef>>> {
