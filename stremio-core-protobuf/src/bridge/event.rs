@@ -237,7 +237,7 @@ impl<E, M, F> ToProtobuf<runtime::RuntimeEvent, ()> for RuntimeEvent<E, M>
 where
     E: stremio_core::runtime::Env + 'static,
     M: stremio_core::runtime::Model<E, Field = F>,
-    F: Into<Field> + Clone,
+    F: ToProtobuf<Field, ()>,
 {
     fn to_protobuf<Env: stremio_core::runtime::Env + 'static>(
         &self,
@@ -247,11 +247,9 @@ where
             RuntimeEvent::NewState(fields, ..) => {
                 runtime::runtime_event::Event::NewState(runtime::runtime_event::NewState {
                     fields: fields
+                        .to_protobuf::<E>(&())
                         .iter()
-                        .map(|field| field.clone().into())
-                        // .to_protobuf::<E>(&())
-                        // .iter()
-                        .map(|field: Field| field as i32)
+                        .map(|field| *field as i32)
                         .collect(),
                 })
             }
