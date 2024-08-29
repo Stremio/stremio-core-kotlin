@@ -7,14 +7,13 @@ use stremio_core::runtime::msg::{
 };
 use stremio_core::runtime::RuntimeAction;
 
-use crate::bridge::FromProtobuf;
-// use crate::env::AndroidEnv;
-// use crate::model::AndroidModel;
-use crate::protobuf::stremio::core::runtime;
-use crate::protobuf::stremio::core::runtime::{
-    action_catalog_with_filters, action_catalogs_with_extra, action_ctx, action_library_by_type,
-    action_link, action_load, action_meta_details, action_player, action_streaming_server,
-    create_torrent_args, Field,
+use crate::{
+    bridge::FromProtobuf,
+    protobuf::stremio::core::runtime::{
+        self, action_catalog_with_filters, action_catalogs_with_extra, action_ctx,
+        action_library_by_type, action_link, action_load, action_meta_details, action_player,
+        action_streaming_server, create_torrent_args, Field,
+    },
 };
 
 impl FromProtobuf<Action> for runtime::Action {
@@ -246,24 +245,10 @@ impl FromProtobuf<Action> for runtime::Action {
     }
 }
 
-// impl FromProtobuf<RuntimeAction<AndroidEnv, AndroidModel>> for runtime::RuntimeAction {
-//     fn from_protobuf(&self) -> RuntimeAction<AndroidEnv, AndroidModel> {
-//         RuntimeAction {
-//             field: self
-//                 .field
-//                 .and_then(|value| Field::try_from(value).ok())
-//                 .from_protobuf(),
-//             action: self.action.from_protobuf(),
-//         }
-//     }
-// }
-
-// impl<E, M> FromProtobuf<RuntimeAction<E, M>> for runtime::RuntimeAction
 impl<E, M, F> FromProtobuf<RuntimeAction<E, M>> for runtime::RuntimeAction
 where
     E: stremio_core::runtime::Env + 'static,
     M: stremio_core::runtime::Model<E, Field = F>,
-    // M: stremio_core::runtime::Model<E, Field = crate::model::AndroidModelField>,
     F: From<Field>,
 {
     fn from_protobuf(&self) -> RuntimeAction<E, M> {
@@ -271,7 +256,6 @@ where
             field: self
                 .field
                 .and_then(|value| Field::try_from(value).ok().map(Into::into)),
-            // .from_protobuf(),
             action: self.action.from_protobuf(),
         }
     }

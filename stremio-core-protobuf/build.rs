@@ -36,7 +36,7 @@ fn main() {
 
     Config::new()
         .compile_well_known_types()
-        .out_dir(&protobuf_gen_dir.display().to_string())
+        .out_dir(protobuf_gen_dir.display().to_string())
         .include_file("mod.rs")
         .compile_fds(file_descriptors)
         .expect("Expected successful protobuf codegen");
