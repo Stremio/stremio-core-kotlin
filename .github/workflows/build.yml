@@ -5,6 +5,20 @@ on:
     branches:
       - '**'
 
+# Stops the running workflow of previous pushes
+concurrency:
+  group: ${{ github.ref }}-android
+  cancel-in-progress: true
+
+env:
+  # For the confusing protoc versioning check out these docs:
+  # https://protobuf.dev/support/version-support/
+  # v3.26.x, where `.x` is a wildcard
+  #
+  # For stremio-core-android we use version 3.21
+  # Check build.gradle.kts
+  PROTOC_VERSION: '21.x'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,6 +29,8 @@ jobs:
       # add protoc because of stremio-core-csharp
       - name: Install Protoc
         uses: arduino/setup-protoc@v3
+        with:
+          version: "${{ env.PROTOC_VERSION }}"
 
       - name: Rust setup (1.67.1)
         uses: dtolnay/rust-toolchain@1.67.1
