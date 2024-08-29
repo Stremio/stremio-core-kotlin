@@ -1,29 +1,30 @@
 use prost::Message;
-use stremio_core::models::addon_details::AddonDetails;
-use stremio_core::models::catalog_with_filters::CatalogWithFilters;
-use stremio_core::models::catalogs_with_extra::CatalogsWithExtra;
-use stremio_core::models::continue_watching_preview::ContinueWatchingPreview;
-use stremio_core::models::ctx::Ctx;
-use stremio_core::models::library_by_type::LibraryByType;
-use stremio_core::models::library_with_filters::{LibraryWithFilters, NotRemovedFilter};
-use stremio_core::models::link::Link;
-use stremio_core::models::meta_details::MetaDetails;
-use stremio_core::models::player::Player;
-use stremio_core::models::streaming_server::StreamingServer;
-use stremio_core::runtime::Effects;
-use stremio_core::types::api::LinkAuthKey;
-use stremio_core::types::events::DismissedEventsBucket;
-use stremio_core::types::library::LibraryBucket;
-use stremio_core::types::notifications::NotificationsBucket;
-use stremio_core::types::profile::Profile;
-use stremio_core::types::resource::MetaItemPreview;
-use stremio_core::types::search_history::SearchHistoryBucket;
-use stremio_core::types::streams::StreamsBucket;
-use stremio_core::Model;
 
-use crate::bridge::ToProtobuf;
-use crate::env::AndroidEnv;
-use crate::model::AddonsWithFilters;
+use stremio_core::{
+    models::{
+        addon_details::AddonDetails,
+        catalog_with_filters::CatalogWithFilters,
+        catalogs_with_extra::CatalogsWithExtra,
+        continue_watching_preview::ContinueWatchingPreview,
+        ctx::Ctx,
+        library_by_type::LibraryByType,
+        library_with_filters::{LibraryWithFilters, NotRemovedFilter},
+        link::Link,
+        meta_details::MetaDetails,
+        player::Player,
+        streaming_server::StreamingServer,
+    },
+    runtime::Effects,
+    types::{
+        api::LinkAuthKey, events::DismissedEventsBucket, library::LibraryBucket,
+        notifications::NotificationsBucket, profile::Profile, resource::MetaItemPreview,
+        search_history::SearchHistoryBucket, streams::StreamsBucket,
+    },
+    Model,
+};
+use stremio_core_protobuf::model::AddonsWithFilters;
+
+use crate::{bridge::ToProtobuf, env::AndroidEnv};
 
 #[derive(Model, Clone)]
 #[model(AndroidEnv)]
@@ -99,30 +100,55 @@ impl AndroidModel {
 
     pub fn get_state_binary(&self, field: &AndroidModelField) -> Vec<u8> {
         match field {
-            AndroidModelField::Ctx => self.ctx.to_protobuf(&()).encode_to_vec(),
-            AndroidModelField::AuthLink => self.auth_link.to_protobuf(&()).encode_to_vec(),
+            AndroidModelField::Ctx => self.ctx.to_protobuf::<AndroidEnv>(&()).encode_to_vec(),
+            AndroidModelField::AuthLink => self
+                .auth_link
+                .to_protobuf::<AndroidEnv>(&())
+                .encode_to_vec(),
             AndroidModelField::ContinueWatchingPreview => self
                 .continue_watching_preview
-                .to_protobuf(&self.ctx)
+                .to_protobuf::<AndroidEnv>(&self.ctx)
                 .encode_to_vec(),
-            AndroidModelField::Library => self.library.to_protobuf(&self.ctx).encode_to_vec(),
-            AndroidModelField::LibraryByType => {
-                self.library_by_type.to_protobuf(&self.ctx).encode_to_vec()
-            }
-            AndroidModelField::Board => self.board.to_protobuf(&self.ctx).encode_to_vec(),
-            AndroidModelField::Search => self.search.to_protobuf(&self.ctx).encode_to_vec(),
-            AndroidModelField::Discover => self.discover.to_protobuf(&self.ctx).encode_to_vec(),
-            AndroidModelField::MetaDetails => {
-                self.meta_details.to_protobuf(&self.ctx).encode_to_vec()
-            }
-            AndroidModelField::Addons => self.addons.to_protobuf(&self.ctx).encode_to_vec(),
-            AndroidModelField::AddonDetails => {
-                self.addon_details.to_protobuf(&self.ctx).encode_to_vec()
-            }
-            AndroidModelField::StreamingServer => {
-                self.streaming_server.to_protobuf(&()).encode_to_vec()
-            }
-            AndroidModelField::Player => self.player.to_protobuf(&self.ctx).encode_to_vec(),
+            AndroidModelField::Library => self
+                .library
+                .to_protobuf::<AndroidEnv>(&self.ctx)
+                .encode_to_vec(),
+            AndroidModelField::LibraryByType => self
+                .library_by_type
+                .to_protobuf::<AndroidEnv>(&self.ctx)
+                .encode_to_vec(),
+            AndroidModelField::Board => self
+                .board
+                .to_protobuf::<AndroidEnv>(&self.ctx)
+                .encode_to_vec(),
+            AndroidModelField::Search => self
+                .search
+                .to_protobuf::<AndroidEnv>(&self.ctx)
+                .encode_to_vec(),
+            AndroidModelField::Discover => self
+                .discover
+                .to_protobuf::<AndroidEnv>(&self.ctx)
+                .encode_to_vec(),
+            AndroidModelField::MetaDetails => self
+                .meta_details
+                .to_protobuf::<AndroidEnv>(&self.ctx)
+                .encode_to_vec(),
+            AndroidModelField::Addons => self
+                .addons
+                .to_protobuf::<AndroidEnv>(&self.ctx)
+                .encode_to_vec(),
+            AndroidModelField::AddonDetails => self
+                .addon_details
+                .to_protobuf::<AndroidEnv>(&self.ctx)
+                .encode_to_vec(),
+            AndroidModelField::StreamingServer => self
+                .streaming_server
+                .to_protobuf::<AndroidEnv>(&())
+                .encode_to_vec(),
+            AndroidModelField::Player => self
+                .player
+                .to_protobuf::<AndroidEnv>(&self.ctx)
+                .encode_to_vec(),
         }
     }
 }

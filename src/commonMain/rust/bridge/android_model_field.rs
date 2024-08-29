@@ -1,4 +1,7 @@
+use stremio_core::runtime::Env;
+
 use crate::bridge::{FromProtobuf, ToProtobuf};
+use crate::env::AndroidEnv;
 use crate::model::AndroidModelField;
 use crate::protobuf::stremio::core::runtime::Field;
 
@@ -10,7 +13,7 @@ impl From<Field> for AndroidModelField {
 
 impl From<AndroidModelField> for Field {
     fn from(field: AndroidModelField) -> Self {
-        field.to_protobuf(&())
+        field.to_protobuf::<AndroidEnv>(&())
     }
 }
 
@@ -35,7 +38,7 @@ impl FromProtobuf<AndroidModelField> for Field {
 }
 
 impl ToProtobuf<Field, ()> for AndroidModelField {
-    fn to_protobuf(&self, _args: &()) -> Field {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> Field {
         match self {
             AndroidModelField::Ctx => Field::Ctx,
             AndroidModelField::AuthLink => Field::AuthLink,

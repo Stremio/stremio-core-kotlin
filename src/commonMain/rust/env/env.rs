@@ -5,7 +5,7 @@ use std::{
 };
 
 use chrono::{DateTime, Utc};
-use futures::{Future, TryFutureExt};
+use futures::Future;
 use http::Request;
 use jni::{
     objects::{GlobalRef, JObject},

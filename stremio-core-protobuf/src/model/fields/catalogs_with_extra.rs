@@ -1,6 +1,6 @@
 use stremio_core::deep_links::DiscoverDeepLinks;
 use stremio_core::models::catalog_with_filters::Catalog;
-use stremio_core::models::catalogs_with_extra::Selected;
+use stremio_core::models::catalogs_with_extra::{CatalogsWithExtra, Selected};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::types::resource::MetaItemPreview;
 
@@ -32,6 +32,18 @@ impl ToProtobuf<models::Catalog, Ctx> for Catalog<MetaItemPreview> {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::Catalog {
         models::Catalog {
             pages: self.iter().map(|page| page.to_protobuf::<E>(ctx)).collect(),
+        }
+    }
+}
+
+impl ToProtobuf<models::CatalogsWithExtra, Ctx> for CatalogsWithExtra {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> models::CatalogsWithExtra {
+        models::CatalogsWithExtra {
+            selected: self.selected.to_protobuf::<E>(&()),
+            catalogs: self.catalogs.to_protobuf::<E>(ctx),
         }
     }
 }
