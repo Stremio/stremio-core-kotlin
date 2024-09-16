@@ -19,13 +19,14 @@ message ActionLoad {
     stremio.core.models.AddonDetails.Selected addon_details = 1;
     stremio.core.models.CatalogsWithExtra.Selected catalogs_with_extra = 2;
     stremio.core.models.CatalogWithFilters.Selected catalog_with_filters = 3;
-    stremio.core.models.AddonsWithFilters.Selected addons_with_filters = 4;
-    stremio.core.models.LibraryByType.Selected library_by_type = 5;
-    stremio.core.models.LibraryWithFilters.Selected library_with_filters = 6;
-    stremio.core.models.MetaDetails.Selected meta_details = 7;
-    stremio.core.models.Player.Selected player = 8;
-    google.protobuf.Empty link = 9;
-    google.protobuf.Empty data_export = 10;
-    google.protobuf.Empty local_search = 11;
+    google.protobuf.Empty catalog_with_filters_all = 4;
+    stremio.core.models.AddonsWithFilters.Selected addons_with_filters = 5;
+    stremio.core.models.LibraryByType.Selected library_by_type = 6;
+    stremio.core.models.LibraryWithFilters.Selected library_with_filters = 7;
+    stremio.core.models.MetaDetails.Selected meta_details = 8;
+    stremio.core.models.Player.Selected player = 9;
+    google.protobuf.Empty link = 10;
+    google.protobuf.Empty data_export = 11;
+    google.protobuf.Empty local_search = 12;
   }
 }

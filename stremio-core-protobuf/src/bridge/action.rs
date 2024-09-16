@@ -214,6 +214,9 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_load::Args::CatalogWithFilters(selected)) => Action::Load(
                     ActionLoad::CatalogWithFilters(Some(selected.from_protobuf())),
                 ),
+                Some(action_load::Args::CatalogWithFiltersAll(_empty)) => Action::Load(
+                    ActionLoad::CatalogWithFilters(None),
+                ),
                 Some(action_load::Args::AddonsWithFilters(selected)) => {
                     Action::Load(match selected.request.base.is_empty() {
                         true => ActionLoad::InstalledAddonsWithFilters(selected.from_protobuf()),
