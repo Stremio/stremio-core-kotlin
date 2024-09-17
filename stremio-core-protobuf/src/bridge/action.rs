@@ -1,11 +1,16 @@
 use std::ops::Range;
 
-use stremio_core::runtime::msg::{
-    Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx, ActionLibraryByType,
-    ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer, ActionStreamingServer,
-    CreateTorrentArgs, PlayOnDeviceArgs,
+use stremio_core::{
+    models::catalogs_with_extra::Selected,
+    runtime::{
+        msg::{
+            Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx,
+            ActionLibraryByType, ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer,
+            ActionStreamingServer, CreateTorrentArgs, PlayOnDeviceArgs,
+        },
+        RuntimeAction,
+    },
 };
-use stremio_core::runtime::RuntimeAction;
 
 use crate::{
     bridge::FromProtobuf,
@@ -208,15 +213,31 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_load::Args::AddonDetails(selected)) => {
                     Action::Load(ActionLoad::AddonDetails(selected.from_protobuf()))
                 }
+                // Board
                 Some(action_load::Args::CatalogsWithExtra(selected)) => {
                     Action::Load(ActionLoad::CatalogsWithExtra(selected.from_protobuf()))
                 }
+                // Board
+                Some(action_load::Args::CatalogsWithExtraAll(_empty)) => {
+                    Action::Load(ActionLoad::CatalogsWithExtra(Selected {
+                        r#type: None,
+                        extra: vec![],
+                    }))
+                }
+                // Search
+                // Needs `LoadRange` to fetch next pages
+                Some(action_load::Args::Search(selected)) => {
+                    Action::Load(ActionLoad::CatalogsWithExtra(selected.from_protobuf()))
+                }
+                // Discovery
+                // Needs `LoadNextPage` to fetch next pages
                 Some(action_load::Args::CatalogWithFilters(selected)) => Action::Load(
                     ActionLoad::CatalogWithFilters(Some(selected.from_protobuf())),
                 ),
-                Some(action_load::Args::CatalogWithFiltersAll(_empty)) => Action::Load(
-                    ActionLoad::CatalogWithFilters(None),
-                ),
+                // Discovery
+                Some(action_load::Args::CatalogWithFiltersAll(_empty)) => {
+                    Action::Load(ActionLoad::CatalogWithFilters(None))
+                }
                 Some(action_load::Args::AddonsWithFilters(selected)) => {
                     Action::Load(match selected.request.base.is_empty() {
                         true => ActionLoad::InstalledAddonsWithFilters(selected.from_protobuf()),
@@ -240,6 +261,7 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_load::Args::LocalSearch(_args)) => {
                     Action::Load(ActionLoad::LocalSearch)
                 }
+
                 None => unimplemented!("ActionLoad missing"),
             },
             Some(runtime::action::Type::Unload(_args)) => Action::Unload,
