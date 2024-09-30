@@ -12,7 +12,8 @@ use jni::{
     sys::{jbyteArray, jint, jobject, JNI_VERSION_1_6},
     JNIEnv, JavaVM,
 };
-use lazy_static::lazy_static;
+
+use once_cell::sync::Lazy;
 use prost::Message;
 
 use stremio_core::{
@@ -39,10 +40,8 @@ use crate::{
     protobuf::stremio::core::runtime::{self, Field},
 };
 
-lazy_static! {
-    static ref RUNTIME: RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, EnvError>>> =
-        Default::default();
-}
+static RUNTIME: Lazy<RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, EnvError>>>> =
+    Lazy::new(Default::default);
 
 #[no_mangle]
 pub unsafe extern "C" fn JNI_OnLoad(_: JavaVM, _: *mut c_void) -> jint {

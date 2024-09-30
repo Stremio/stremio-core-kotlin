@@ -2595,7 +2595,6 @@ dependencies = [
  "http-cache-reqwest",
  "itertools 0.10.5",
  "jni",
- "lazy_static",
  "once_cell",
  "openssl",
  "percent-encoding",
