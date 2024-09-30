@@ -2532,7 +2532,7 @@ dependencies = [
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#990c11e5e639312839b9ace4ad9bc92528f3666a"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#87e12f2d7bf0329f2bf8170f170617e58a2f7a1f"
 dependencies = [
  "anyhow",
  "base64 0.21.5",
@@ -2547,7 +2547,6 @@ dependencies = [
  "hex 0.4.3",
  "http",
  "itertools 0.11.0",
- "lazy_static",
  "lazysort",
  "localsearch",
  "magnet-url",
@@ -2637,8 +2636,8 @@ dependencies = [
 
 [[package]]
 name = "stremio-core-web"
-version = "0.47.7"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#990c11e5e639312839b9ace4ad9bc92528f3666a"
+version = "0.47.8"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#87e12f2d7bf0329f2bf8170f170617e58a2f7a1f"
 dependencies = [
  "boolinator",
  "chrono",
@@ -2646,7 +2645,7 @@ dependencies = [
  "enclose",
  "futures",
  "itertools 0.10.5",
- "lazy_static",
+ "once_cell",
  "semver",
  "serde",
  "serde_json",
@@ -2658,7 +2657,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#990c11e5e639312839b9ace4ad9bc92528f3666a"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#87e12f2d7bf0329f2bf8170f170617e58a2f7a1f"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2692,7 +2691,7 @@ dependencies = [
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#990c11e5e639312839b9ace4ad9bc92528f3666a"
+source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#87e12f2d7bf0329f2bf8170f170617e58a2f7a1f"
 dependencies = [
  "base64 0.13.1",
  "flate2",
