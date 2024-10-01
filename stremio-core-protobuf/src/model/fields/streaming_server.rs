@@ -1,7 +1,9 @@
-use stremio_core::models::streaming_server::{
-    PlaybackDevice, Selected as StreamingServerSelected, StatisticsRequest, StreamingServer,
+use stremio_core::{
+    models::streaming_server::{
+        PlaybackDevice, Selected as StreamingServerSelected, StreamingServer,
+    },
+    types::streaming_server::{StatisticsRequest, Settings, Statistics},
 };
-use stremio_core::types::streaming_server::{Settings, Statistics};
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::models;
