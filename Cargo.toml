@@ -31,13 +31,13 @@ resolver = "2"
 members = ["stremio-core-protobuf"]
 
 [workspace.dependencies]
-stremio-core = { version = "0.1", git = "https://github.com/Stremio/stremio-core", branch = "feat/serialize-model-separatelly-from-creating-it", features = [
+stremio-core = { version = "0.1", git = "https://github.com/Stremio/stremio-core", branch = "development", features = [
     "derive",
     "analytics",
     "env-future-send",
 ] }
 # For share UI models
-stremio-core-web = { version = "0.47", git = "https://github.com/Stremio/stremio-core", branch = "feat/serialize-model-separatelly-from-creating-it", default-features = false }
+# stremio-core-web = { version = "0.47", git = "https://github.com/Stremio/stremio-core", branch = "feat/serialize-model-separatelly-from-creating-it", default-features = false }
 stremio-core-protobuf = { version = "0.1", path = "stremio-core-protobuf", default-features = false }
 
 # Protobuf 

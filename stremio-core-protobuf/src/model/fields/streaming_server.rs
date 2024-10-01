@@ -2,7 +2,7 @@ use stremio_core::{
     models::streaming_server::{
         PlaybackDevice, Selected as StreamingServerSelected, StreamingServer,
     },
-    types::streaming_server::{StatisticsRequest, Settings, Statistics},
+    types::streaming_server::{Settings, Statistics, StatisticsRequest},
 };
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
