@@ -2532,7 +2532,7 @@ dependencies = [
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#87e12f2d7bf0329f2bf8170f170617e58a2f7a1f"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#416b2f9ca09e25799b4dab36717f8b2186e7cab8"
 dependencies = [
  "anyhow",
  "base64 0.21.5",
@@ -2609,7 +2609,6 @@ dependencies = [
  "serde_path_to_error",
  "stremio-core",
  "stremio-core-protobuf",
- "stremio-core-web",
  "strum 0.22.0",
  "tokio",
  "url",
@@ -2637,7 +2636,7 @@ dependencies = [
 [[package]]
 name = "stremio-core-web"
 version = "0.47.8"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#87e12f2d7bf0329f2bf8170f170617e58a2f7a1f"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#416b2f9ca09e25799b4dab36717f8b2186e7cab8"
 dependencies = [
  "boolinator",
  "chrono",
@@ -2657,7 +2656,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#87e12f2d7bf0329f2bf8170f170617e58a2f7a1f"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#416b2f9ca09e25799b4dab36717f8b2186e7cab8"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2691,7 +2690,7 @@ dependencies = [
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/serialize-model-separatelly-from-creating-it#87e12f2d7bf0329f2bf8170f170617e58a2f7a1f"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#416b2f9ca09e25799b4dab36717f8b2186e7cab8"
 dependencies = [
  "base64 0.13.1",
  "flate2",
