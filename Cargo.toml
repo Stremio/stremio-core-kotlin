@@ -4,7 +4,7 @@ version = "1.2.6"
 authors = ["Smart Code OOD"]
 edition = "2021"
 
-rust-version = "1.67.1"
+rust-version = "1.70.0"
 
 [features]
 default = ["kotlin"]
@@ -28,7 +28,7 @@ path = "src/commonMain/rust/lib.rs"
 
 [workspace]
 resolver = "2"
-members = ["stremio-core-protobuf"]
+members = ["stremio-core-protobuf", "stremio-core-swift"]
 
 [workspace.dependencies]
 stremio-core = { version = "0.1", git = "https://github.com/Stremio/stremio-core", branch = "development", features = [
