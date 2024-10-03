@@ -1,0 +1,47 @@
+{
+    "protocPath": "/$SRCROOT/stremio-core-protobuf/proto",
+    "invocations": [
+        {
+            "protoFiles": [
+                "models/addon_details.proto",
+                "models/addons_with_filters.proto",
+                "models/catalog_with_filters.proto",
+                "models/catalogs_with_extra.proto",
+                "models/continue_watching_preview.proto",
+                "models/ctx.proto",
+                "models/library_by_type.proto",
+                "models/library_with_filters.proto",
+                "models/link.proto",
+                "models/loadable.proto",
+                "models/meta_details.proto",
+                "models/player.proto",
+                "models/streaming_server.proto",
+                "runtime/action.proto",
+                "runtime/action_catalog_with_filters.proto",
+                "runtime/action_catalogs_with_extra.proto",
+                "runtime/action_ctx.proto",
+                "runtime/action_library_by_type.proto",
+                "runtime/action_link.proto",
+                "runtime/action_load.proto",
+                "runtime/action_meta_details.proto",
+                "runtime/action_player.proto",
+                "runtime/action_streaming_server.proto",
+                "runtime/event.proto",
+                "runtime/field.proto",
+                "runtime/runtime.proto",
+                "types/addon.proto",
+                "types/api.proto",
+                "types/auth_request.proto",
+                "types/library.proto",
+                "types/manifest.proto",
+                "types/meta_item.proto",
+                "types/meta_item_preview.proto",
+                "types/profile.proto",
+                "types/stream.proto",
+                "types/subtitle.proto",
+                "types/video.proto"
+            ],
+            "visibility": "public"
+        }
+    ]
+}
