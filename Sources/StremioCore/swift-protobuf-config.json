@@ -1,0 +1,47 @@
+{
+    "protocPath": "/$SRCROOT/Support/protoc",
+    "invocations": [
+        {
+            "protoFiles": [
+                "stremio/core/models/addon_details.proto",
+                "stremio/core/models/addons_with_filters.proto",
+                "stremio/core/models/catalog_with_filters.proto",
+                "stremio/core/models/catalogs_with_extra.proto",
+                "stremio/core/models/continue_watching_preview.proto",
+                "stremio/core/models/ctx.proto",
+                "stremio/core/models/library_by_type.proto",
+                "stremio/core/models/library_with_filters.proto",
+                "stremio/core/models/link.proto",
+                "stremio/core/models/loadable.proto",
+                "stremio/core/models/meta_details.proto",
+                "stremio/core/models/player.proto",
+                "stremio/core/models/streaming_server.proto",
+                "stremio/core/runtime/action.proto",
+                "stremio/core/runtime/action_catalog_with_filters.proto",
+                "stremio/core/runtime/action_catalogs_with_extra.proto",
+                "stremio/core/runtime/action_ctx.proto",
+                "stremio/core/runtime/action_library_by_type.proto",
+                "stremio/core/runtime/action_link.proto",
+                "stremio/core/runtime/action_load.proto",
+                "stremio/core/runtime/action_meta_details.proto",
+                "stremio/core/runtime/action_player.proto",
+                "stremio/core/runtime/action_streaming_server.proto",
+                "stremio/core/runtime/event.proto",
+                "stremio/core/runtime/field.proto",
+                "stremio/core/runtime/runtime.proto",
+                "stremio/core/types/addon.proto",
+                "stremio/core/types/api.proto",
+                "stremio/core/types/auth_request.proto",
+                "stremio/core/types/library.proto",
+                "stremio/core/types/manifest.proto",
+                "stremio/core/types/meta_item.proto",
+                "stremio/core/types/meta_item_preview.proto",
+                "stremio/core/types/profile.proto",
+                "stremio/core/types/stream.proto",
+                "stremio/core/types/subtitle.proto",
+                "stremio/core/types/video.proto"
+            ],
+            "visibility": "public"
+        }
+    ]
+}
