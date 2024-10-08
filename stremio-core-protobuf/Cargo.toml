@@ -22,6 +22,7 @@ semver = { version = "1", features = ["serde"] }
 chrono = "0.4.*"
 boolinator = "2.4.*"
 Inflector = "0.11.*"
+itertools.workspace = true
 
 hex = "0.4.*"
 url = { version = "2.4", features = ["serde"] }

@@ -1,24 +1,29 @@
+use itertools::Itertools;
 use url::Url;
 
-use stremio_core::deep_links::MetaItemDeepLinks;
-use stremio_core::models::common::{Loadable, ResourceError};
-use stremio_core::models::ctx::{Ctx, CtxError};
-use stremio_core::models::link::LinkError;
-use stremio_core::models::streaming_server::PlaybackDevice;
-use stremio_core::runtime::EnvError;
-
-use stremio_core::types::{
-    addon::{Descriptor, DescriptorPreview, ResourcePath, ResourceRequest},
-    api::{GetModalResponse, GetNotificationResponse, LinkAuthKey, LinkCodeResponse},
-    library::LibraryItem,
-    resource::{MetaItem, MetaItemPreview, Stream, Subtitles},
-    streaming_server::{Settings, Statistics},
-    watched_bitfield::WatchedBitField,
+use stremio_core::{
+    deep_links::MetaItemDeepLinks,
+    models::{
+        common::{Loadable, ResourceError},
+        ctx::{Ctx, CtxError},
+        link::LinkError,
+        streaming_server::PlaybackDevice,
+    },
+    runtime::EnvError,
+    types::{
+        addon::{Descriptor, DescriptorPreview, ResourcePath, ResourceRequest},
+        api::{GetModalResponse, GetNotificationResponse, LinkAuthKey, LinkCodeResponse},
+        library::LibraryItem,
+        resource::{MetaItem, MetaItemPreview, Stream, Subtitles},
+        streaming_server::{Settings, Statistics},
+        watched_bitfield::WatchedBitField,
+    },
 };
 
-use crate::bridge::ToProtobuf;
-use crate::protobuf::stremio::core::models;
-use crate::protobuf::stremio::core::models::{LoadedModal, LoadedNotification, PlaybackDevices};
+use crate::{
+    bridge::ToProtobuf,
+    protobuf::stremio::core::models::{self, LoadedModal, LoadedNotification, PlaybackDevices},
+};
 
 impl ToProtobuf<models::loadable_page::Content, (&Ctx, &ResourceRequest)>
     for Loadable<Vec<MetaItemPreview>, ResourceError>
@@ -29,7 +34,12 @@ impl ToProtobuf<models::loadable_page::Content, (&Ctx, &ResourceRequest)>
     ) -> models::loadable_page::Content {
         match &self {
             Loadable::Ready(ready) => models::loadable_page::Content::Ready(models::Page {
-                meta_items: ready.to_protobuf::<E>(&(*ctx, *request)),
+                meta_items: ready
+                    .iter()
+                    .unique_by(|meta_item| &meta_item.id)
+                    .map(|meta_item| meta_item.to_owned())
+                    .collect_vec()
+                    .to_protobuf::<E>(&(*ctx, *request)),
             }),
             Loadable::Err(error) => models::loadable_page::Content::Error(models::Error {
                 message: error.to_string(),
