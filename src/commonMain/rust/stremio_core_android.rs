@@ -40,6 +40,7 @@ use crate::{
     protobuf::stremio::core::runtime::{self, Field},
 };
 
+#[allow(clippy::type_complexity)]
 static RUNTIME: Lazy<RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, EnvError>>>> =
     Lazy::new(Default::default);
 
