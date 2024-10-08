@@ -32,8 +32,8 @@ jobs:
         with:
           version: "${{ env.PROTOC_VERSION }}"
 
-      - name: Rust setup (1.67.1)
-        uses: dtolnay/rust-toolchain@1.67.1
+      - name: Rust setup (1.70.0)
+        uses: dtolnay/rust-toolchain@1.70.0
         with:
           components: rustfmt, clippy
 
