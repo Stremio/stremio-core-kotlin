@@ -2601,7 +2601,7 @@ dependencies = [
  "hex 0.4.3",
  "http",
  "http-cache-reqwest",
- "itertools 0.10.5",
+ "itertools 0.13.0",
  "jni",
  "once_cell",
  "openssl",
