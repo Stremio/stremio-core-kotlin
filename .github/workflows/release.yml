@@ -1,4 +1,4 @@
-name: Release
+name: Release stremio-core-android
 
 on:
   release:
@@ -20,22 +20,16 @@ jobs:
         uses: android-actions/setup-android@v2
       - name: Setup Android NDK
         run: yes | sdkmanager "ndk;21.4.7075529" >/dev/null
-      - name: Set default rust toolchain
-        run: rustup default 1.70.0
-      - name: Install rustfmt
-        run: rustup component add rustfmt
-      - name: Install clippy
-        run: rustup component add clippy
-      - name: Add armv7 target
-        run: rustup target add armv7-linux-androideabi
-      - name: Add aarch64 target
-        run: rustup target add aarch64-linux-android
-      - name: Add i686 target
-        run: rustup target add i686-linux-android
-      - name: Add x86_64 target
-        run: rustup target add x86_64-linux-android
-      - name: Rust cache
-        uses: Swatinem/rust-cache@v2
+
+      # use MSRV
+      - name: Set Rust version to MSRV 1.70
+        uses: dtolnay/rust-toolchain@1.70
+        with:
+          # Add armv7, aarch64, i686, x86_64 targets
+          targets: armv7-linux-androideabi, aarch64-linux-android, i686-linux-android, x86_64-linux-android
+
+      - uses: Swatinem/rust-cache@v2
+
       - name: Build aar
         run: ./gradlew -Pversion=${GITHUB_REF##*/} publishToMavenLocal
       - name: Archive artifacts

@@ -41,7 +41,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Build code
-        run: cargo build
+        run: cargo build -p stremio-core-android
 
       - name: Lint code format
         run: cargo fmt --all -- --check
