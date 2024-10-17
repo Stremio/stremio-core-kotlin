@@ -5,8 +5,16 @@ use stremio_core::models::ctx::Ctx;
 
 impl FromProtobuf<Selected> for models::addon_details::Selected {
     fn from_protobuf(&self) -> Selected {
+        let transport_url = self.transport_url.from_protobuf();
+
         Selected {
-            transport_url: self.transport_url.from_protobuf(),
+            transport_url: if transport_url.scheme() == "stremio" {
+                let replaced_url = transport_url.as_str().replacen("stremio://", "https://", 1);
+
+                replaced_url.parse().expect("Should be able to parse URL")
+            } else {
+                transport_url
+            },
         }
     }
 }
