@@ -1,42 +1,48 @@
-use std::io::Cursor;
-use std::os::raw::c_void;
+// TODO: Add safety docs and remove suppression of linter!
+#![allow(clippy::missing_safety_doc)]
+
 #[cfg(debug_assertions)]
 use std::panic;
-use std::sync::RwLock;
+use std::{io::Cursor, os::raw::c_void, sync::RwLock};
 
 use enclose::enclose;
 use futures::{future, StreamExt};
-use jni::objects::{JClass, JObject};
-use jni::sys::{jbyteArray, jint, jobject, JNI_VERSION_1_6};
-use jni::{JNIEnv, JavaVM};
-use lazy_static::lazy_static;
-use prost::Message;
-use stremio_core::constants::{
-    DISMISSED_EVENTS_STORAGE_KEY, LIBRARY_RECENT_STORAGE_KEY, LIBRARY_STORAGE_KEY,
-    NOTIFICATIONS_STORAGE_KEY, PROFILE_STORAGE_KEY, SEARCH_HISTORY_STORAGE_KEY,
-    STREAMS_STORAGE_KEY,
+use jni::{
+    objects::{JClass, JObject},
+    sys::{jbyteArray, jint, jobject, JNI_VERSION_1_6},
+    JNIEnv, JavaVM,
 };
-use stremio_core::models::common::Loadable;
-use stremio_core::runtime::{Env, EnvError, Runtime, RuntimeEvent};
-use stremio_core::types::events::DismissedEventsBucket;
-use stremio_core::types::library::LibraryBucket;
-use stremio_core::types::notifications::NotificationsBucket;
-use stremio_core::types::profile::Profile;
-use stremio_core::types::resource::Stream;
-use stremio_core::types::search_history::SearchHistoryBucket;
-use stremio_core::types::streams::StreamsBucket;
 
-use crate::bridge::{FromProtobuf, ToJNIByteArray, ToProtobuf};
-use crate::env::{AndroidEnv, AndroidEvent, KotlinClassName};
-use crate::jni_ext::ExceptionDescribeExt;
-use crate::model::AndroidModel;
-use crate::protobuf::stremio::core::runtime;
-use crate::protobuf::stremio::core::runtime::Field;
+use once_cell::sync::Lazy;
+use prost::Message;
 
-lazy_static! {
-    static ref RUNTIME: RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, EnvError>>> =
-        Default::default();
-}
+use stremio_core::{
+    constants::{
+        DISMISSED_EVENTS_STORAGE_KEY, LIBRARY_RECENT_STORAGE_KEY, LIBRARY_STORAGE_KEY,
+        NOTIFICATIONS_STORAGE_KEY, PROFILE_STORAGE_KEY, SEARCH_HISTORY_STORAGE_KEY,
+        STREAMS_STORAGE_KEY,
+    },
+    models::common::Loadable,
+    runtime::{Env, EnvError, Runtime, RuntimeEvent},
+    types::{
+        events::DismissedEventsBucket, library::LibraryBucket, notifications::NotificationsBucket,
+        profile::Profile, resource::Stream, search_history::SearchHistoryBucket,
+        streams::StreamsBucket,
+    },
+};
+use stremio_core_protobuf::{FromProtobuf, ToProtobuf};
+
+use crate::{
+    bridge::ToJNIByteArray,
+    env::{AndroidEnv, AndroidEvent, KotlinClassName},
+    jni_ext::ExceptionDescribeExt,
+    model::AndroidModel,
+    protobuf::stremio::core::runtime::{self, Field},
+};
+
+#[allow(clippy::type_complexity)]
+static RUNTIME: Lazy<RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, EnvError>>>> =
+    Lazy::new(Default::default);
 
 #[no_mangle]
 pub unsafe extern "C" fn JNI_OnLoad(_: JavaVM, _: *mut c_void) -> jint {
@@ -132,7 +138,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                             .attach_current_thread_as_daemon()
                             .expect("JavaVM attach to current thread as deamon failed");
                         let event = event
-                            .to_protobuf(&())
+                            .to_protobuf::<AndroidEnv>(&())
                             .encode_to_vec()
                             .to_jni_byte_array(&env);
                         let event = env.auto_local(event);
@@ -154,7 +160,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                     *RUNTIME.write().expect("RUNTIME write failed") =
                         Some(Loadable::Err(error.to_owned()));
                     error
-                        .to_protobuf(&())
+                        .to_protobuf::<AndroidEnv>(&())
                         .encode_to_vec()
                         .to_jni_byte_array(&env)
                 }
@@ -163,7 +169,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
         Err(error) => {
             *RUNTIME.write().expect("RUNTIME write failed") = Some(Loadable::Err(error.to_owned()));
             error
-                .to_protobuf(&())
+                .to_protobuf::<AndroidEnv>(&())
                 .encode_to_vec()
                 .to_jni_byte_array(&env)
         }
@@ -231,7 +237,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
         Err(_) => return JObject::null().into_inner(),
     };
     stream
-        .to_protobuf(&(None, None, None, None))
+        .to_protobuf::<AndroidEnv>(&(None, None, None, None))
         .encode_to_vec()
         .to_jni_byte_array(&env)
 }
