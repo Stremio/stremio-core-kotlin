@@ -1315,15 +1315,6 @@ checksum = "8f518f335dce6725a761382244631d86cf0ccb2863413590b31338feb467f9c3"
 
 [[package]]
 name = "itertools"
-version = "0.10.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0fd2260e829bddf4cb6ea802289de2f86d6a7a690192fbe91b3f46e0f2c8473"
-dependencies = [
- "either",
-]
-
-[[package]]
-name = "itertools"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1c173a5686ce8bfa551b3563d0c2170bf24ca44da99c7ca4bfdab5418c3fe57"
@@ -2639,27 +2630,6 @@ dependencies = [
  "protox",
  "semver",
  "stremio-core",
- "stremio-core-web",
- "url",
-]
-
-[[package]]
-name = "stremio-core-web"
-version = "0.47.8"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#416b2f9ca09e25799b4dab36717f8b2186e7cab8"
-dependencies = [
- "boolinator",
- "chrono",
- "either",
- "enclose",
- "futures",
- "itertools 0.10.5",
- "once_cell",
- "semver",
- "serde",
- "serde_json",
- "stremio-core",
- "tracing",
  "url",
 ]
 

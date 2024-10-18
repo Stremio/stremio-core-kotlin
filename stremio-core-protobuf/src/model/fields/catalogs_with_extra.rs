@@ -48,17 +48,6 @@ impl ToProtobuf<models::CatalogsWithExtra, Ctx> for CatalogsWithExtra {
     }
 }
 
-#[cfg(feature = "model-deser")]
-impl stremio_core_web::model::SerializeModel<Vec<u8>> for models::CatalogsWithExtra {
-    type Error = ();
-
-    fn serialize_model(&self) -> Result<Vec<u8>, Self::Error> {
-        use prost::Message;
-
-        Ok(self.clone().encode_to_vec())
-    }
-}
-
 impl ToProtobuf<models::DiscoverDeepLinks, ()> for DiscoverDeepLinks {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,

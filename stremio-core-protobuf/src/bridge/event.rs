@@ -3,8 +3,10 @@ use stremio_core::{
     runtime::{msg::Event, RuntimeEvent},
 };
 
-use crate::bridge::ToProtobuf;
-use crate::stremio_core_models::runtime::{self, Field};
+use crate::{
+    bridge::ToProtobuf,
+    stremio_core_models::runtime::{self, Field},
+};
 
 impl ToProtobuf<runtime::Event, ()> for Event {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> runtime::Event {
@@ -212,26 +214,6 @@ impl ToProtobuf<runtime::Event, ()> for Event {
         }
     }
 }
-
-// impl ToProtobuf<runtime::RuntimeEvent, ()> for RuntimeEvent<AndroidEnv, AndroidModel> {
-//     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> runtime::RuntimeEvent {
-//         let event = match self {
-//             RuntimeEvent::NewState(fields, ..) => {
-//                 runtime::runtime_event::Event::NewState(runtime::runtime_event::NewState {
-//                     fields: fields
-//                         .to_protobuf::<E>(&())
-//                         .iter()
-//                         .map(|field| *field as i32)
-//                         .collect(),
-//                 })
-//             }
-//             RuntimeEvent::CoreEvent(event) => {
-//                 runtime::runtime_event::Event::CoreEvent(event.to_protobuf::<E>(&()))
-//             }
-//         };
-//         runtime::RuntimeEvent { event: Some(event) }
-//     }
-// }
 
 impl<E, M, F> ToProtobuf<runtime::RuntimeEvent, ()> for RuntimeEvent<E, M>
 where

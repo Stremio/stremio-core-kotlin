@@ -1,37 +1,21 @@
 use inflector::Inflector;
 use url::Url;
 
-use stremio_core::deep_links::DiscoverDeepLinks;
-use stremio_core::models::common::{DescriptorLoadable, ResourceLoadable};
-use stremio_core::models::ctx::Ctx;
-use stremio_core::types::addon::{DescriptorPreview, ResourceRequest};
-use stremio_core::types::library::LibraryItem;
-use stremio_core::types::resource::{MetaItem, MetaItemPreview, Stream, Subtitles};
-use stremio_core::types::watched_bitfield::WatchedBitField;
+use stremio_core::{
+    deep_links::DiscoverDeepLinks,
+    models::{
+        common::{DescriptorLoadable, ResourceLoadable},
+        ctx::Ctx,
+    },
+    types::{
+        addon::{DescriptorPreview, ResourceRequest},
+        library::LibraryItem,
+        resource::{MetaItem, MetaItemPreview, Stream, Subtitles},
+        watched_bitfield::WatchedBitField,
+    },
+};
 
-use crate::bridge::ToProtobuf;
-use crate::protobuf::stremio::core::models;
-// use crate::stremio_core_models::types::ResourcePath;
-
-// impl<'a> ToProtobuf<models::LoadablePage, Ctx> for stremio_core_web::model::serialize_catalogs_with_extra::ResourceLoadable<'a> {
-//     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::LoadablePage {
-//         let deep_links = DiscoverDeepLinks::from(&self.request).to_protobuf::<E>(&());
-//         models::LoadablePage {
-//             title: self.name.to_string(),
-//             request: crate::protobuf::stremio::core::types::ResourceRequest {
-//                 base: "todo".into(),
-//                 path: ResourcePath {
-//                     resource: "todo".to_string(),
-//                     r#type: "todo".into(),
-//                     id: "todo".into(),
-//                     extra: vec![],
-//                 },
-//             },
-//             content: self.content.to_protobuf::<E>(&(ctx, &self.request)),
-//             deep_links,
-//         }
-//     }
-// }
+use crate::{bridge::ToProtobuf, protobuf::stremio::core::models};
 
 impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPreview>> {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
