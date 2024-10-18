@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package stremio.core.runtime;
+
+option java_package = "com.stremio.core.runtime.msg";
+
+import "google/protobuf/empty.proto";
+
+message ActionLibraryWithFilters {
+  oneof args {
+    google.protobuf.Empty load_next_page = 1;
+  }
+}

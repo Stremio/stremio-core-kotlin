@@ -6,6 +6,7 @@ option java_package = "com.stremio.core.runtime.msg";
 
 import "stremio/core/runtime/action_catalogs_with_extra.proto";
 import "stremio/core/runtime/action_catalog_with_filters.proto";
+import "stremio/core/runtime/action_library_with_filters.proto";
 import "stremio/core/runtime/action_library_by_type.proto";
 import "stremio/core/runtime/action_ctx.proto";
 import "stremio/core/runtime/action_link.proto";
@@ -26,12 +27,13 @@ message Action {
     ActionLink link = 2;
     ActionCatalogWithFilters catalog_with_filters = 3;
     ActionCatalogsWithExtra catalogs_with_extra = 4;
-    ActionLibraryByType library_by_type = 5;
-    ActionMetaDetails meta_details = 6;
-    ActionStreamingServer streaming_server = 7;
-    ActionPlayer player = 8;
-    ActionLoad load = 9;
-    ActionUnload unload = 10;
+    ActionLibraryWithFilters library_with_filters = 5;
+    ActionLibraryByType library_by_type = 6;
+    ActionMetaDetails meta_details = 7;
+    ActionStreamingServer streaming_server = 8;
+    ActionPlayer player = 9;
+    ActionLoad load = 10;
+    ActionUnload unload = 11;
   }
 
   message ActionUnload {
