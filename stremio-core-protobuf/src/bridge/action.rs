@@ -5,8 +5,9 @@ use stremio_core::{
     runtime::{
         msg::{
             Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx,
-            ActionLibraryByType, ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer,
-            ActionStreamingServer, CreateTorrentArgs, PlayOnDeviceArgs,
+            ActionLibraryByType, ActionLibraryWithFilters, ActionLink, ActionLoad,
+            ActionMetaDetails, ActionPlayer, ActionStreamingServer, CreateTorrentArgs,
+            PlayOnDeviceArgs,
         },
         RuntimeAction,
     },
@@ -16,8 +17,8 @@ use crate::{
     bridge::FromProtobuf,
     protobuf::stremio::core::runtime::{
         self, action_catalog_with_filters, action_catalogs_with_extra, action_ctx,
-        action_library_by_type, action_link, action_load, action_meta_details, action_player,
-        action_streaming_server, create_torrent_args, Field,
+        action_library_by_type, action_library_with_filters, action_link, action_load,
+        action_meta_details, action_player, action_streaming_server, create_torrent_args, Field,
     },
 };
 
@@ -116,6 +117,14 @@ impl FromProtobuf<Action> for runtime::Action {
                         ))
                     }
                     None => unimplemented!("ActionCatalogsWithExtra missing"),
+                }
+            }
+            Some(runtime::action::Type::LibraryWithFilters(action_library_with_filters)) => {
+                match &action_library_with_filters.args {
+                    Some(action_library_with_filters::Args::LoadNextPage(_args)) => {
+                        Action::LibraryWithFilters(ActionLibraryWithFilters::LoadNextPage)
+                    }
+                    None => unimplemented!("ActionLibraryWithFilters missing"),
                 }
             }
             Some(runtime::action::Type::LibraryByType(action_library_by_type)) => {
