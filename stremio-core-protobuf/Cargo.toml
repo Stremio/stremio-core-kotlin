@@ -5,6 +5,9 @@ edition = "2021"
 
 authors = ["Smart Code OOD", "Lachezar Lechev <lachezar@ambire.com>"]
 
+[lib]
+crate-type = ["rlib", "staticlib", "dylib"]
+
 [features]
 default = []
 

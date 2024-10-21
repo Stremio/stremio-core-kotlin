@@ -12,11 +12,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: "11"
           distribution: "adopt"
       - name: Setup Android SDK
+        # newer version of the 2 actions will cause a LinkageError
+        # Error: LinkageError occurred while loading main class com.android.sdklib.tool.sdkmanager.SdkManagerCli
+        # java.lang.UnsupportedClassVersionError: com/android/sdklib/tool/sdkmanager/SdkManagerCli
+        # has been compiled by a more recent version of the Java Runtime (class file version 61.0),
+        # this version of the Java Runtime only recognizes class file versions up to 55.0
+        # uses: android-actions/setup-android@v3
         uses: android-actions/setup-android@v2
       - name: Setup Android NDK
         run: yes | sdkmanager "ndk;21.4.7075529" >/dev/null
@@ -27,6 +33,7 @@ jobs:
         with:
           # Add armv7, aarch64, i686, x86_64 targets
           targets: armv7-linux-androideabi, aarch64-linux-android, i686-linux-android, x86_64-linux-android
+          components: rust-std
 
       - uses: Swatinem/rust-cache@v2
 
