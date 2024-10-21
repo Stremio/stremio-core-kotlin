@@ -242,20 +242,3 @@ where
         runtime::RuntimeEvent { event: Some(event) }
     }
 }
-
-// impl<E, M, F> FromProtobuf<RuntimeAction<E, M>> for runtime::RuntimeAction
-// where
-//     E: stremio_core::runtime::Env + 'static,
-//     M: stremio_core::runtime::Model<E, Field = F>,
-//     F: From<Field>,
-// {
-//     fn from_protobuf(&self) -> RuntimeAction<E, M> {
-//         RuntimeAction {
-//             field: self
-//                 .field
-//                 .and_then(|value| Field::try_from(value).ok().map(Into::into)),
-//                 // .from_protobuf(),
-//             action: self.action.from_protobuf(),
-//         }
-//     }
-// }
