@@ -1,16 +1,12 @@
 use std::ops::Range;
 
-use stremio_core::{
-    models::catalogs_with_extra::Selected,
-    runtime::{
-        msg::{
-            Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx,
-            ActionLibraryByType, ActionLibraryWithFilters, ActionLink, ActionLoad,
-            ActionMetaDetails, ActionPlayer, ActionStreamingServer, CreateTorrentArgs,
-            PlayOnDeviceArgs,
-        },
-        RuntimeAction,
+use stremio_core::runtime::{
+    msg::{
+        Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx, ActionLibraryByType,
+        ActionLibraryWithFilters, ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer,
+        ActionStreamingServer, CreateTorrentArgs, PlayOnDeviceArgs,
     },
+    RuntimeAction,
 };
 
 use crate::{
@@ -226,13 +222,6 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_load::Args::CatalogsWithExtra(selected)) => {
                     Action::Load(ActionLoad::CatalogsWithExtra(selected.from_protobuf()))
                 }
-                // Board
-                Some(action_load::Args::CatalogsWithExtraAll(_empty)) => {
-                    Action::Load(ActionLoad::CatalogsWithExtra(Selected {
-                        r#type: None,
-                        extra: vec![],
-                    }))
-                }
                 // Search
                 // Needs `LoadRange` to fetch next pages
                 Some(action_load::Args::Search(selected)) => {
@@ -243,10 +232,6 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_load::Args::CatalogWithFilters(selected)) => Action::Load(
                     ActionLoad::CatalogWithFilters(Some(selected.from_protobuf())),
                 ),
-                // Discovery
-                Some(action_load::Args::CatalogWithFiltersAll(_empty)) => {
-                    Action::Load(ActionLoad::CatalogWithFilters(None))
-                }
                 Some(action_load::Args::AddonsWithFilters(selected)) => {
                     Action::Load(match selected.request.base.is_empty() {
                         true => ActionLoad::InstalledAddonsWithFilters(selected.from_protobuf()),

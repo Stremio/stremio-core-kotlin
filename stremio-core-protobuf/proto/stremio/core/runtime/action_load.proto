@@ -18,17 +18,15 @@ message ActionLoad {
   oneof args {
     stremio.core.models.AddonDetails.Selected addon_details = 1;
     stremio.core.models.CatalogsWithExtra.Selected catalogs_with_extra = 2;
-    google.protobuf.Empty catalogs_with_extra_all = 3;
-    stremio.core.models.CatalogWithFilters.Selected catalog_with_filters = 4;
-    google.protobuf.Empty catalog_with_filters_all = 5;
-    stremio.core.models.AddonsWithFilters.Selected addons_with_filters = 6;
-    stremio.core.models.LibraryByType.Selected library_by_type = 7;
-    stremio.core.models.LibraryWithFilters.Selected library_with_filters = 8;
-    stremio.core.models.MetaDetails.Selected meta_details = 9;
-    stremio.core.models.CatalogsWithExtra.Selected search = 10;
-    stremio.core.models.Player.Selected player = 11;
-    google.protobuf.Empty link = 12;
-    google.protobuf.Empty data_export = 13;
-    google.protobuf.Empty local_search = 14;
+    stremio.core.models.CatalogWithFilters.Selected catalog_with_filters = 3;
+    stremio.core.models.AddonsWithFilters.Selected addons_with_filters = 4;
+    stremio.core.models.LibraryByType.Selected library_by_type = 5;
+    stremio.core.models.LibraryWithFilters.Selected library_with_filters = 6;
+    stremio.core.models.MetaDetails.Selected meta_details = 7;
+    stremio.core.models.CatalogsWithExtra.Selected search = 8;
+    stremio.core.models.Player.Selected player = 9;
+    google.protobuf.Empty link = 10;
+    google.protobuf.Empty data_export = 11;
+    google.protobuf.Empty local_search = 12;
   }
 }
