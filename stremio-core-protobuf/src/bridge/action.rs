@@ -270,7 +270,6 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_load::Args::LocalSearch(_args)) => {
                     Action::Load(ActionLoad::LocalSearch)
                 }
-
                 None => unimplemented!("ActionLoad missing"),
             },
             Some(runtime::action::Type::Unload(_args)) => Action::Unload,
