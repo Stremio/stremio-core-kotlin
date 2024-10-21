@@ -1,13 +1,19 @@
-use semver::Version;
 use std::str::FromStr;
-use stremio_core::models::ctx::Ctx;
-use stremio_core::types::addon::{
-    Descriptor, DescriptorFlags, DescriptorPreview, ExtraProp, Manifest, ManifestBehaviorHints,
-    ManifestCatalog, ManifestExtra, ManifestPreview, ManifestResource, OptionsLimit,
+
+use semver::Version;
+
+use stremio_core::{
+    models::ctx::Ctx,
+    types::addon::{
+        Descriptor, DescriptorFlags, DescriptorPreview, ExtraProp, Manifest, ManifestBehaviorHints,
+        ManifestCatalog, ManifestExtra, ManifestPreview, ManifestResource, OptionsLimit,
+    },
 };
 
-use crate::bridge::{FromProtobuf, ToProtobuf};
-use crate::protobuf::stremio::core::types;
+use crate::{
+    bridge::{FromProtobuf, ToProtobuf},
+    protobuf::stremio::core::types,
+};
 
 impl FromProtobuf<ExtraProp> for types::ExtraProp {
     fn from_protobuf(&self) -> ExtraProp {
@@ -117,7 +123,7 @@ impl FromProtobuf<DescriptorFlags> for types::DescriptorFlags {
     }
 }
 
-impl FromProtobuf<Descriptor> for types::Descriptor {
+impl FromProtobuf<Descriptor> for types::AddonDescriptor {
     fn from_protobuf(&self) -> Descriptor {
         Descriptor {
             manifest: self.manifest.from_protobuf(),
@@ -281,14 +287,17 @@ impl ToProtobuf<types::DescriptorPreview, Ctx> for DescriptorPreview {
     }
 }
 
-impl ToProtobuf<types::Descriptor, Ctx> for Descriptor {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> types::Descriptor {
+impl ToProtobuf<types::AddonDescriptor, Ctx> for Descriptor {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        ctx: &Ctx,
+    ) -> types::AddonDescriptor {
         let installed_addon = ctx
             .profile
             .addons
             .iter()
             .find(|addon| addon.transport_url == self.transport_url);
-        types::Descriptor {
+        types::AddonDescriptor {
             manifest: self.manifest.to_protobuf::<E>(&()),
             transport_url: self.transport_url.to_protobuf::<E>(&()),
             flags: self.flags.to_protobuf::<E>(&()),

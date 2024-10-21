@@ -4,7 +4,7 @@ package stremio.core.types;
 
 option java_package = "com.stremio.core.types.addon";
 
-message Descriptor__ {
+message AddonDescriptor {
   required Manifest manifest = 1;
   required string transport_url = 2;
   required DescriptorFlags flags = 3;
