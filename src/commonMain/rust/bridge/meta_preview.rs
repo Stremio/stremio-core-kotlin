@@ -54,16 +54,6 @@ impl ToProtobuf<types::MetaItemBehaviorHints, ()> for MetaItemBehaviorHints {
     }
 }
 
-impl ToProtobuf<types::MetaItemDeepLinks, ()> for MetaItemDeepLinks {
-    fn to_protobuf(&self, _args: &()) -> types::MetaItemDeepLinks {
-        types::MetaItemDeepLinks {
-            meta_details_videos: self.meta_details_videos.clone(),
-            meta_details_streams: self.meta_details_streams.clone(),
-            player: self.player.clone(),
-        }
-    }
-}
-
 impl ToProtobuf<types::MetaItemPreview, (&Ctx, &ResourceRequest)> for MetaItemPreview {
     fn to_protobuf(
         &self,
