@@ -6,6 +6,7 @@ option java_package = "com.stremio.core.models";
 
 import "stremio/core/models/loadable.proto";
 import "stremio/core/types/meta_item.proto";
+import "stremio/core/types/deep_links.proto";
 
 message StreamingServer {
   required Selected selected = 1;

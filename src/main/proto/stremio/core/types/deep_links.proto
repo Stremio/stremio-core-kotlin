@@ -1,0 +1,28 @@
+syntax = "proto2";
+
+package stremio.core.types;
+
+option java_package = "com.stremio.core.types.resource";
+
+message MetaItemDeepLinks {
+    optional string meta_details_videos = 1;
+    optional string meta_details_streams = 2;
+    optional string player = 3;
+}
+
+message LibraryItemDeepLinks {
+    optional string meta_details_videos = 1;
+    optional string meta_details_streams = 2;
+    optional string player = 3;
+    optional ExternalPlayerLink external_player = 4;
+}
+
+message StreamDeepLinks {
+    required string player = 1;
+    required ExternalPlayerLink external_player = 2;
+}
+
+message ExternalPlayerLink {
+    optional string download = 1;
+    optional string streaming = 2;
+}

@@ -5,6 +5,7 @@ package stremio.core.types;
 option java_package = "com.stremio.core.types.library";
 
 import "stremio/core/types/meta_item.proto";
+import "stremio/core/types/deep_links.proto";
 
 message LibraryItem {
   required string id = 1;
@@ -14,7 +15,7 @@ message LibraryItem {
   required PosterShape poster_shape = 5;
   required LibraryItemState state = 6;
   required MetaItemBehaviorHints behavior_hints = 7;
-  required MetaItemDeepLinks deep_links = 8;
+  required LibraryItemDeepLinks deep_links = 8;
   required double progress = 9;
   required bool watched = 10;
   required uint64 notifications = 11;

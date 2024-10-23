@@ -35,11 +35,7 @@ impl ToProtobuf<types::LibraryItem, (&Ctx, Option<usize>)> for LibraryItem {
                 no_notif: self.state.no_notif,
             },
             behavior_hints: self.behavior_hints.to_protobuf(&()),
-            deep_links: types::MetaItemDeepLinks {
-                meta_details_videos: deep_links.meta_details_videos,
-                meta_details_streams: deep_links.meta_details_streams,
-                player: deep_links.player,
-            },
+            deep_links: deep_links.to_protobuf(&()),
             progress: self.progress(),
             watched: self.state.times_watched > 0,
             notifications: notifications as u64,

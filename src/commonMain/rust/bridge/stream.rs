@@ -205,7 +205,7 @@ impl
             },
             deep_links: types::StreamDeepLinks {
                 player: deep_links.player,
-                external_player: types::stream_deep_links::ExternalPlayerLink {
+                external_player: types::ExternalPlayerLink {
                     download: deep_links.external_player.download,
                     streaming: deep_links.external_player.streaming,
                 },

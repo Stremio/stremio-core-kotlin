@@ -6,6 +6,7 @@ option java_package = "com.stremio.core.types.resource";
 
 import "google/protobuf/timestamp.proto";
 import "stremio/core/types/meta_item.proto";
+import "stremio/core/types/deep_links.proto";
 
 message MetaItemPreview {
   required string id = 1;

@@ -7,6 +7,7 @@ option java_package = "com.stremio.core.types.resource";
 import "google/protobuf/timestamp.proto";
 import "stremio/core/types/stream.proto";
 import "stremio/core/types/video.proto";
+import "stremio/core/types/deep_links.proto";
 
 message MetaItem {
   required string id = 1;
@@ -46,10 +47,4 @@ message MetaItemBehaviorHints {
   optional string default_video_id = 1;
   optional string featured_video_id = 2;
   required bool has_scheduled_videos = 3;
-}
-
-message MetaItemDeepLinks {
-  optional string meta_details_videos = 1;
-  optional string meta_details_streams = 2;
-  optional string player = 3;
 }

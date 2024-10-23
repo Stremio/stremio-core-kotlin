@@ -5,6 +5,7 @@ package stremio.core.types;
 option java_package = "com.stremio.core.types.resource";
 
 import "stremio/core/types/subtitle.proto";
+import "stremio/core/types/deep_links.proto";
 
 message Stream {
   oneof source {
@@ -73,14 +74,4 @@ message StreamBehaviorHints {
 message StreamProxyHeaders {
   map<string, string> request = 1;
   map<string, string> response = 2;
-}
-
-message StreamDeepLinks {
-  required string player = 1;
-  required ExternalPlayerLink external_player = 2;
-
-  message ExternalPlayerLink {
-    optional string download = 1;
-    optional string streaming = 2;
-  }
 }
