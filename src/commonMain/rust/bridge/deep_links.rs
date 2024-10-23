@@ -1,6 +1,6 @@
-use stremio_core::deep_links::{LibraryItemDeepLinks, ExternalPlayerLink};
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::types;
+use stremio_core::deep_links::{ExternalPlayerLink, LibraryItemDeepLinks};
 
 impl ToProtobuf<types::LibraryItemDeepLinks, ()> for LibraryItemDeepLinks {
     fn to_protobuf(&self, _args: &()) -> types::LibraryItemDeepLinks {
