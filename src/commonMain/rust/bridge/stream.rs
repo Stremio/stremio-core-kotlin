@@ -203,13 +203,7 @@ impl
                 video_hash: self.behavior_hints.video_hash.to_owned(),
                 video_size: self.behavior_hints.video_size,
             },
-            deep_links: types::StreamDeepLinks {
-                player: deep_links.player,
-                external_player: types::ExternalPlayerLink {
-                    download: deep_links.external_player.download,
-                    streaming: deep_links.external_player.streaming,
-                },
-            },
+            deep_links: deep_links.to_protobuf(&()),
             source: Some(self.source.to_protobuf(&())),
         }
     }
