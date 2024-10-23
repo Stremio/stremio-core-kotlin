@@ -1,6 +1,7 @@
 use stremio_core::deep_links::LibraryItemDeepLinks;
 use stremio_core::models::ctx::Ctx;
 use stremio_core::types::library::LibraryItem;
+use stremio_core::types::streams::StreamsItemKey;
 
 use crate::bridge::ToProtobuf;
 use crate::protobuf::stremio::core::types;
@@ -18,10 +19,16 @@ impl ToProtobuf<types::LibraryItem, (&Ctx, Option<usize>)> for LibraryItem {
                     .map(|notifs| notifs.len())
             })
             .unwrap_or_default();
+        let streams_item = self.state.video_id.as_ref().and_then(|video_id| {
+            ctx.streams.items.get(&StreamsItemKey {
+                meta_id: self.id.to_owned(),
+                video_id: video_id.to_owned(),
+            })
+        });
         let settings = &ctx.profile.settings;
         let streaming_server_url = &settings.streaming_server_url;
         let deep_links =
-            LibraryItemDeepLinks::from((self, None, Some(streaming_server_url), settings));
+            LibraryItemDeepLinks::from((self, streams_item, Some(streaming_server_url), settings));
         types::LibraryItem {
             id: self.id.to_string(),
             r#type: self.r#type.to_string(),
