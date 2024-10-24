@@ -1,7 +1,7 @@
 use stremio_core::models::streaming_server::{
-    PlaybackDevice, Selected as StreamingServerSelected, StatisticsRequest, StreamingServer,
+    PlaybackDevice, Selected as StreamingServerSelected, StreamingServer,
 };
-use stremio_core::types::streaming_server::{Settings, Statistics};
+use stremio_core::types::streaming_server::{Settings, Statistics, StatisticsRequest};
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::models;
@@ -21,6 +21,7 @@ impl FromProtobuf<Settings> for models::streaming_server::Settings {
             bt_download_speed_soft_limit: self.bt_download_speed_soft_limit,
             bt_download_speed_hard_limit: self.bt_download_speed_hard_limit,
             bt_min_peers_for_stable: self.bt_min_peers_for_stable,
+            proxy_streams_enabled: false,
         }
     }
 }
