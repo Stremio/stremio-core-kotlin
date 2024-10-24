@@ -54,6 +54,13 @@ kotlin {
 
   @Suppress("UNUSED_VARIABLE")
   sourceSets {
+    main {
+      proto {
+        // In addition to the default 'src/main/proto' which we don't use
+        // we add the proto files from stremio-core-protobuf
+        srcDir 'stremio-core-protobuf/proto'
+      }
+    }
     val commonMain by getting {
       dependencies {
         implementation("pro.streem.pbandk:pbandk-runtime:${pbandkVersion}")
@@ -90,7 +97,7 @@ android {
 }
 
 protobuf {
-  generatedFilesBaseDir = "$projectDir/stremio-core-protobuf/proto"
+  generatedFilesBaseDir = "$projectDir/src"
 
   protoc {
     artifact = "com.google.protobuf:protoc:${protobufVersion}"
