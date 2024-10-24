@@ -8,7 +8,7 @@ resolver = "2"
 rust-version = "1.70.0"
 
 [lib]
-crate-type = ["staticlib", "dylib"]
+# crate-type = ["staticlib", "dylib"]
 path = "src/commonMain/rust/lib.rs"
 
 [profile.release]
