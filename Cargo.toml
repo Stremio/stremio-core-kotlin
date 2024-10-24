@@ -5,10 +5,10 @@ authors = ["Smart Code OOD"]
 edition = "2021"
 resolver = "2"
 
-rust-version = "1.67.1"
+rust-version = "1.70.0"
 
 [lib]
-crate_type = ["staticlib", "dylib"]
+crate-type = ["staticlib", "dylib"]
 path = "src/commonMain/rust/lib.rs"
 
 [profile.release]
