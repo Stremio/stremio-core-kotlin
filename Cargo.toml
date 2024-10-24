@@ -23,7 +23,6 @@ kotlin = [
 ]
 
 [lib]
-crate-type = ["staticlib", "dylib"]
 path = "src/commonMain/rust/lib.rs"
 
 [workspace]
