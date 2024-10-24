@@ -5,13 +5,13 @@ use std::{
 };
 
 use chrono::{DateTime, Utc};
-use futures::{Future, TryFutureExt};
+use futures::Future;
 use http::Request;
 use jni::{
     objects::{GlobalRef, JObject},
     JNIEnv,
 };
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use strum::IntoEnumIterator;
@@ -33,29 +33,32 @@ const LOG_DEBUG_PRIORITY: i32 = 3;
 #[cfg(debug_assertions)]
 const LOG_TAG: &str = "AndroidEnv";
 
-lazy_static! {
-    static ref CONCURRENT_RUNTIME: RwLock<tokio::runtime::Runtime> = RwLock::new(
+static CONCURRENT_RUNTIME: Lazy<RwLock<tokio::runtime::Runtime>> = Lazy::new(|| {
+    RwLock::new(
         tokio::runtime::Builder::new_multi_thread()
             .thread_name("CONCURRENT_RUNTIME_THREAD")
             .worker_threads(30)
             .enable_all()
             .build()
-            .expect("CONCURRENT_RUNTIME create failed")
-    );
-    static ref SEQUENTIAL_RUNTIME: RwLock<tokio::runtime::Runtime> = RwLock::new(
+            .expect("CONCURRENT_RUNTIME create failed"),
+    )
+});
+static SEQUENTIAL_RUNTIME: Lazy<RwLock<tokio::runtime::Runtime>> = Lazy::new(|| {
+    RwLock::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(1)
             .thread_name("SEQUENTIAL_RUNTIME_THREAD")
             .enable_all()
             .build()
-            .expect("SEQUENTIAL_RUNTIME create failed")
-    );
-    static ref KOTLIN_CLASSES: RwLock<HashMap<KotlinClassName, GlobalRef>> = Default::default();
-    static ref STORAGE: RwLock<Option<Storage>> = Default::default();
-    static ref ANALYTICS: Analytics<AndroidEnv> = Default::default();
-    static ref INSTALLATION_ID: RwLock<Option<String>> = Default::default();
-    static ref VISIT_ID: String = hex::encode(AndroidEnv::random_buffer(10));
-}
+            .expect("SEQUENTIAL_RUNTIME create failed"),
+    )
+});
+static KOTLIN_CLASSES: Lazy<RwLock<HashMap<KotlinClassName, GlobalRef>>> =
+    Lazy::new(Default::default);
+static STORAGE: Lazy<RwLock<Option<Storage>>> = Lazy::new(Default::default);
+static ANALYTICS: Lazy<Analytics<AndroidEnv>> = Lazy::new(Default::default);
+static INSTALLATION_ID: Lazy<RwLock<Option<String>>> = Lazy::new(Default::default);
+static VISIT_ID: Lazy<String> = Lazy::new(|| hex::encode(AndroidEnv::random_buffer(10)));
 
 extern "C" {
     fn __android_log_write(prio: c_int, tag: *const c_char, text: *const c_char) -> c_int;
@@ -86,15 +89,17 @@ impl AndroidEnv {
             load_kotlin_classes(env).expect("kotlin classes load failed");
         *STORAGE.write().expect("STORAGE write failed") =
             Some(Storage::new(env, storage).expect("Create Storage failed"));
-        AndroidEnv::migrate_storage_schema()
-            .and_then(|_| async {
-                let installation_id = get_installation_id().await?;
-                *INSTALLATION_ID
-                    .write()
-                    .expect("INSTALLATION_ID write failed") = Some(installation_id);
-                Ok(())
-            })
-            .boxed_env()
+
+        async {
+            Self::migrate_storage_schema().await?;
+
+            let installation_id = get_installation_id().await?;
+            *INSTALLATION_ID
+                .write()
+                .expect("INSTALLATION_ID write failed") = Some(installation_id);
+            Ok(())
+        }
+        .boxed_env()
     }
     pub fn kotlin_classes<'a>(
     ) -> LockResult<RwLockReadGuard<'a, HashMap<KotlinClassName, GlobalRef>>> {
