@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.AndroidSourceSet
 import com.google.protobuf.gradle.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -46,6 +47,14 @@ buildscript {
   }
 }
 
+fun AndroidSourceSet.proto(action: SourceDirectorySet.() -> Unit) {
+  (this as? ExtensionAware)
+    ?.extensions
+    ?.getByName("proto")
+    ?.let { it as? SourceDirectorySet }
+    ?.apply(action)
+}
+
 kotlin {
   android {
     // TODO: Adding a "debug" variant here results in failing imports in KMM projects. Figure out why.
@@ -54,13 +63,6 @@ kotlin {
 
   @Suppress("UNUSED_VARIABLE")
   sourceSets {
-    main {
-      proto {
-        // In addition to the default 'src/main/proto' which we don't use
-        // we add the proto files from stremio-core-protobuf
-        srcDir 'stremio-core-protobuf/proto'
-      }
-    }
     val commonMain by getting {
       dependencies {
         implementation("pro.streem.pbandk:pbandk-runtime:${pbandkVersion}")
@@ -85,6 +87,9 @@ android {
 
   sourceSets {
     getByName("main") {
+      proto {
+        srcDirs("stremio-core-protobuf/proto")
+      }
       manifest.srcFile("src/androidMain/AndroidManifest.xml")
     }
   }
