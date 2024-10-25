@@ -8,10 +8,10 @@ Prerequisite:
 - Android NDK `27.2.12479018`
   - The Linkers bin path needs to be added to your `$PATH` env. variable
 
-    E.g.: `$ANDROID_HOME/ndk/$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/bin` (where ANDROID_HOME is installation folder for Android studio and NDK_VERSION is an env. variable set to `27.2.12479018`)
-    or `/path-to-extracted-archive/toolchains/llvm/prebuilt/linux-x86_64/bin`
-  - **Updating:** Needs to be updated in both `.cargo/config.toml` for the 
-    `stremio-core-kotlin` build and the [`.github/workflows/release.yml`](.github/workflows/release.yml)
+    E.g.: `$ANDROID_HOME/ndk/$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/bin` (where ANDROID_HOME is installation folder for Android studio and `NDK_VERSION` is an env. variable set to `27.2.12479018`)
+
+  - **Updating:** Needs to be updated in `.cargo/config.toml` for the 
+    `stremio-core-kotlin` build, the [`.github/workflows/release.yml`](.github/workflows/release.yml) and [`build.gradle.kts`](build.gradle.kts)
 
 ## Using the kotlin library
 
