@@ -1,0 +1,3 @@
+[env]
+NDK_VERSION = "27.2.12479018"
+RANLIB = "$$ANDROID_HOME/ndk/$$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"

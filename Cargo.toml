@@ -39,7 +39,7 @@ stremio-core = { version = "0.1", git = "https://github.com/Stremio/stremio-core
 stremio-core-web = { version = "0.47", git = "https://github.com/Stremio/stremio-core", branch = "development", default-features = false }
 stremio-core-protobuf = { version = "0.1", path = "stremio-core-protobuf", default-features = false }
 
-# Protobuf 
+# Protobuf
 prost = "0.12"
 prost-types = "0.12"
 
@@ -51,7 +51,7 @@ glob = "0.3.0"
 # Http Request handling
 http = { version = "0.2.*" }
 reqwest = { version = "0.11" }
-openssl = { version = "=0.10.40" }
+openssl = { version = "=0.10.68" }
 http-cache-reqwest = { version = "0.4.5" }
 reqwest-middleware = { version = "0.1.6" }
 
@@ -119,7 +119,7 @@ openssl = { workspace = true, features = ["vendored"], optional = true }
 http-cache-reqwest = { workspace = true, optional = true }
 reqwest-middleware = { workspace = true, optional = true }
 
-# Bytes / Protobuf 
+# Bytes / Protobuf
 bytes = "1.1.0"
 prost.workspace = true
 prost-types.workspace = true
