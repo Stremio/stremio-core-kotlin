@@ -2,7 +2,6 @@ use std::convert::TryFrom;
 use std::env;
 use std::time::Duration;
 
-use futures::future::Either;
 use futures::{future, TryFutureExt};
 use http::{Method, Request};
 use http_cache_reqwest::{CACacheManager, Cache, CacheMode, HttpCache};
@@ -60,32 +59,30 @@ pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Se
             .build()
         })
     };
-    client
-        .execute(request)
-        .map_err(|error| EnvError::Fetch(error.to_string()))
-        .and_then(|resp| {
-            if !resp.status().is_success() {
-                Either::Right(future::err(EnvError::Fetch(format!(
-                    "Unexpected HTTP status code {}",
-                    resp.status().as_u16(),
-                ))))
-            } else {
-                Either::Left(
-                    resp.bytes()
-                        .map_err(|error| EnvError::Fetch(error.to_string())),
-                )
-            }
-        })
-        .and_then(|body| {
-            let mut deserializer = Deserializer::from_slice(body.as_ref());
-            cfg_if::cfg_if! {
-                if #[cfg(debug_assertions)] {
-                    let result = serde_path_to_error::deserialize::<_, OUT>(&mut deserializer);
-                } else {
-                    let result = OUT::deserialize(&mut deserializer);
-                }
-            };
-            future::ready(result.map_err(|error| EnvError::Serde(error.to_string())))
-        })
-        .boxed_env()
+
+    let fut = async {
+        let resp = client
+            .execute(request)
+            .map_err(|error| EnvError::Fetch(error.to_string()))
+            .await?;
+
+        let body = if !resp.status().is_success() {
+            return Err(EnvError::Fetch(format!(
+                "Unexpected HTTP status code {}",
+                resp.status().as_u16(),
+            )));
+        } else {
+            resp.bytes()
+                .await
+                .map_err(|error| EnvError::Fetch(error.to_string()))?
+        };
+
+        let mut deserializer = Deserializer::from_slice(body.as_ref());
+        let result = serde_path_to_error::deserialize::<_, OUT>(&mut deserializer);
+
+        result.map_err(|error| EnvError::Serde(error.to_string()))
+        // .boxed_env()
+    };
+
+    fut.boxed_env()
 }

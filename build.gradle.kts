@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.AndroidSourceSet
 import com.google.protobuf.gradle.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -15,7 +16,7 @@ plugins {
   kotlin("multiplatform") version "1.8.0"
   id("maven-publish")
   id("com.android.library") version "7.2.2"
-  id("org.mozilla.rust-android-gradle.rust-android") version "0.9.0"
+  id("org.mozilla.rust-android-gradle.rust-android") version "0.9.4"
   id("com.google.protobuf") version "0.8.18"
 }
 
@@ -46,6 +47,14 @@ buildscript {
   }
 }
 
+fun AndroidSourceSet.proto(action: SourceDirectorySet.() -> Unit) {
+  (this as? ExtensionAware)
+    ?.extensions
+    ?.getByName("proto")
+    ?.let { it as? SourceDirectorySet }
+    ?.apply(action)
+}
+
 kotlin {
   android {
     // TODO: Adding a "debug" variant here results in failing imports in KMM projects. Figure out why.
@@ -69,7 +78,7 @@ kotlin {
 
 android {
   compileSdk = 33
-  ndkVersion = "21.4.7075529"
+  ndkVersion = "27.2.12479018" // configure in .cargo/config.toml and workflows/release.yml as well
 
   defaultConfig {
     minSdk = 21
@@ -78,6 +87,9 @@ android {
 
   sourceSets {
     getByName("main") {
+      proto {
+        srcDirs("stremio-core-protobuf/proto")
+      }
       manifest.srcFile("src/androidMain/AndroidManifest.xml")
     }
   }
