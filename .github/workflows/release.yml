@@ -28,7 +28,7 @@ jobs:
         # has been compiled by a more recent version of the Java Runtime (class file version 61.0),
         # this version of the Java Runtime only recognizes class file versions up to 55.0
         # uses: android-actions/setup-android@v3
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v3
       - name: Setup Android NDK (${{ env.NDK_VERSION }})
         run: yes | sdkmanager "ndk;${{ env.NDK_VERSION }}" >/dev/null
 
