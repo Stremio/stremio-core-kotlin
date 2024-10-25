@@ -1,3 +1,6 @@
 [env]
 NDK_VERSION = "27.2.12479018"
-RANLIB = "$$ANDROID_HOME/ndk/$$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"
+RANLIB_armv7_linux_androideabi = "$$ANDROID_HOME/ndk/$$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"
+RANLIB_aarch64_linux_android = "$$ANDROID_HOME/ndk/$$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"
+RANLIB_i686_linux_android = "$$ANDROID_HOME/ndk/$$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"
+RANLIB_x86_64_linux_android = "$$ANDROID_HOME/ndk/$$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"
