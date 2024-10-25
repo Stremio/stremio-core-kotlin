@@ -4,6 +4,11 @@ on:
   release:
     types: [published]
 
+env:
+  # Make sure to keep this version in line with `.config/cargo.toml` file for
+  # stremio-core-kotlin!
+  NDK_VERSION: '27.2.12479018'
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -24,8 +29,8 @@ jobs:
         # this version of the Java Runtime only recognizes class file versions up to 55.0
         # uses: android-actions/setup-android@v3
         uses: android-actions/setup-android@v2
-      - name: Setup Android NDK
-        run: yes | sdkmanager "ndk;27.2.12479018" >/dev/null
+      - name: Setup Android NDK (${{ env.NDK_VERSION }})
+        run: yes | sdkmanager "ndk;${{ env.NDK_VERSION }}" >/dev/null
 
       # use MSRV
       - name: Set Rust version to MSRV 1.70
