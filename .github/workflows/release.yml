@@ -43,16 +43,19 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Build aar
+        working-directory: stremio-core-kotlin
         run: ./gradlew -Pversion=${GITHUB_REF##*/} publishToMavenLocal
       - name: Archive artifacts
+        working-directory: stremio-core-kotlin
         run: tar -C ~/.m2/repository/com/github/Stremio -cvzf stremio-core-kotlin.tar.gz .
       - name: Archive build
+        working-directory: stremio-core-kotlin
         run: tar -C build -cvzf build.tar.gz publications
       - name: Upload build artifacts
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: "*.tar.gz"
+          file: "stremoi-core-kotlin/*.tar.gz"
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true

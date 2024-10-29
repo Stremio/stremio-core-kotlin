@@ -2,13 +2,13 @@
 
 #[cfg(feature = "kotlin")]
 // Re-export the kotlin-specific impls
-pub use stremio_core_android::*;
+pub use stremio_core_kotlin::*;
 
 #[cfg(feature = "kotlin")]
 pub mod bridge;
 
 #[cfg(feature = "kotlin")]
-/// Contains all android (kotlin) related implementations for the bridge between
+/// Contains all kotlin (for android) related implementations for the bridge between
 /// Rust and Kotlin.
 ///
 /// - [AndroidEnv](crate::env::AndroidEnv)
@@ -51,4 +51,4 @@ pub mod protobuf {
 #[cfg(feature = "kotlin")]
 pub mod jni_ext;
 #[cfg(feature = "kotlin")]
-mod stremio_core_android;
+mod stremio_core_kotlin;

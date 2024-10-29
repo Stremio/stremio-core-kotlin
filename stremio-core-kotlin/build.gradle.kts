@@ -88,7 +88,7 @@ android {
   sourceSets {
     getByName("main") {
       proto {
-        srcDirs("stremio-core-protobuf/proto")
+        srcDirs("../stremio-core-protobuf/proto")
       }
       manifest.srcFile("src/androidMain/AndroidManifest.xml")
     }
