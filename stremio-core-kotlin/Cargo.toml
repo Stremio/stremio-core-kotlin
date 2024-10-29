@@ -23,7 +23,7 @@ kotlin = [
 ]
 
 [lib]
-name = "stremio-core-android"
+name = "stremio_core_android"
 path = "src/commonMain/rust/lib.rs"
 
 [dependencies]

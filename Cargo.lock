@@ -2438,7 +2438,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "stremio-core-android"
+name = "stremio-core-kotlin"
 version = "1.2.6"
 dependencies = [
  "Inflector",

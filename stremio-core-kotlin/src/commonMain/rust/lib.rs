@@ -40,7 +40,6 @@ pub mod model {
     // model is only available when the feature is enabled
     // because of the `AndroidEnv` impl
     mod model;
-
 }
 #[allow(clippy::all)]
 /// Protobuf generated module
