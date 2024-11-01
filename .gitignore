@@ -1,8 +1,8 @@
-/build
-/target
-/.gradle
-/src/debug
-/src/release
+**/build
+**/target
+**/.gradle
+**/src/debug
+**/src/release
 /.idea/
 /local.properties
 
