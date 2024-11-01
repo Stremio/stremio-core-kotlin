@@ -15,7 +15,7 @@ import kotlin.reflect.full.companionObjectInstance
 
 actual object Core {
     init {
-        System.loadLibrary("stremio_core_android")
+        System.loadLibrary("stremio_core_kotlin")
     }
 
     actual fun interface EventListener {

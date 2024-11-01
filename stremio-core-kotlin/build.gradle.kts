@@ -125,7 +125,7 @@ protobuf {
 
 cargo {
   module = "./"
-  libname = "stremio_core_android"
+  libname = "stremio_core_kotlin"
   targets = listOf("arm", "arm64", "x86", "x86_64")
   verbose = true
   profile = stremioCoreAndroidProfile

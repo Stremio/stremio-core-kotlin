@@ -23,8 +23,9 @@ kotlin = [
 ]
 
 [lib]
-name = "stremio_core_android"
+# name = "stremio_core_android"
 path = "src/commonMain/rust/lib.rs"
+crate-type = ["staticlib", "dylib"]
 
 [dependencies]
 stremio-core.workspace = true
