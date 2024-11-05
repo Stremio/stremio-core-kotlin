@@ -1,4 +1,4 @@
-name: Build
+name: Build (stremio-core-kotlin)
 
 on:
   push:
@@ -41,7 +41,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Build code
-        run: cargo build -p stremio-core-android
+        run: cargo build -p stremio-core-kotlin
 
       - name: Lint code format
         run: cargo fmt --all -- --check

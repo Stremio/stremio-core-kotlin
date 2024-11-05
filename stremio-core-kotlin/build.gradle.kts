@@ -88,7 +88,7 @@ android {
   sourceSets {
     getByName("main") {
       proto {
-        srcDirs("stremio-core-protobuf/proto")
+        srcDirs("../stremio-core-protobuf/proto")
       }
       manifest.srcFile("src/androidMain/AndroidManifest.xml")
     }
@@ -125,7 +125,8 @@ protobuf {
 
 cargo {
   module = "./"
-  libname = "stremio_core_android"
+  libname = "stremio_core_kotlin"
+  targetDirectory = "../target"
   targets = listOf("arm", "arm64", "x86", "x86_64")
   verbose = true
   profile = stremioCoreAndroidProfile

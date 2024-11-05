@@ -1,33 +1,6 @@
-[package]
-name = "stremio-core-android"
-version = "1.2.6"
-authors = ["Smart Code OOD"]
-edition = "2021"
-
-rust-version = "1.70.0"
-
-[features]
-default = ["kotlin"]
-kotlin = [
-    # for fetch (making requests):
-    "dep:http",
-    "dep:reqwest",
-    "dep:openssl",
-    "dep:http-cache-reqwest",
-    "dep:reqwest-middleware",
-    # executors
-    "dep:tokio",
-    # java bindings
-    "dep:jni",
-    "dep:getrandom",
-]
-
-[lib]
-path = "src/commonMain/rust/lib.rs"
-
 [workspace]
 resolver = "2"
-members = ["stremio-core-protobuf"]
+members = ["stremio-core-kotlin", "stremio-core-protobuf"]
 
 [workspace.dependencies]
 stremio-core = { version = "0.1", git = "https://github.com/Stremio/stremio-core", branch = "development", features = [
@@ -73,63 +46,3 @@ futures = "0.3"
 [profile.release]
 lto = true
 opt-level = 3
-
-[dependencies]
-stremio-core.workspace = true
-# stremio-core-web.workspace = true
-stremio-core-protobuf.workspace = true
-
-serde.workspace = true
-serde_json.workspace = true
-serde_path_to_error.workspace = true
-
-strum = { version = "0.22.*", features = ["derive"] }
-
-# Utils
-once_cell.workspace = true
-semver = { version = "1", features = ["serde"] }
-enclose = "1.1.*"
-itertools.workspace = true
-chrono.workspace = true
-boolinator = "2.4.*"
-Inflector = "0.11.*"
-cfg-if = "0.1.*"
-auto_impl = "0.5.*"
-
-base64 = "0.13.*"
-hex.workspace = true
-flate2 = "1.0.*"
-url = { version = "2.4", features = ["serde"] }
-percent-encoding = "2.1"
-
-# kotlin specific + Env impl
-getrandom = { workspace = true, optional = true }
-
-jni = { version = "0.19.*", optional = true }
-
-# Async executor
-tokio = { version = "1", features = ["rt", "rt-multi-thread"], optional = true }
-# Futures
-futures.workspace = true
-
-# Http Request handling
-http = { workspace = true, optional = true }
-reqwest = { workspace = true, features = ["json", "rustls-tls"], optional = true }
-openssl = { workspace = true, features = ["vendored"], optional = true }
-http-cache-reqwest = { workspace = true, optional = true }
-reqwest-middleware = { workspace = true, optional = true }
-
-# Bytes / Protobuf
-bytes = "1.1.0"
-prost.workspace = true
-prost-types.workspace = true
-
-[build-dependencies]
-prost-build.workspace = true
-protox.workspace = true
-glob.workspace = true
-
-# A way to quickly test with local version of `core` crates
-# [patch.'https://github.com/Stremio/stremio-core']
-# stremio-core = { path = "../core" }
-# stremio-core-web = { path = "../core/stremio-core-web" }

@@ -2,13 +2,13 @@
 
 #[cfg(feature = "kotlin")]
 // Re-export the kotlin-specific impls
-pub use stremio_core_android::*;
+pub use stremio_core_kotlin::*;
 
 #[cfg(feature = "kotlin")]
 pub mod bridge;
 
 #[cfg(feature = "kotlin")]
-/// Contains all android (kotlin) related implementations for the bridge between
+/// Contains all kotlin (for android) related implementations for the bridge between
 /// Rust and Kotlin.
 ///
 /// - [AndroidEnv](crate::env::AndroidEnv)
@@ -32,7 +32,15 @@ pub mod env {
     pub use storage::*;
 }
 
-pub mod model;
+pub mod model {
+    #[cfg(feature = "kotlin")]
+    pub use model::*;
+
+    #[cfg(feature = "kotlin")]
+    // model is only available when the feature is enabled
+    // because of the `AndroidEnv` impl
+    mod model;
+}
 #[allow(clippy::all)]
 /// Protobuf generated module
 pub mod protobuf {
@@ -42,4 +50,4 @@ pub mod protobuf {
 #[cfg(feature = "kotlin")]
 pub mod jni_ext;
 #[cfg(feature = "kotlin")]
-mod stremio_core_android;
+mod stremio_core_kotlin;
