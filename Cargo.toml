@@ -24,7 +24,8 @@ glob = "0.3.0"
 # Http Request handling
 http = { version = "0.2.*" }
 reqwest = { version = "0.11" }
-openssl = { version = "=0.10.46" }
+openssl = { version = "=0.10.57" }
+openssl-sys = { version = "=0.9.92" }
 http-cache-reqwest = { version = "0.4.5" }
 reqwest-middleware = { version = "0.1.6" }
 
