@@ -66,10 +66,10 @@ actual object Core {
 
     @JvmStatic
     private fun onRuntimeEvent(eventProtobuf: ByteArray) {
-        listeners.forEach {
+        for (listener in listeners) {
             try {
                 val event = RuntimeEvent.decodeFromByteArray(eventProtobuf)
-                it.onEvent(event)
+                listener.onEvent(event)
             } catch (e: Exception) {
                 Log.e("Stremio", "Failed passing event: ", e)
             }
