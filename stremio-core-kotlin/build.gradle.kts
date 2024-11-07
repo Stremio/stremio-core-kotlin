@@ -1,6 +1,4 @@
-import com.android.build.api.dsl.AndroidSourceSet
 import com.google.protobuf.gradle.*
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "com.github.Stremio"
 version = "1.3.0"
@@ -13,50 +11,32 @@ allprojects {
 }
 
 plugins {
-  kotlin("multiplatform") version "1.8.0"
-  id("maven-publish")
-  id("com.android.library") version "7.2.2"
+  kotlin("multiplatform") version "1.9.25"
   id("org.mozilla.rust-android-gradle.rust-android") version "0.9.4"
-  id("com.google.protobuf") version "0.8.18"
+  id("com.google.protobuf") version "0.9.4"
+  id("com.android.library") version "8.5.2"
+  id("maven-publish")
 }
 
 val kotlinVersion: String by extra
 val pbandkVersion: String by extra
 val protobufVersion: String by extra
-val stremioCoreAndroidProfile: String by extra
 
 buildscript {
-  extra["kotlinVersion"] = "1.7.20"
-  extra["pbandkVersion"] = "0.14.2"
-  extra["protobufVersion"] = "3.21.0"
-  extra["stremioCoreAndroidProfile"] = "release"
-
-  val kotlinVersion: String by extra
+  extra["kotlinVersion"] = "1.9.25"
+  extra["pbandkVersion"] = "0.16.0"
+  extra["protobufVersion"] = "4.28.3"
 
   repositories {
     google()
     mavenCentral()
-    maven("https://plugins.gradle.org/m2/")
+    gradlePluginPortal()
   }
-
-  dependencies {
-    classpath("com.android.tools.build:gradle:7.2.2")
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
-    classpath("org.mozilla.rust-android-gradle:plugin:0.9.0")
-    classpath("com.google.protobuf:protobuf-gradle-plugin:0.8.18")
-  }
-}
-
-fun AndroidSourceSet.proto(action: SourceDirectorySet.() -> Unit) {
-  (this as? ExtensionAware)
-    ?.extensions
-    ?.getByName("proto")
-    ?.let { it as? SourceDirectorySet }
-    ?.apply(action)
 }
 
 kotlin {
-  android {
+  jvmToolchain(17)
+  androidTarget {
     // TODO: Adding a "debug" variant here results in failing imports in KMM projects. Figure out why.
     publishLibraryVariants("release")
   }
@@ -77,12 +57,12 @@ kotlin {
 }
 
 android {
-  compileSdk = 33
   ndkVersion = "27.2.12479018" // configure in .cargo/config.toml and workflows/release.yml as well
 
   defaultConfig {
+    namespace = "com.stremio.core"
     minSdk = 21
-    targetSdk = 33
+    compileSdk = 34
   }
 
   sourceSets {
@@ -94,7 +74,7 @@ android {
     }
   }
 
-  packagingOptions {
+  packaging {
     resources {
       excludes += "**/*.proto"
     }
@@ -102,8 +82,6 @@ android {
 }
 
 protobuf {
-  generatedFilesBaseDir = "$projectDir/src"
-
   protoc {
     artifact = "com.google.protobuf:protoc:${protobufVersion}"
   }
@@ -129,17 +107,11 @@ cargo {
   targetDirectory = "../target"
   targets = listOf("arm", "arm64", "x86", "x86_64")
   verbose = true
-  profile = stremioCoreAndroidProfile
+  profile = "release"
 }
 
 tasks.whenTaskAdded {
   if (name == "javaPreCompileDebug" || name == "javaPreCompileRelease" || name == "mergeDebugJniLibFolders" || name == "mergeReleaseJniLibFolders") {
     dependsOn("cargoBuild")
-  }
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-  kotlinOptions {
-    freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
   }
 }
