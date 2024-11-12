@@ -44,5 +44,5 @@ message LoadableAddonCatalog {
 }
 
 message Addons {
-  repeated stremio.core.types.DescriptorPreview items = 1;
+  repeated stremio.core.types.AddonDescriptor items = 1;
 }

@@ -11,7 +11,7 @@ use stremio_core::{
     },
     runtime::EnvError,
     types::{
-        addon::{Descriptor, DescriptorPreview, ResourcePath, ResourceRequest},
+        addon::{Descriptor, ResourcePath, ResourceRequest},
         api::{GetModalResponse, GetNotificationResponse, LinkAuthKey, LinkCodeResponse},
         library::LibraryItem,
         resource::{MetaItem, MetaItemPreview, Stream, Subtitles},
@@ -314,7 +314,7 @@ impl ToProtobuf<models::LoadableStatistics, ()> for Loadable<Statistics, EnvErro
 }
 
 impl ToProtobuf<models::loadable_addon_catalog::Content, Ctx>
-    for Loadable<Vec<DescriptorPreview>, ResourceError>
+    for Loadable<Vec<Descriptor>, ResourceError>
 {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,

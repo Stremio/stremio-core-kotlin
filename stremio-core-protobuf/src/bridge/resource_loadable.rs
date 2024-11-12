@@ -8,7 +8,7 @@ use stremio_core::{
         ctx::Ctx,
     },
     types::{
-        addon::{DescriptorPreview, ResourceRequest},
+        addon::{Descriptor, ResourceRequest},
         library::LibraryItem,
         resource::{MetaItem, MetaItemPreview, Stream, Subtitles},
         watched_bitfield::WatchedBitField,
@@ -136,7 +136,7 @@ impl ToProtobuf<models::LoadableSubtitles, Ctx> for ResourceLoadable<Vec<Subtitl
     }
 }
 
-impl ToProtobuf<models::LoadableAddonCatalog, Ctx> for &ResourceLoadable<Vec<DescriptorPreview>> {
+impl ToProtobuf<models::LoadableAddonCatalog, Ctx> for &ResourceLoadable<Vec<Descriptor>> {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
         ctx: &Ctx,

@@ -3,19 +3,18 @@ use stremio_core::models::ctx::Ctx;
 use stremio_core::models::installed_addons_with_filters::InstalledAddonsWithFilters;
 use stremio_core::runtime::msg::{Action, ActionLoad, Msg};
 use stremio_core::runtime::{Effects, Env, UpdateWithCtx};
-use stremio_core::types::addon::DescriptorPreview;
+use stremio_core::types::addon::Descriptor;
 use stremio_core::types::profile::Profile;
 
 #[derive(Default, Clone)]
 pub struct AddonsWithFilters {
-    pub remote_addons: CatalogWithFilters<DescriptorPreview>,
+    pub remote_addons: CatalogWithFilters<Descriptor>,
     pub installed_addons: InstalledAddonsWithFilters,
 }
 
 impl AddonsWithFilters {
     pub fn new(profile: &Profile) -> (Self, Effects) {
-        let (remote_addons, remote_addons_effects) =
-            CatalogWithFilters::<DescriptorPreview>::new(profile);
+        let (remote_addons, remote_addons_effects) = CatalogWithFilters::<Descriptor>::new(profile);
         let (installed_addons, installed_addons_effects) = InstalledAddonsWithFilters::new(profile);
         let effects = remote_addons_effects.join(installed_addons_effects);
         (
