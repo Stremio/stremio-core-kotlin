@@ -2396,7 +2396,7 @@ dependencies = [
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/remote-addons-descriptor#3c9aefa3282ff0637df36ed4a107a4945fa9d078"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#70684d03151e17eb05c2ea55caf13d69bc6eb586"
 dependencies = [
  "anyhow",
  "base64 0.21.7",
@@ -2500,7 +2500,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/remote-addons-descriptor#3c9aefa3282ff0637df36ed4a107a4945fa9d078"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#70684d03151e17eb05c2ea55caf13d69bc6eb586"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2534,7 +2534,7 @@ dependencies = [
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=feat/remote-addons-descriptor#3c9aefa3282ff0637df36ed4a107a4945fa9d078"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#70684d03151e17eb05c2ea55caf13d69bc6eb586"
 dependencies = [
  "base64 0.13.1",
  "flate2",
