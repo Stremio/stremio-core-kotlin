@@ -31,10 +31,12 @@ message Player {
   message StreamState {
     optional SubtitleTrack subtitle_track = 1;
     optional int64 subtitle_delay = 2;
-    optional AudioTrack audio_track = 3;
-    optional int64 audio_delay = 4;
-    optional float playback_speed = 5;
-    optional string player_type = 6;
+    optional int64 subtitle_size = 3;
+    optional int64 subtitle_offset = 4;
+    optional AudioTrack audio_track = 5;
+    optional int64 audio_delay = 6;
+    optional float playback_speed = 7;
+    optional string player_type = 8;
   }
   message SubtitleTrack {
     required string id = 1;

@@ -21,6 +21,8 @@ impl FromProtobuf<StreamItemState> for models::player::StreamState {
         StreamItemState {
             subtitle_track: self.subtitle_track.from_protobuf(),
             subtitle_delay: self.subtitle_delay.to_owned(),
+            subtitle_size: self.subtitle_size.from_protobuf(),
+            subtitle_offset: self.subtitle_offset.from_protobuf(),
             audio_track: self.audio_track.from_protobuf(),
             audio_delay: self.audio_delay.to_owned(),
             playback_speed: self.playback_speed.to_owned(),
@@ -79,6 +81,8 @@ impl ToProtobuf<models::player::StreamState, ()> for StreamItemState {
         models::player::StreamState {
             subtitle_track: self.subtitle_track.to_protobuf::<E>(&()),
             subtitle_delay: self.subtitle_delay.to_owned(),
+            subtitle_size: self.subtitle_size.to_protobuf::<E>(&()),
+            subtitle_offset: self.subtitle_offset.to_protobuf::<E>(&()),
             audio_track: self.audio_track.to_protobuf::<E>(&()),
             audio_delay: self.audio_delay.to_owned(),
             playback_speed: self.playback_speed.to_owned(),
