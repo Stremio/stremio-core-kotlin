@@ -31,8 +31,8 @@ message Player {
   message StreamState {
     optional SubtitleTrack subtitle_track = 1;
     optional int64 subtitle_delay = 2;
-    optional uint64 subtitle_size = 3;
-    optional uint64 subtitle_offset = 4;
+    optional float subtitle_size = 3;
+    optional float subtitle_offset = 4;
     optional AudioTrack audio_track = 5;
     optional int64 audio_delay = 6;
     optional float playback_speed = 7;
