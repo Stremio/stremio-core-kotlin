@@ -29,7 +29,7 @@ mod stream;
 mod string;
 mod subtitle;
 
-pub trait ToProtobuf<T, A> {
+pub trait ToProtobuf<T, A = ()> {
     fn to_protobuf<E: Env + 'static>(&self, args: &A) -> T;
 }
 
