@@ -1343,9 +1343,9 @@ dependencies = [
 
 [[package]]
 name = "logos-codegen"
-version = "0.14.3"
+version = "0.14.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f3303189202bb8a052bcd93d66b6c03e6fe70d9c7c47c0ea5e974955e54c876"
+checksum = "b32eb6b5f26efacd015b000bfc562186472cd9b34bdba3f6b264e2a052676d10"
 dependencies = [
  "beef",
  "fnv",
@@ -1353,15 +1353,14 @@ dependencies = [
  "proc-macro2",
  "quote",
  "regex-syntax",
- "rustc_version",
  "syn 2.0.85",
 ]
 
 [[package]]
 name = "logos-derive"
-version = "0.14.3"
+version = "0.14.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "774a1c225576486e4fdf40b74646f672c542ca3608160d348749693ae9d456e6"
+checksum = "3e5d0c5463c911ef55624739fc353238b4e310f0144be1f875dc42fec6bfd5ec"
 dependencies = [
  "logos-codegen",
 ]
@@ -2498,6 +2497,8 @@ dependencies = [
  "hex 0.4.3",
  "itertools 0.13.0",
  "logos",
+ "logos-codegen",
+ "logos-derive",
  "prost",
  "prost-build",
  "prost-types",
