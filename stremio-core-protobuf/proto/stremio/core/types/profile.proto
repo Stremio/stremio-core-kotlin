@@ -63,6 +63,7 @@ message User{
   required google.protobuf.Timestamp date_registered = 6;
   required google.protobuf.Timestamp last_modified = 7;
   optional google.protobuf.Timestamp premium_expire = 8;
+  optional TraktInfo trakt = 9;
 }
 
 message GDPRConsent {
@@ -70,4 +71,10 @@ message GDPRConsent {
   required bool privacy = 2;
   required bool marketing = 3;
   optional string from = 4;
+}
+
+message TraktInfo {
+  required google.protobuf.Timestamp created_at = 1;
+  required google.protobuf.Timestamp expires_in = 2;
+  required string access_token = 3;
 }

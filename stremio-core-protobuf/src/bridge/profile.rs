@@ -3,7 +3,7 @@ use std::convert::TryFrom;
 
 use stremio_core::types::api::{LinkAuthKey, LinkCodeResponse};
 use stremio_core::types::profile::{
-    Auth, FrameRateMatchingStrategy, GDPRConsent, Profile, Settings, User,
+    Auth, FrameRateMatchingStrategy, GDPRConsent, Profile, Settings, TraktInfo, User,
 };
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
@@ -140,6 +140,16 @@ impl ToProtobuf<types::GdprConsent, ()> for GDPRConsent {
     }
 }
 
+impl ToProtobuf<types::TraktInfo, ()> for TraktInfo {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::TraktInfo {
+        types::TraktInfo {
+            created_at: self.created_at.to_protobuf::<E>(&()),
+            expires_in: self.expires_in.to_protobuf::<E>(&()),
+            access_token: self.access_token.clone(),
+        }
+    }
+}
+
 impl ToProtobuf<types::User, ()> for User {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> types::User {
         types::User {
@@ -151,6 +161,7 @@ impl ToProtobuf<types::User, ()> for User {
             date_registered: self.date_registered.to_protobuf::<E>(&()),
             last_modified: self.last_modified.to_protobuf::<E>(&()),
             premium_expire: self.premium_expire.to_protobuf::<E>(&()),
+            trakt: self.trakt.to_protobuf::<E>(&()),
         }
     }
 }
