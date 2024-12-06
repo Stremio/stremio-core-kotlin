@@ -1237,15 +1237,6 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.12.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
-dependencies = [
- "either",
-]
-
-[[package]]
-name = "itertools"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
@@ -1343,32 +1334,34 @@ dependencies = [
 
 [[package]]
 name = "logos"
-version = "0.13.0"
+version = "0.14.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c000ca4d908ff18ac99b93a062cb8958d331c3220719c52e77cb19cc6ac5d2c1"
+checksum = "4b6aa86787fd2da255f97a4425799c8d1fd39951f5798a1192fc1b956581f605"
 dependencies = [
  "logos-derive",
 ]
 
 [[package]]
 name = "logos-codegen"
-version = "0.13.0"
+version = "0.14.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc487311295e0002e452025d6b580b77bb17286de87b57138f3b5db711cded68"
+checksum = "5f3303189202bb8a052bcd93d66b6c03e6fe70d9c7c47c0ea5e974955e54c876"
 dependencies = [
  "beef",
  "fnv",
+ "lazy_static",
  "proc-macro2",
  "quote",
- "regex-syntax 0.6.29",
+ "regex-syntax",
+ "rustc_version",
  "syn 2.0.85",
 ]
 
 [[package]]
 name = "logos-derive"
-version = "0.13.0"
+version = "0.14.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dbfc0d229f1f42d790440136d941afd806bc9e949e2bcb8faa813b0f00d1267e"
+checksum = "774a1c225576486e4fdf40b74646f672c542ca3608160d348749693ae9d456e6"
 dependencies = [
  "logos-codegen",
 ]
@@ -1418,12 +1411,12 @@ dependencies = [
 
 [[package]]
 name = "miette"
-version = "5.10.0"
+version = "7.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "59bb584eaeeab6bd0226ccf3509a69d7936d148cf3d036ad350abe35e8c6856e"
+checksum = "317f146e2eb7021892722af37cf1b971f0a70c8406f487e24952667616192c64"
 dependencies = [
- "miette-derive 5.10.0",
- "once_cell",
+ "cfg-if 1.0.0",
+ "miette-derive 7.4.0",
  "thiserror",
  "unicode-width",
 ]
@@ -1441,9 +1434,9 @@ dependencies = [
 
 [[package]]
 name = "miette-derive"
-version = "5.10.0"
+version = "7.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "49e7bc1560b95a3c4a25d03de42fe76ca718ab92d1a22a55b9b4cf67b3ae635c"
+checksum = "23c9b935fbe1d6cbd1dac857b54a688145e2d93f48db36010514d0f612d0ad67"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1802,9 +1795,9 @@ dependencies = [
 
 [[package]]
 name = "prost"
-version = "0.12.6"
+version = "0.13.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "deb1435c188b76130da55f17a466d252ff7b1418b2ad3e037d127b94e3411f29"
+checksum = "7b0487d90e047de87f984913713b85c601c05609aad5b0df4b4573fbf69aa13f"
 dependencies = [
  "bytes",
  "prost-derive",
@@ -1812,13 +1805,13 @@ dependencies = [
 
 [[package]]
 name = "prost-build"
-version = "0.12.6"
+version = "0.13.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22505a5c94da8e3b7c2996394d1c933236c4d743e81a410bcca4e6989fc066a4"
+checksum = "0c1318b19085f08681016926435853bbf7858f9c082d0999b80550ff5d9abe15"
 dependencies = [
  "bytes",
  "heck 0.5.0",
- "itertools 0.12.1",
+ "itertools 0.13.0",
  "log",
  "multimap",
  "once_cell",
@@ -1826,6 +1819,8 @@ dependencies = [
  "prettyplease",
  "prost",
  "prost-types",
+ "pulldown-cmark",
+ "pulldown-cmark-to-cmark",
  "regex",
  "syn 2.0.85",
  "tempfile",
@@ -1833,12 +1828,12 @@ dependencies = [
 
 [[package]]
 name = "prost-derive"
-version = "0.12.6"
+version = "0.13.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81bddcdb20abf9501610992b6759a4c888aef7d1a7247ef75e2404275ac24af1"
+checksum = "e9552f850d5f0964a4e4d0bf306459ac29323ddfbae05e35a7c0d35cb0803cc5"
 dependencies = [
  "anyhow",
- "itertools 0.12.1",
+ "itertools 0.13.0",
  "proc-macro2",
  "quote",
  "syn 2.0.85",
@@ -1846,12 +1841,12 @@ dependencies = [
 
 [[package]]
 name = "prost-reflect"
-version = "0.12.0"
+version = "0.14.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "057237efdb71cf4b3f9396302a3d6599a92fa94063ba537b66130980ea9909f3"
+checksum = "20ae544fca2892fd4b7e9ff26cba1090cedf1d4d95c2aded1af15d2f93f270b8"
 dependencies = [
  "logos",
- "miette 5.10.0",
+ "miette 7.4.0",
  "once_cell",
  "prost",
  "prost-types",
@@ -1859,21 +1854,21 @@ dependencies = [
 
 [[package]]
 name = "prost-types"
-version = "0.12.6"
+version = "0.13.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9091c90b0a32608e984ff2fa4091273cbdd755d54935c51d520887f4a1dbd5b0"
+checksum = "4759aa0d3a6232fb8dbdb97b61de2c20047c68aca932c7ed76da9d788508d670"
 dependencies = [
  "prost",
 ]
 
 [[package]]
 name = "protox"
-version = "0.5.1"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00bb76c5f6221de491fe2c8f39b106330bbd9762c6511119c07940e10eb9ff11"
+checksum = "873f359bdecdfe6e353752f97cb9ee69368df55b16363ed2216da85e03232a58"
 dependencies = [
  "bytes",
- "miette 5.10.0",
+ "miette 7.4.0",
  "prost",
  "prost-reflect",
  "prost-types",
@@ -1883,14 +1878,34 @@ dependencies = [
 
 [[package]]
 name = "protox-parse"
-version = "0.5.0"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7b4581f441c58863525a3e6bec7b8de98188cf75239a56c725a3e7288450a33f"
+checksum = "a3a462d115462c080ae000c29a47f0b3985737e5d3a995fcdbcaa5c782068dde"
 dependencies = [
  "logos",
- "miette 5.10.0",
+ "miette 7.4.0",
  "prost-types",
  "thiserror",
+]
+
+[[package]]
+name = "pulldown-cmark"
+version = "0.12.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f86ba2052aebccc42cbbb3ed234b8b13ce76f75c3551a303cb2bcffcff12bb14"
+dependencies = [
+ "bitflags 2.6.0",
+ "memchr",
+ "unicase",
+]
+
+[[package]]
+name = "pulldown-cmark-to-cmark"
+version = "17.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "41b27c0d365d60ff3e085007911d73419e5664de48155d558ebfa84d117a5109"
+dependencies = [
+ "pulldown-cmark",
 ]
 
 [[package]]
@@ -1911,7 +1926,7 @@ dependencies = [
  "aho-corasick",
  "memchr",
  "regex-automata",
- "regex-syntax 0.8.5",
+ "regex-syntax",
 ]
 
 [[package]]
@@ -1922,14 +1937,8 @@ checksum = "368758f23274712b504848e9d5a6f010445cc8b87a7cdb4d7cbee666c1288da3"
 dependencies = [
  "aho-corasick",
  "memchr",
- "regex-syntax 0.8.5",
+ "regex-syntax",
 ]
-
-[[package]]
-name = "regex-syntax"
-version = "0.6.29"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f162c6dd7b008981e4d40210aca20b4bd0f9b60ca9271061b07f78537722f2e1"
 
 [[package]]
 name = "regex-syntax"
