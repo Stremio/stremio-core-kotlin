@@ -32,8 +32,8 @@ jobs:
         with:
           version: "${{ env.PROTOC_VERSION }}"
 
-      - name: Rust setup (1.70.0)
-        uses: dtolnay/rust-toolchain@1.70.0
+      - name: Rust setup (1.71.0)
+        uses: dtolnay/rust-toolchain@1.71.0
         with:
           components: rustfmt, clippy
 
@@ -48,3 +48,6 @@ jobs:
 
       - name: Lint code
         run: cargo clippy --all -- -D warnings
+
+      - name: Test code
+        run: cargo test
