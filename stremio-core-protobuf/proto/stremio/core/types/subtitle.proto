@@ -5,7 +5,8 @@ package stremio.core.types;
 option java_package = "com.stremio.core.types.subtitle";
 
 message Subtitle {
-  required string lang = 1;
-  required string url = 2;
-  optional string name = 3;
+  required string id = 1;
+  required string lang = 2;
+  required string url = 3;
+  optional string name = 4;
 }

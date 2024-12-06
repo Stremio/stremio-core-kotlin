@@ -13,12 +13,13 @@ stremio-core-web = { version = "0.47", git = "https://github.com/Stremio/stremio
 stremio-core-protobuf = { version = "0.1", path = "stremio-core-protobuf", default-features = false }
 
 # Protobuf
-prost = "0.12"
-prost-types = "0.12"
+prost = "0.13"
+prost-types = "0.13"
 
 # Protobuf for codegen, e.g. build.rs
-prost-build = "0.12"
-protox = "0.5"
+# Enable the `cleanup-markdown` feature to clean any non-rust markdown examples
+prost-build = { version = "0.13", features = ["cleanup-markdown"] }
+protox = "0.7"
 glob = "0.3.0"
 
 # Http Request handling

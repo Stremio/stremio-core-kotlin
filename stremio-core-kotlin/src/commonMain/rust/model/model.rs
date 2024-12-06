@@ -20,7 +20,7 @@ use stremio_core::{
     types::{
         api::LinkAuthKey, events::DismissedEventsBucket, library::LibraryBucket,
         notifications::NotificationsBucket, profile::Profile, resource::MetaItemPreview,
-        search_history::SearchHistoryBucket, streams::StreamsBucket,
+        search_history::SearchHistoryBucket, server_urls::ServerUrlsBucket, streams::StreamsBucket,
     },
     Model,
 };
@@ -56,6 +56,7 @@ impl AndroidModel {
         profile: Profile,
         library: LibraryBucket,
         streams: StreamsBucket,
+        server_urls: ServerUrlsBucket,
         notifications: NotificationsBucket,
         search_history: SearchHistoryBucket,
         dismissed_events: DismissedEventsBucket,
@@ -79,6 +80,7 @@ impl AndroidModel {
                 profile,
                 library,
                 streams,
+                server_urls,
                 notifications,
                 search_history,
                 dismissed_events,

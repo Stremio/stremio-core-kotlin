@@ -197,6 +197,20 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     device: device.to_owned(),
                 })
             }
+            Event::StreamingServerUrlsBucketChanged { uid } => {
+                runtime::event::Type::StreamingServerUrlsBucketChanged(
+                    runtime::event::StreamingServerUrlsBucketChanged {
+                        uid: uid.to_owned(),
+                    },
+                )
+            }
+            Event::StreamingServerUrlsPushedToStorage { uid } => {
+                runtime::event::Type::StreamingServerUrlsPushedToStorage(
+                    runtime::event::StreamingServerUrlsPushedToStorage {
+                        uid: uid.to_owned(),
+                    },
+                )
+            }
             Event::Error { error, source } => {
                 let error = match error {
                     CtxError::API(error) => error.message.to_owned(),

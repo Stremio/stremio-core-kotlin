@@ -48,6 +48,8 @@ message Event {
     MagnetParsed magnet_parsed = 37;
     TorrentParsed torrent_parsed = 38;
     PlayingOnDevice playing_on_device = 39;
+    StreamingServerUrlsBucketChanged streaming_server_urls_bucket_changed = 40;
+    StreamingServerUrlsPushedToStorage streaming_server_urls_pushed_to_storage = 41;
     Error error = 100;
   }
 
@@ -172,6 +174,12 @@ message Event {
   }
   message PlayingOnDevice {
     required string device = 1;
+  }
+  message StreamingServerUrlsBucketChanged {
+    optional string uid = 1;
+  }
+  message StreamingServerUrlsPushedToStorage {
+    optional string uid = 1;
   }
   message Error {
     required string error = 1;

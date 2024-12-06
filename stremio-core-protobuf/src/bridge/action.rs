@@ -198,6 +198,13 @@ impl FromProtobuf<Action> for runtime::Action {
                         state: stream_state.from_protobuf(),
                     })
                 }
+                Some(action_player::Args::SeekAction(seek_state)) => {
+                    Action::Player(ActionPlayer::Seek {
+                        time: seek_state.time,
+                        duration: seek_state.duration,
+                        device: seek_state.device.to_owned(),
+                    })
+                }
                 Some(action_player::Args::TimeChanged(item_state)) => {
                     Action::Player(ActionPlayer::TimeChanged {
                         time: item_state.time,

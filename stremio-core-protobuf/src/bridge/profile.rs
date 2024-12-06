@@ -96,6 +96,8 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             pause_on_minimize: self.pause_on_minimize,
             surround_sound: self.surround_sound,
             streaming_server_warning_dismissed: None,
+            server_in_foreground: self.server_in_foreground,
+            send_crash_reports: self.send_crash_reports,
         }
     }
 }
@@ -206,6 +208,8 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
                 as i32,
             next_video_notification_duration: self.next_video_notification_duration as i64,
             surround_sound: self.surround_sound,
+            server_in_foreground: self.server_in_foreground,
+            send_crash_reports: self.send_crash_reports,
         }
     }
 }

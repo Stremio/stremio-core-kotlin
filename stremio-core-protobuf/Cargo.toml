@@ -32,3 +32,8 @@ url = { version = "2.4", features = ["serde"] }
 prost-build.workspace = true
 protox.workspace = true
 glob.workspace = true
+
+# 0.14.3 bumped MSRV to 1.75 and it's used in protox-parse
+logos = "=0.14.2"
+logos-codegen = "=0.14.2"
+logos-derive = "=0.14.2"
