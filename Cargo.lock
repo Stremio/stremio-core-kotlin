@@ -1334,9 +1334,9 @@ dependencies = [
 
 [[package]]
 name = "logos"
-version = "0.14.3"
+version = "0.14.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b6aa86787fd2da255f97a4425799c8d1fd39951f5798a1192fc1b956581f605"
+checksum = "1c6b6e02facda28ca5fb8dbe4b152496ba3b1bd5a4b40bb2b1b2d8ad74e0f39b"
 dependencies = [
  "logos-derive",
 ]
@@ -2497,6 +2497,7 @@ dependencies = [
  "glob",
  "hex 0.4.3",
  "itertools 0.13.0",
+ "logos",
  "prost",
  "prost-build",
  "prost-types",
