@@ -20,14 +20,14 @@ use stremio_core::{
     constants::{
         DISMISSED_EVENTS_STORAGE_KEY, LIBRARY_RECENT_STORAGE_KEY, LIBRARY_STORAGE_KEY,
         NOTIFICATIONS_STORAGE_KEY, PROFILE_STORAGE_KEY, SEARCH_HISTORY_STORAGE_KEY,
-        STREAMS_STORAGE_KEY,
+        STREAMING_SERVER_URLS_STORAGE_KEY, STREAMS_STORAGE_KEY,
     },
     models::common::Loadable,
     runtime::{Env, EnvError, Runtime, RuntimeEvent},
     types::{
         events::DismissedEventsBucket, library::LibraryBucket, notifications::NotificationsBucket,
         profile::Profile, resource::Stream, search_history::SearchHistoryBucket,
-        streams::StreamsBucket,
+        server_urls::ServerUrlsBucket, streams::StreamsBucket,
     },
 };
 use stremio_core_protobuf::{FromProtobuf, ToProtobuf};
@@ -67,20 +67,22 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
     let init_result = AndroidEnv::exec_sync(AndroidEnv::init(&env, storage));
     match init_result {
         Ok(_) => {
-            let storage_result = AndroidEnv::exec_sync(future::try_join3(
+            let storage_result = AndroidEnv::exec_sync(future::try_join4(
                 future::try_join5(
                     AndroidEnv::get_storage::<Profile>(PROFILE_STORAGE_KEY),
                     AndroidEnv::get_storage::<LibraryBucket>(LIBRARY_RECENT_STORAGE_KEY),
                     AndroidEnv::get_storage::<LibraryBucket>(LIBRARY_STORAGE_KEY),
                     AndroidEnv::get_storage::<StreamsBucket>(STREAMS_STORAGE_KEY),
-                    AndroidEnv::get_storage::<NotificationsBucket>(NOTIFICATIONS_STORAGE_KEY),
+                    AndroidEnv::get_storage::<ServerUrlsBucket>(STREAMING_SERVER_URLS_STORAGE_KEY),
                 ),
+                AndroidEnv::get_storage::<NotificationsBucket>(NOTIFICATIONS_STORAGE_KEY),
                 AndroidEnv::get_storage::<SearchHistoryBucket>(SEARCH_HISTORY_STORAGE_KEY),
                 AndroidEnv::get_storage::<DismissedEventsBucket>(DISMISSED_EVENTS_STORAGE_KEY),
             ));
             match storage_result {
                 Ok((
-                    (profile, recent_bucket, other_bucket, streams, notifications),
+                    (profile, recent_bucket, other_bucket, streams, server_urls_bucket),
+                    notifications,
                     search_history,
                     dismissed_events,
                 )) => {
@@ -93,6 +95,9 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                         library.merge_bucket(other_bucket);
                     };
                     let streams = streams.unwrap_or(StreamsBucket::new(profile.uid()));
+                    let server_urls_bucket =
+                        server_urls_bucket
+                            .unwrap_or(ServerUrlsBucket::new::<AndroidEnv>(profile.uid()));
                     let notifications = notifications.unwrap_or(NotificationsBucket::new::<
                         AndroidEnv,
                     >(
@@ -106,6 +111,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                         profile,
                         library,
                         streams,
+                        server_urls_bucket,
                         notifications,
                         search_history,
                         dismissed_events,
