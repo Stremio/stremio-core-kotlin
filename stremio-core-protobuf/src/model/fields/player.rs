@@ -1,9 +1,16 @@
-use stremio_core::models::ctx::Ctx;
-use stremio_core::models::player::{Player, Selected, VideoParams};
-use stremio_core::types::streams::{AudioTrack, StreamItemState, SubtitleTrack};
+use stremio_core::{
+    models::{
+        ctx::Ctx,
+        player::{Player, Selected, VideoParams},
+        streaming_server::StreamingServer,
+    },
+    types::streams::{AudioTrack, StreamItemState, SubtitleTrack},
+};
 
-use crate::bridge::{FromProtobuf, ToProtobuf};
-use crate::protobuf::stremio::core::models;
+use crate::{
+    bridge::{FromProtobuf, ToProtobuf},
+    protobuf::stremio::core::models,
+};
 
 impl FromProtobuf<Selected> for models::player::Selected {
     fn from_protobuf(&self) -> Selected {
@@ -139,22 +146,35 @@ impl ToProtobuf<models::player::Selected, Ctx> for Selected {
     }
 }
 
-impl ToProtobuf<models::Player, Ctx> for Player {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, ctx: &Ctx) -> models::Player {
+impl ToProtobuf<models::Player, (Ctx, StreamingServer)> for Player {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        (ctx, streaming_server): &(Ctx, StreamingServer),
+    ) -> models::Player {
         models::Player {
             selected: self.selected.to_protobuf::<E>(ctx),
             video_params: self.video_params.to_protobuf::<E>(&()),
             meta_item: self.meta_item.as_ref().to_protobuf::<E>(&(
                 ctx,
+                streaming_server,
                 self.library_item.as_ref(),
                 self.watched.as_ref(),
             )),
             subtitles: self.subtitles.to_protobuf::<E>(ctx),
-            next_video: self.next_video.to_protobuf::<E>(&(
-                self.library_item.as_ref(),
-                self.watched.as_ref(),
-                None,
-            )),
+            next_video: self
+                .selected
+                .as_ref()
+                .and_then(|selected| selected.meta_request.as_ref())
+                .and_then(|meta_request| {
+                    self.next_video.to_protobuf::<E>(&(
+                        ctx,
+                        streaming_server.base_url.as_ref(),
+                        self.library_item.as_ref(),
+                        self.watched.as_ref(),
+                        None,
+                        meta_request,
+                    ))
+                }),
             series_info: self.series_info.to_protobuf::<E>(&()),
             library_item: self.library_item.to_protobuf::<E>(&(ctx, None)),
             stream_state: self.stream_state.to_protobuf::<E>(&()),

@@ -1,12 +1,18 @@
 use boolinator::Boolinator;
-use stremio_core::deep_links::MetaItemDeepLinks;
+
+use stremio_core::deep_links::{MetaItemDeepLinks, VideoDeepLinks};
 use stremio_core::models::ctx::Ctx;
-use stremio_core::models::meta_details::{MetaDetails, Selected};
+use stremio_core::models::{
+    meta_details::{MetaDetails, Selected},
+    streaming_server::StreamingServer,
+};
 use stremio_core::runtime::Env;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::library::LibraryItem;
 use stremio_core::types::resource::{MetaItem, SeriesInfo, Video};
 use stremio_core::types::watched_bitfield::WatchedBitField;
+
+use url::Url;
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::{models, types};
@@ -53,18 +59,25 @@ impl
     ToProtobuf<
         types::Video,
         (
+            &Ctx,
+            Option<&Url>,
+            // &StreamingServer,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
             Option<&String>,
+            &ResourceRequest,
         ),
     > for Video
 {
     fn to_protobuf<E: Env + 'static>(
         &self,
-        (library_item, watched, addon_name): &(
+        (ctx, streaming_server_url, library_item, watched, addon_name, request): &(
+            &Ctx,
+            Option<&Url>,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
             Option<&String>,
+            &ResourceRequest,
         ),
     ) -> types::Video {
         types::Video {
@@ -88,6 +101,23 @@ impl
                 .and_then(|library_item| library_item.state.video_id.to_owned())
                 .map(|current_video_id| current_video_id == self.id)
                 .unwrap_or_default(),
+            progress: library_item.and_then(|library_item| {
+                ctx.library
+                    .items
+                    .get(&library_item.id)
+                    .filter(|library_item| Some(self.id.to_owned()) == library_item.state.video_id)
+                    .map(|library_item| library_item.progress())
+            }),
+            // scheduled: meta_item.preview.behavior_hints.has_scheduled_videos,
+            deep_links: VideoDeepLinks::from((
+                self,
+                *request,
+                // necessary because Core doesn't use the
+                // preferred `Option<&Url>` format
+                &streaming_server_url.map(Clone::clone),
+                &ctx.profile.settings,
+            ))
+            .to_protobuf::<E>(&()),
         }
     }
 }
@@ -109,10 +139,32 @@ impl FromProtobuf<Video> for types::Video {
     }
 }
 
+impl ToProtobuf<types::VideoDeepLinks, ()> for VideoDeepLinks {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> types::VideoDeepLinks {
+        types::VideoDeepLinks {
+            meta_details_videos: self.meta_details_videos.clone(),
+            meta_details_streams: self.meta_details_streams.clone(),
+            player: self.player.clone(),
+            external_player: types::video_deep_links::ExternalPlayerLink {
+                download: self
+                    .external_player
+                    .as_ref()
+                    .and_then(|ep| ep.download.clone()),
+                streaming: self
+                    .external_player
+                    .as_ref()
+                    .and_then(|ep| ep.streaming.clone()),
+            },
+        }
+    }
+}
+
 impl
     ToProtobuf<
         types::MetaItem,
         (
+            &Ctx,
+            &StreamingServer,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
             Option<&String>,
@@ -122,7 +174,9 @@ impl
 {
     fn to_protobuf<E: Env + 'static>(
         &self,
-        (library_item, watched, addon_name, meta_request): &(
+        (ctx, streaming_server, library_item, watched, addon_name, meta_request): &(
+            &Ctx,
+            &StreamingServer,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
             Option<&String>,
@@ -146,9 +200,15 @@ impl
                 .preview
                 .trailer_streams
                 .to_protobuf::<E>(&(None, None, None, None)),
-            videos: self
-                .videos
-                .to_protobuf::<E>(&(*library_item, *watched, *addon_name)),
+            videos: self.videos.to_protobuf::<E>(&(
+                *ctx,
+                streaming_server.base_url.as_ref(),
+                *library_item,
+                *watched,
+                *addon_name,
+                *meta_request,
+            )),
+
             behavior_hints: self.preview.behavior_hints.to_protobuf::<E>(&()),
             deep_links: MetaItemDeepLinks::from((self, *meta_request)).to_protobuf::<E>(&()),
             progress: library_item.and_then(|item| {
@@ -166,8 +226,11 @@ impl
     }
 }
 
-impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
-    fn to_protobuf<E: Env + 'static>(&self, ctx: &Ctx) -> models::MetaDetails {
+impl ToProtobuf<models::MetaDetails, (&Ctx, &StreamingServer)> for MetaDetails {
+    fn to_protobuf<E: Env + 'static>(
+        &self,
+        (ctx, streaming_server): &(&Ctx, &StreamingServer),
+    ) -> models::MetaDetails {
         let meta_item = self
             .meta_items
             .iter()
@@ -226,6 +289,7 @@ impl ToProtobuf<models::MetaDetails, Ctx> for MetaDetails {
             title,
             meta_item: meta_item.to_protobuf::<E>(&(
                 ctx,
+                streaming_server,
                 self.library_item.as_ref(),
                 self.watched.as_ref(),
             )),
