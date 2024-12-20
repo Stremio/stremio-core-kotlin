@@ -33,8 +33,6 @@ message Video {
 message VideoDeepLinks {
   required string meta_details_videos = 1;
   required string meta_details_streams = 2;
-  // pub player: Option<String>,
-  // pub external_player: Option<ExternalPlayerLink>,
   optional string player = 3;
   required ExternalPlayerLink external_player = 4;
 
