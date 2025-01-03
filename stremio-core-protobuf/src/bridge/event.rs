@@ -77,6 +77,11 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     uid: uid.clone(),
                 })
             }
+            Event::UserAccountDeleted { uid } => {
+                runtime::event::Type::UserAccountDeleted(runtime::event::UserAccountDeleted {
+                    uid: uid.clone(),
+                })
+            }
             Event::SessionDeleted { auth_key } => {
                 runtime::event::Type::SessionDeleted(runtime::event::SessionDeleted {
                     auth_key: auth_key.0.to_owned(),
