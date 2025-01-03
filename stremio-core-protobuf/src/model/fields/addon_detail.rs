@@ -2,10 +2,11 @@ use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::models;
 use stremio_core::models::addon_details::{AddonDetails, Selected};
 use stremio_core::models::ctx::Ctx;
+use url::Url;
 
 impl FromProtobuf<Selected> for models::addon_details::Selected {
     fn from_protobuf(&self) -> Selected {
-        let transport_url = self.transport_url.from_protobuf();
+        let transport_url: Url = self.transport_url.from_protobuf();
 
         Selected {
             transport_url: if transport_url.scheme() == "stremio" {

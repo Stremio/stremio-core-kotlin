@@ -26,6 +26,9 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Ctx(ActionCtx::Authenticate(auth_request.from_protobuf()))
                 }
                 Some(action_ctx::Args::Logout(_args)) => Action::Ctx(ActionCtx::Logout),
+                Some(action_ctx::Args::DeleteAccount(password)) => {
+                    Action::Ctx(ActionCtx::DeleteAccount(password.from_protobuf()))
+                }
                 Some(action_ctx::Args::InstallAddon(descriptor)) => {
                     Action::Ctx(ActionCtx::InstallAddon(descriptor.from_protobuf()))
                 }

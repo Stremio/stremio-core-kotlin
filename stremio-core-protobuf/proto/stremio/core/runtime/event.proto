@@ -26,30 +26,31 @@ message Event {
     UserAddonsLocked user_addons_locked = 15;
     UserLibraryMissing user_library_missing = 16;
     UserLoggedOut user_logged_out = 17;
-    SessionDeleted session_deleted = 18;
-    TraktAddonFetched trakt_addon_fetched = 19;
-    TraktLoggedOut trakt_logged_out = 20;
-    AddonInstalled addon_installed = 21;
-    AddonUpgraded addon_upgraded = 22;
-    AddonUninstalled addon_uninstalled = 23;
-    SettingsUpdated settings_updated = 24;
-    LibraryItemAdded library_item_added = 25;
-    LibraryItemRemoved library_item_removed = 26;
-    LibraryItemRewinded library_item_rewinded = 27;
-    LibraryItemNotificationsToggled library_item_notifications_toggled = 28;
-    LibraryItemMarkedAsWatched library_item_marked_as_watched = 29;
-    NotificationsDismissed notifications_dismissed = 30;
-    PlayerPlaying player_playing = 31;
-    PlayerStopped player_stopped = 32;
-    PlayerNextVideo player_next_video = 33;
-    PlayerEnded player_ended = 34;
-    TraktPlaying trakt_playing = 35;
-    TraktPaused trakt_paused = 36;
-    MagnetParsed magnet_parsed = 37;
-    TorrentParsed torrent_parsed = 38;
-    PlayingOnDevice playing_on_device = 39;
-    StreamingServerUrlsBucketChanged streaming_server_urls_bucket_changed = 40;
-    StreamingServerUrlsPushedToStorage streaming_server_urls_pushed_to_storage = 41;
+    UserAccountDeleted user_account_deleted = 18;
+    SessionDeleted session_deleted = 19;
+    TraktAddonFetched trakt_addon_fetched = 20;
+    TraktLoggedOut trakt_logged_out = 21;
+    AddonInstalled addon_installed = 22;
+    AddonUpgraded addon_upgraded = 23;
+    AddonUninstalled addon_uninstalled = 24;
+    SettingsUpdated settings_updated = 25;
+    LibraryItemAdded library_item_added = 26;
+    LibraryItemRemoved library_item_removed = 27;
+    LibraryItemRewinded library_item_rewinded = 28;
+    LibraryItemNotificationsToggled library_item_notifications_toggled = 29;
+    LibraryItemMarkedAsWatched library_item_marked_as_watched = 30;
+    NotificationsDismissed notifications_dismissed = 31;
+    PlayerPlaying player_playing = 32;
+    PlayerStopped player_stopped = 33;
+    PlayerNextVideo player_next_video = 34;
+    PlayerEnded player_ended = 35;
+    TraktPlaying trakt_playing = 36;
+    TraktPaused trakt_paused = 37;
+    MagnetParsed magnet_parsed = 38;
+    TorrentParsed torrent_parsed = 39;
+    PlayingOnDevice playing_on_device = 40;
+    StreamingServerUrlsBucketChanged streaming_server_urls_bucket_changed = 41;
+    StreamingServerUrlsPushedToStorage streaming_server_urls_pushed_to_storage = 42;
     Error error = 100;
   }
 
@@ -103,6 +104,9 @@ message Event {
     required bool library_missing = 1;
   }
   message UserLoggedOut {
+    optional string uid = 1;
+  }
+  message UserAccountDeleted {
     optional string uid = 1;
   }
   message SessionDeleted {
