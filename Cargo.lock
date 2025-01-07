@@ -2447,7 +2447,7 @@ dependencies = [
 
 [[package]]
 name = "stremio-core-kotlin"
-version = "1.5.0"
+version = "1.5.1"
 dependencies = [
  "Inflector",
  "auto_impl",
