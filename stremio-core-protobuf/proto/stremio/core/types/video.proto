@@ -18,9 +18,26 @@ message Video {
   required bool upcoming = 8;
   required bool watched = 9;
   required bool current_video = 10;
+  // Watch progress percentage
+  optional double progress = 11;
+  // scheduled: bool,
+
+  required VideoDeepLinks deep_links = 12;
 
   message SeriesInfo {
     required int64 season = 1;
     required int64 episode = 2;
+  }
+}
+
+message VideoDeepLinks {
+  required string meta_details_videos = 1;
+  required string meta_details_streams = 2;
+  optional string player = 3;
+  required ExternalPlayerLink external_player = 4;
+
+  message ExternalPlayerLink {
+    optional string download = 1;
+    optional string streaming = 2;
   }
 }

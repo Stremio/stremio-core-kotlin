@@ -6,6 +6,7 @@ use stremio_core::{
     models::{
         common::{DescriptorLoadable, ResourceLoadable},
         ctx::Ctx,
+        streaming_server::StreamingServer,
     },
     types::{
         addon::{Descriptor, ResourceRequest},
@@ -60,18 +61,33 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
     }
 }
 
-impl ToProtobuf<models::LoadableMetaItem, (&Ctx, Option<&LibraryItem>, Option<&WatchedBitField>)>
-    for &ResourceLoadable<MetaItem>
+impl
+    ToProtobuf<
+        models::LoadableMetaItem,
+        (
+            &Ctx,
+            &StreamingServer,
+            Option<&LibraryItem>,
+            Option<&WatchedBitField>,
+        ),
+    > for &ResourceLoadable<MetaItem>
 {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
-        (ctx, library_item, watched): &(&Ctx, Option<&LibraryItem>, Option<&WatchedBitField>),
+        (ctx, streming_server, library_item, watched): &(
+            &Ctx,
+            &StreamingServer,
+            Option<&LibraryItem>,
+            Option<&WatchedBitField>,
+        ),
     ) -> models::LoadableMetaItem {
         let addon_name = get_addon_name(ctx, &self.request.base);
         models::LoadableMetaItem {
             title: addon_name.to_string(),
             request: self.request.to_protobuf::<E>(&()),
             content: self.content.to_protobuf::<E>(&(
+                *ctx,
+                *streming_server,
                 *library_item,
                 *watched,
                 Some(&addon_name),

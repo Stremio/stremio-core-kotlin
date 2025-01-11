@@ -7,7 +7,7 @@ use stremio_core::{
         common::{Loadable, ResourceError},
         ctx::{Ctx, CtxError},
         link::LinkError,
-        streaming_server::PlaybackDevice,
+        streaming_server::{PlaybackDevice, StreamingServer},
     },
     runtime::EnvError,
     types::{
@@ -53,6 +53,8 @@ impl
     ToProtobuf<
         models::loadable_meta_item::Content,
         (
+            &Ctx,
+            &StreamingServer,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
             Option<&String>,
@@ -62,7 +64,9 @@ impl
 {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
-        (library_item, watched, addon_name, meta_request): &(
+        (ctx, streaming_server, library_item, watched, addon_name, meta_request): &(
+            &Ctx,
+            &StreamingServer,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
             Option<&String>,
@@ -70,9 +74,16 @@ impl
         ),
     ) -> models::loadable_meta_item::Content {
         match &self {
-            Loadable::Ready(ready) => models::loadable_meta_item::Content::Ready(
-                ready.to_protobuf::<E>(&(*library_item, *watched, *addon_name, *meta_request)),
-            ),
+            Loadable::Ready(ready) => {
+                models::loadable_meta_item::Content::Ready(ready.to_protobuf::<E>(&(
+                    *ctx,
+                    *streaming_server,
+                    *library_item,
+                    *watched,
+                    *addon_name,
+                    *meta_request,
+                )))
+            }
             Loadable::Err(error) => models::loadable_meta_item::Content::Error(models::Error {
                 message: error.to_string(),
             }),
