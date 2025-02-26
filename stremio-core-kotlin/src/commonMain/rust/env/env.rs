@@ -20,6 +20,7 @@ use stremio_core::{
     analytics::Analytics,
     models::{ctx::Ctx, streaming_server::StreamingServer},
     runtime::{msg::Event, Env, EnvError, EnvFuture, EnvFutureExt, TryEnvFuture},
+    types::api::AuthRequest,
 };
 
 use crate::{
@@ -113,35 +114,63 @@ impl AndroidEnv {
     }
     pub fn emit_to_analytics(event: &AndroidEvent, model: &AndroidModel, path: &str) {
         let (name, data) = match event {
-            AndroidEvent::CoreEvent(Event::PlayerPlaying { load_time, context }) => (
-                "playerPlaying".to_owned(),
-                json!({
-                    "loadTime": load_time,
-                    "player": context
-                }),
-            ),
-            AndroidEvent::CoreEvent(Event::PlayerStopped { context }) => {
-                ("playerStopped".to_owned(), json!({ "player": context }))
-            }
-            AndroidEvent::CoreEvent(Event::PlayerEnded {
-                context,
-                is_binge_enabled,
-                is_playing_next_video,
-            }) => (
-                "playerEnded".to_owned(),
-                json!({
-                   "player": context,
-                   "isBingeEnabled": is_binge_enabled,
-                   "isPlayingNextVideo": is_playing_next_video
-                }),
-            ),
-            AndroidEvent::CoreEvent(Event::TraktPlaying { context }) => {
-                ("traktPlaying".to_owned(), json!({ "player": context }))
-            }
-            AndroidEvent::CoreEvent(Event::TraktPaused { context }) => {
-                ("traktPaused".to_owned(), json!({ "player": context }))
-            }
-            _ => return,
+            AndroidEvent::CoreEvent(core_event) => match core_event {
+                Event::UserAuthenticated { auth_request } => (
+                    "login".to_owned(),
+                    json!({
+                        "type": match auth_request {
+                            AuthRequest::Login { facebook, .. } if *facebook => "facebook",
+                            AuthRequest::Login { .. } => "login",
+                            AuthRequest::Facebook { .. } => "authWithFacebook",
+                            AuthRequest::LoginWithToken { .. } => "loginWithToken",
+                            AuthRequest::Register { .. } => "register",
+                        },
+                    }),
+                ),
+                Event::AddonInstalled { transport_url, id } => (
+                    "installAddon".to_owned(),
+                    json!({
+                        "addonTransportUrl": transport_url,
+                        "addonID": id
+                    }),
+                ),
+                Event::AddonUninstalled { transport_url, id } => (
+                    "removeAddon".to_owned(),
+                    json!({
+                        "addonTransportUrl": transport_url,
+                        "addonID": id
+                    }),
+                ),
+                Event::PlayerPlaying { load_time, context } => (
+                    "playerPlaying".to_owned(),
+                    json!({
+                        "loadTime": load_time,
+                        "player": context
+                    }),
+                ),
+                Event::PlayerStopped { context } => {
+                    ("playerStopped".to_owned(), json!({ "player": context }))
+                }
+                Event::PlayerEnded {
+                    context,
+                    is_binge_enabled,
+                    is_playing_next_video,
+                } => (
+                    "playerEnded".to_owned(),
+                    json!({
+                       "player": context,
+                       "isBingeEnabled": is_binge_enabled,
+                       "isPlayingNextVideo": is_playing_next_video
+                    }),
+                ),
+                Event::TraktPlaying { context } => {
+                    ("traktPlaying".to_owned(), json!({ "player": context }))
+                }
+                Event::TraktPaused { context } => {
+                    ("traktPaused".to_owned(), json!({ "player": context }))
+                }
+                _ => return,
+            },
         };
         ANALYTICS.emit(name, data, &model.ctx, &model.streaming_server, path);
     }

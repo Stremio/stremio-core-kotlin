@@ -166,7 +166,7 @@ impl AndroidModel {
                 .encode_to_vec(),
             AndroidModelField::MetaDetails => self
                 .meta_details
-                .to_protobuf::<AndroidEnv>(&self.ctx)
+                .to_protobuf::<AndroidEnv>(&(&self.ctx, &self.streaming_server))
                 .encode_to_vec(),
             AndroidModelField::AddonDetails => self
                 .addon_details
@@ -178,7 +178,7 @@ impl AndroidModel {
                 .encode_to_vec(),
             AndroidModelField::Player => self
                 .player
-                .to_protobuf::<AndroidEnv>(&self.ctx)
+                .to_protobuf::<AndroidEnv>(&(&self.ctx, &self.streaming_server))
                 .encode_to_vec(),
 
             // guard against new fields  being added to the CSharp model
