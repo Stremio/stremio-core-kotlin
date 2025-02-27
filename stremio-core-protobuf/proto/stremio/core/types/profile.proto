@@ -40,6 +40,7 @@ message Profile {
     required bool surround_sound = 28;
     required bool send_crash_reports = 29;
     required bool server_in_foreground = 30;
+    required bool quit_on_close = 31;
   }
 
   enum FrameRateMatchingStrategy {

@@ -6,7 +6,7 @@ use std::{
 
 use chrono::{DateTime, Utc};
 use futures::Future;
-use http::Request;
+use http::request::Request;
 use jni::{
     objects::{GlobalRef, JObject},
     JNIEnv,
@@ -179,7 +179,7 @@ impl AndroidEnv {
     }
     pub fn random_buffer(len: usize) -> Vec<u8> {
         let mut buffer = vec![0u8; len];
-        getrandom::getrandom(buffer.as_mut_slice()).expect("getrandom failed");
+        getrandom::fill(buffer.as_mut_slice()).expect("getrandom failed");
         buffer
     }
 }
