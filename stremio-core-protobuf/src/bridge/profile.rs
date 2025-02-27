@@ -98,6 +98,7 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             streaming_server_warning_dismissed: None,
             server_in_foreground: self.server_in_foreground,
             send_crash_reports: self.send_crash_reports,
+            quit_on_close: self.quit_on_close,
         }
     }
 }
@@ -210,6 +211,7 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             surround_sound: self.surround_sound,
             server_in_foreground: self.server_in_foreground,
             send_crash_reports: self.send_crash_reports,
+            quit_on_close: self.quit_on_close,
         }
     }
 }

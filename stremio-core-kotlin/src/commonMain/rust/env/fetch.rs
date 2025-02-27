@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use futures::{future, TryFutureExt};
 use http::{Method, Request};
-use http_cache_reqwest::{CACacheManager, Cache, CacheMode, HttpCache};
+use http_cache_reqwest::{CACacheManager, Cache, CacheMode, HttpCache, HttpCacheOptions};
 use once_cell::sync::OnceCell;
 use reqwest::{Body, Client};
 use reqwest_middleware::{ClientBuilder, ClientWithMiddleware};
@@ -41,9 +41,9 @@ pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Se
             .with(Cache(HttpCache::<CACacheManager> {
                 mode: CacheMode::Default,
                 manager: CACacheManager {
-                    path: env::temp_dir().display().to_string() + "/http-cacache",
+                    path: env::temp_dir().join("http-cacache"),
                 },
-                options: None,
+                options: HttpCacheOptions::default(),
             }))
             .build()
         })

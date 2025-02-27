@@ -294,7 +294,7 @@ impl ToProtobuf<models::MetaDetails, (&Ctx, &StreamingServer)> for MetaDetails {
                 self.watched.as_ref(),
             )),
             streams: streams.to_protobuf::<E>(&(ctx, meta_request)),
-            suggested_stream: self.suggested_stream.to_protobuf::<E>(&(ctx, meta_request)),
+            last_used_stream: self.last_used_stream.to_protobuf::<E>(&(ctx, meta_request)),
         }
     }
 }
