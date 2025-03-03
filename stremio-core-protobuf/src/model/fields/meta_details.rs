@@ -219,6 +219,7 @@ impl
                 }
             }),
             in_library: library_item.map(|item| !item.removed).unwrap_or_default(),
+            watched: library_item.map(|item| item.watched()).unwrap_or_default(),
             receive_notifications: library_item
                 .map(|item| !item.state.no_notif)
                 .unwrap_or_default(),

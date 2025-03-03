@@ -23,7 +23,8 @@ message MetaItemPreview {
   required MetaItemBehaviorHints behavior_hints = 15;
   required MetaItemDeepLinks deep_links = 16;
   required bool in_library = 17;
-  required bool in_cinema = 18;
+  required bool watched = 18;
+  required bool in_cinema = 19;
 }
 
 message LinkPreview {
