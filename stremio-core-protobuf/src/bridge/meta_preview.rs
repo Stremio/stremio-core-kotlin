@@ -90,6 +90,12 @@ impl ToProtobuf<types::MetaItemPreview, (&Ctx, &ResourceRequest)> for MetaItemPr
                 .get(&self.id)
                 .map(|library_item| !library_item.removed)
                 .unwrap_or_default(),
+            watched: ctx
+                .library
+                .items
+                .get(&self.id)
+                .map(|library_item| library_item.watched())
+                .unwrap_or_default(),
             in_cinema: self
                 .released
                 .filter(|_released| self.r#type == "movie")
