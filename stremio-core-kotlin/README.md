@@ -32,6 +32,6 @@ allprojects {
 
 ```gradle
 dependencies {
-    implementation 'com.github.Stremio:stremio-core-kotlin:1.6.0'
+    implementation 'com.github.Stremio:stremio-core-kotlin:1.6.1'
 }
 ```
