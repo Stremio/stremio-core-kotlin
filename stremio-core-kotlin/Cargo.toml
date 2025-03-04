@@ -1,6 +1,6 @@
 [package]
 name = "stremio-core-kotlin"
-version = "1.5.1"
+version = "1.6.0"
 authors = ["Smart Code OOD"]
 edition = "2021"
 

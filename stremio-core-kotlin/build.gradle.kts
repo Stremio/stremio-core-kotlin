@@ -1,7 +1,7 @@
 import com.google.protobuf.gradle.*
 
 group = "com.github.Stremio"
-version = "1.5.1"
+version = "1.6.0"
 
 allprojects {
   repositories {
