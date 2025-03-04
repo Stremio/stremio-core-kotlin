@@ -145,6 +145,12 @@ impl FromProtobuf<Action> for runtime::Action {
                             video_state.is_watched,
                         ))
                     }
+                    Some(action_meta_details::Args::MarkSeasonAsWatched(args)) => {
+                        Action::MetaDetails(ActionMetaDetails::MarkSeasonAsWatched(
+                            args.season,
+                            args.watched,
+                        ))
+                    }
                     None => unimplemented!("ActionMetaDetails missing"),
                 }
             }
