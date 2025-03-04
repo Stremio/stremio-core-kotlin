@@ -228,6 +228,12 @@ impl FromProtobuf<Action> for runtime::Action {
                     Action::Player(ActionPlayer::NextVideo {})
                 }
                 Some(action_player::Args::Ended(_args)) => Action::Player(ActionPlayer::Ended {}),
+                Some(action_player::Args::MarkVideoAsWatched(args)) => Action::Player(
+                    ActionPlayer::MarkVideoAsWatched(args.video.from_protobuf(), args.watched),
+                ),
+                Some(action_player::Args::MarkSeasonAsWatched(args)) => {
+                    Action::Player(ActionPlayer::MarkSeasonAsWatched(args.season, args.watched))
+                }
                 None => unimplemented!("ActionLink missing"),
             },
             Some(runtime::action::Type::Load(action_load)) => match &action_load.args {
