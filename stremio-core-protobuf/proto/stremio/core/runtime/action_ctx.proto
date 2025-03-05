@@ -35,6 +35,10 @@ message ActionCtx {
     google.protobuf.Empty pull_notifications = 21;
     google.protobuf.Empty get_events = 22;
     string dismiss_event = 23;
+    // Add a server URL to the list of available streaming servers
+    string add_server_url = 24;
+    // Delete a server URL from the list of available streaming servers
+    string delete_server_url = 25;
   }
 
   message LibraryItemToggle {

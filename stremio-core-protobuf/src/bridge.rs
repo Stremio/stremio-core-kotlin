@@ -28,6 +28,7 @@ mod resource_request;
 mod stream;
 mod string;
 mod subtitle;
+mod streaming_server_urls;
 
 pub trait ToProtobuf<T, A = ()> {
     fn to_protobuf<E: Env + 'static>(&self, args: &A) -> T;

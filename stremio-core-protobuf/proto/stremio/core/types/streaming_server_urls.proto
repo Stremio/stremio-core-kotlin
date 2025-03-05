@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package stremio.core.types;
+
+option java_package = "com.stremio.core.types.streaming_server_urls";
+import "google/protobuf/timestamp.proto";
+
+
+message StreamingServerUrlItem {
+    required string url = 1;
+    required google.protobuf.Timestamp mtime = 2;
+}
