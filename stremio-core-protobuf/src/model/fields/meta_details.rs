@@ -235,18 +235,18 @@ impl ToProtobuf<models::MetaDetails, (&Ctx, &StreamingServer)> for MetaDetails {
         let meta_item = self
             .meta_items
             .iter()
-            .find(|meta_item| meta_item.content.as_ref().map_or(false, |x| x.is_ready()))
+            .find(|meta_item| meta_item.content.as_ref().is_some_and(|x| x.is_ready()))
             .or_else(|| {
                 if self
                     .meta_items
                     .iter()
-                    .all(|meta_item| meta_item.content.as_ref().map_or(false, |x| x.is_err()))
+                    .all(|meta_item| meta_item.content.as_ref().is_some_and(|x| x.is_err()))
                 {
                     self.meta_items.first()
                 } else {
                     self.meta_items
                         .iter()
-                        .find(|catalog| catalog.content.as_ref().map_or(false, |x| x.is_loading()))
+                        .find(|catalog| catalog.content.as_ref().is_some_and(|x| x.is_loading()))
                 }
             });
         let streams = if self.meta_streams.is_empty() {
