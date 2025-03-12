@@ -18,8 +18,8 @@ message Profile {
     required bool play_in_background = 4;
     required bool hardware_decoding = 6;
     required bool audio_passthrough = 7;
-    required string audio_language = 8;
-    required string subtitles_language = 9;
+    optional string audio_language = 8;
+    optional string subtitles_language = 9;
     required int32 subtitles_size = 10;
     required string subtitles_font = 11;
     required bool subtitles_bold = 12;
