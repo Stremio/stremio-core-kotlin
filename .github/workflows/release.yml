@@ -34,7 +34,7 @@ jobs:
 
       # use MSRV
       - name: Set Rust version to MSRV 1.77
-        uses: dtolnay/rust-toolchain@1.77
+        uses: dtolnay/rust-toolchain@1.100
         with:
           # Add armv7, aarch64, i686, x86_64 targets
           targets: armv7-linux-androideabi, aarch64-linux-android, i686-linux-android, x86_64-linux-android
