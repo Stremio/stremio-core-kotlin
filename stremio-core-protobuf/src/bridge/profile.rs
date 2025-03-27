@@ -59,6 +59,7 @@ impl FromProtobuf<Settings> for types::profile::Settings {
     fn from_protobuf(&self) -> Settings {
         Settings {
             interface_language: self.interface_language.to_string(),
+            hide_spoilers: self.hide_spoilers,
             streaming_server_url: self.streaming_server_url.from_protobuf(),
             player_type: self.player_type.clone(),
             binge_watching: self.binge_watching,
@@ -183,6 +184,7 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
     ) -> types::profile::Settings {
         types::profile::Settings {
             interface_language: self.interface_language.to_string(),
+            hide_spoilers: self.hide_spoilers,
             streaming_server_url: self.streaming_server_url.to_string(),
             binge_watching: self.binge_watching,
             play_in_background: self.play_in_background,

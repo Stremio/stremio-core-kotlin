@@ -13,9 +13,10 @@ message Profile {
 
   message Settings {
     required string interface_language = 1;
-    required string streaming_server_url = 2;
-    required bool binge_watching = 3;
-    required bool play_in_background = 4;
+    required  bool hide_spoilers = 2;
+    required string streaming_server_url = 3;
+    required bool binge_watching = 4;
+    required bool play_in_background = 5;
     required bool hardware_decoding = 6;
     required bool audio_passthrough = 7;
     optional string audio_language = 8;
