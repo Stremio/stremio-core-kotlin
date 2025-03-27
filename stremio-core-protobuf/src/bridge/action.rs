@@ -6,17 +6,34 @@ use stremio_core::runtime::{
         ActionLibraryWithFilters, ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer,
         ActionStreamingServer, CreateTorrentArgs, PlayOnDeviceArgs,
     },
-    RuntimeAction,
+    EnvError, RuntimeAction,
 };
 
 use crate::{
-    bridge::FromProtobuf,
+    bridge::{FromProtobuf, TryFromProtobuf},
     protobuf::stremio::core::runtime::{
         self, action_catalog_with_filters, action_catalogs_with_extra, action_ctx,
         action_library_by_type, action_library_with_filters, action_link, action_load,
         action_meta_details, action_player, action_streaming_server, create_torrent_args, Field,
     },
 };
+
+impl TryFromProtobuf<Action> for runtime::Action {
+    type Error = EnvError;
+
+    // overrides only 1 of the actions to test the impl
+    fn try_from_protobuf(&self) -> Result<Action, Self::Error> {
+        match &self.r#type {
+            Some(runtime::action::Type::Ctx(action_ctx)) => match &action_ctx.args {
+                Some(action_ctx::Args::AddToLibrary(meta_item_preview)) => meta_item_preview
+                    .try_from_protobuf()
+                    .map(|x| Action::Ctx(ActionCtx::AddToLibrary(x))),
+                _ => Ok(self.from_protobuf()),
+            },
+            _ => Ok(self.from_protobuf()),
+        }
+    }
+}
 
 impl FromProtobuf<Action> for runtime::Action {
     fn from_protobuf(&self) -> Action {
@@ -282,6 +299,32 @@ impl FromProtobuf<Action> for runtime::Action {
             Some(runtime::action::Type::Unload(_args)) => Action::Unload,
             None => unimplemented!("Action missing"),
         }
+    }
+}
+
+impl<E, M, F> TryFromProtobuf<RuntimeAction<E, M>> for runtime::RuntimeAction
+where
+    E: stremio_core::runtime::Env + 'static,
+    M: stremio_core::runtime::Model<E, Field = F>,
+    F: From<Field>,
+{
+    type Error = EnvError;
+
+    fn try_from_protobuf(&self) -> Result<RuntimeAction<E, M>, Self::Error> {
+        let field = self
+            .field
+            .map(|value| {
+                Field::try_from(value).map_err(|unknown_enum_value: prost::UnknownEnumValue| {
+                    EnvError::Other(unknown_enum_value.to_string())
+                })
+            })
+            .transpose()?
+            .map(Into::into);
+
+        Ok(RuntimeAction {
+            field,
+            action: self.action.try_from_protobuf()?,
+        })
     }
 }
 
