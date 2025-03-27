@@ -6,10 +6,12 @@ option java_package = "com.stremio.core.models";
 
 import "stremio/core/models/loadable.proto";
 import "stremio/core/types/profile.proto";
+import "stremio/core/types/streaming_server_urls.proto";
 
 message Ctx {
   required stremio.core.types.Profile profile = 1;
   required Events events = 2;
+  repeated stremio.core.types.StreamingServerUrlItem streaming_urls = 3;
 }
 
 message Events {

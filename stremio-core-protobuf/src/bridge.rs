@@ -26,6 +26,7 @@ mod resource_loadable;
 mod resource_path;
 mod resource_request;
 mod stream;
+mod streaming_server_urls;
 mod string;
 mod subtitle;
 

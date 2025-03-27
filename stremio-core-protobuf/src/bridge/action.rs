@@ -88,6 +88,12 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_ctx::Args::DismissEvent(id)) => {
                     Action::Ctx(ActionCtx::DismissEvent(id.to_owned()))
                 }
+                Some(action_ctx::Args::AddServerUrl(url)) => {
+                    Action::Ctx(ActionCtx::AddServerUrl(url.from_protobuf()))
+                }
+                Some(action_ctx::Args::DeleteServerUrl(url)) => {
+                    Action::Ctx(ActionCtx::DeleteServerUrl(url.from_protobuf()))
+                }
                 None => unimplemented!("ActionCtx missing"),
             },
             Some(runtime::action::Type::Link(action_link)) => match &action_link.args {

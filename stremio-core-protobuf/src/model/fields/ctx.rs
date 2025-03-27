@@ -7,6 +7,7 @@ impl ToProtobuf<models::Ctx, ()> for Ctx {
         models::Ctx {
             profile: self.profile.to_protobuf::<E>(&()),
             events: self.events.to_protobuf::<E>(&()),
+            streaming_urls: self.streaming_server_urls.to_protobuf::<E>(&()),
         }
     }
 }
