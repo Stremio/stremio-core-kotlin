@@ -59,6 +59,7 @@ impl FromProtobuf<Settings> for types::profile::Settings {
     fn from_protobuf(&self) -> Settings {
         Settings {
             interface_language: self.interface_language.to_string(),
+            hide_spoilers: self.hide_spoilers,
             streaming_server_url: self.streaming_server_url.from_protobuf(),
             player_type: self.player_type.clone(),
             binge_watching: self.binge_watching,
@@ -76,9 +77,9 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             ))
             .unwrap_or(u32::MAX),
             audio_passthrough: self.audio_passthrough,
-            audio_language: Some(self.audio_language.to_string()),
+            audio_language: self.audio_language.clone(),
             secondary_audio_language: self.secondary_audio_language.clone(),
-            subtitles_language: Some(self.subtitles_language.to_string()),
+            subtitles_language: self.subtitles_language.clone(),
             secondary_subtitles_language: self.secondary_subtitles_language.clone(),
             subtitles_size: u8::try_from(cmp::max(self.subtitles_size, 0)).unwrap_or(u8::MAX),
             subtitles_font: self.subtitles_font.to_string(),
@@ -183,13 +184,14 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
     ) -> types::profile::Settings {
         types::profile::Settings {
             interface_language: self.interface_language.to_string(),
+            hide_spoilers: self.hide_spoilers,
             streaming_server_url: self.streaming_server_url.to_string(),
             binge_watching: self.binge_watching,
             play_in_background: self.play_in_background,
             hardware_decoding: self.hardware_decoding,
             audio_passthrough: self.audio_passthrough,
-            audio_language: self.audio_language.clone().unwrap_or_default(),
-            subtitles_language: self.subtitles_language.clone().unwrap_or_default(),
+            audio_language: self.audio_language.clone(),
+            subtitles_language: self.subtitles_language.clone(),
             subtitles_size: self.subtitles_size as i32,
             subtitles_font: self.subtitles_font.to_string(),
             subtitles_bold: self.subtitles_bold,

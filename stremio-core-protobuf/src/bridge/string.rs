@@ -1,5 +1,5 @@
 use crate::bridge::{FromProtobuf, ToProtobuf};
-use stremio_core::types::profile::Password;
+use stremio_core::types::profile::{Password, UserId};
 use url::Url;
 
 impl FromProtobuf<Url> for String {
@@ -11,6 +11,11 @@ impl FromProtobuf<Url> for String {
 impl FromProtobuf<Password> for String {
     fn from_protobuf(&self) -> Password {
         Password(self.to_owned())
+    }
+}
+impl FromProtobuf<UserId> for String {
+    fn from_protobuf(&self) -> UserId {
+        UserId(self.to_owned())
     }
 }
 

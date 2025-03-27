@@ -18,6 +18,7 @@ env:
   # For stremio-core-android we use version 3.21
   # Check build.gradle.kts
   PROTOC_VERSION: '21.x'
+  RUST_VERSION: '1.77'
 
 jobs:
   build:
@@ -32,9 +33,10 @@ jobs:
         with:
           version: "${{ env.PROTOC_VERSION }}"
 
-      - name: Rust setup (1.77)
-        uses: dtolnay/rust-toolchain@1.77
+      - name: Rust setup (${{ env.RUST_VERSION }})
+        uses: dtolnay/rust-toolchain@master
         with:
+          toolchain: ${{ env.RUST_VERSION }}
           components: rustfmt, clippy
 
       - name: Rust cache
