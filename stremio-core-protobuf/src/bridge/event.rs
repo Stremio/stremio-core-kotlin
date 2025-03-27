@@ -12,7 +12,9 @@ impl ToProtobuf<runtime::Event, ()> for Event {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(&self, _args: &()) -> runtime::Event {
         let event = match self {
             Event::ProfilePushedToStorage { uid } => runtime::event::Type::ProfilePushedToStorage(
-                runtime::event::ProfilePushedToStorage { uid: uid.clone() },
+                runtime::event::ProfilePushedToStorage {
+                    uid: uid.clone().map(|uid| uid.0),
+                },
             ),
             Event::LibraryItemsPushedToStorage { ids } => {
                 runtime::event::Type::LibraryItemsPushedToStorage(
@@ -20,11 +22,15 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                 )
             }
             Event::StreamsPushedToStorage { uid } => runtime::event::Type::StreamsPushedToStorage(
-                runtime::event::StreamsPushedToStorage { uid: uid.clone() },
+                runtime::event::StreamsPushedToStorage {
+                    uid: uid.clone().map(|uid| uid.0),
+                },
             ),
             Event::SearchHistoryPushedToStorage { uid } => {
                 runtime::event::Type::SearchHistoryPushedToStorage(
-                    runtime::event::SearchHistoryPushedToStorage { uid: uid.clone() },
+                    runtime::event::SearchHistoryPushedToStorage {
+                        uid: uid.clone().map(|uid| uid.0),
+                    },
                 )
             }
             Event::NotificationsPushedToStorage { ids } => {
@@ -34,17 +40,19 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             }
             Event::DismissedEventsPushedToStorage { uid } => {
                 runtime::event::Type::DismissedEventsPushedToStorage(
-                    runtime::event::DismissedEventsPushedToStorage { uid: uid.clone() },
+                    runtime::event::DismissedEventsPushedToStorage {
+                        uid: uid.clone().map(|uid| uid.0),
+                    },
                 )
             }
             Event::UserPulledFromAPI { uid } => {
                 runtime::event::Type::UserPulledFromApi(runtime::event::UserPulledFromApi {
-                    uid: uid.clone(),
+                    uid: uid.clone().map(|uid| uid.0),
                 })
             }
             Event::UserPushedToAPI { uid } => {
                 runtime::event::Type::UserPushedToApi(runtime::event::UserPushedToApi {
-                    uid: uid.clone(),
+                    uid: uid.clone().map(|uid| uid.0),
                 })
             }
             Event::AddonsPulledFromAPI { transport_urls } => {
@@ -74,12 +82,12 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             }
             Event::UserLoggedOut { uid } => {
                 runtime::event::Type::UserLoggedOut(runtime::event::UserLoggedOut {
-                    uid: uid.clone(),
+                    uid: uid.clone().map(|uid| uid.0),
                 })
             }
             Event::UserAccountDeleted { uid } => {
                 runtime::event::Type::UserAccountDeleted(runtime::event::UserAccountDeleted {
-                    uid: uid.clone(),
+                    uid: uid.clone().map(|uid| uid.0),
                 })
             }
             Event::SessionDeleted { auth_key } => {
@@ -89,12 +97,12 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             }
             Event::TraktAddonFetched { uid } => {
                 runtime::event::Type::TraktAddonFetched(runtime::event::TraktAddonFetched {
-                    uid: uid.clone(),
+                    uid: uid.clone().map(|uid| uid.0),
                 })
             }
             Event::TraktLoggedOut { uid } => {
                 runtime::event::Type::TraktLoggedOut(runtime::event::TraktLoggedOut {
-                    uid: uid.clone(),
+                    uid: uid.clone().map(|uid| uid.0),
                 })
             }
             Event::AddonInstalled { transport_url, id } => {
@@ -149,7 +157,7 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             Event::LibrarySyncWithAPIPlanned { uid, plan } => {
                 runtime::event::Type::LibrarySyncWithApiPlanned(
                     runtime::event::LibrarySyncWithApiPlanned {
-                        uid: uid.clone(),
+                        uid: uid.clone().map(|uid| uid.0),
                         plan: plan.to_protobuf::<E>(&()),
                     },
                 )
@@ -205,14 +213,14 @@ impl ToProtobuf<runtime::Event, ()> for Event {
             Event::StreamingServerUrlsBucketChanged { uid } => {
                 runtime::event::Type::StreamingServerUrlsBucketChanged(
                     runtime::event::StreamingServerUrlsBucketChanged {
-                        uid: uid.to_owned(),
+                        uid: uid.clone().map(|uid| uid.0),
                     },
                 )
             }
             Event::StreamingServerUrlsPushedToStorage { uid } => {
                 runtime::event::Type::StreamingServerUrlsPushedToStorage(
                     runtime::event::StreamingServerUrlsPushedToStorage {
-                        uid: uid.to_owned(),
+                        uid: uid.clone().map(|uid| uid.0),
                     },
                 )
             }

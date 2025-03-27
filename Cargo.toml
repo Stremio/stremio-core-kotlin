@@ -49,6 +49,12 @@ futures = "0.3"
 tracing = { version = "0.1" }
 tracing-subscriber = { version = "0.3" }
 
+
+# A way to quickly test with local version of `core` crates
+# [patch.'https://github.com/Stremio/stremio-core']
+# stremio-core = { path = "../core" }
+# stremio-core-web = { path = "../core/stremio-core-web" }
+
 [profile.release]
 lto = true
 opt-level = 3
