@@ -8,6 +8,7 @@ env:
   # Make sure to keep this version in line with `.config/cargo.toml` file for
   # stremio-core-kotlin!
   NDK_VERSION: '27.2.12479018'
+  RUST_VERSION: '1.77'
 
 jobs:
   release:
@@ -33,9 +34,10 @@ jobs:
         run: yes | sdkmanager "ndk;${{ env.NDK_VERSION }}" >/dev/null
 
       # use MSRV
-      - name: Set Rust version to MSRV 1.77
-        uses: dtolnay/rust-toolchain@1.77
+      - name: Set Rust version to MSRV (${{ env.RUST_VERSION }})
+        uses: dtolnay/rust-toolchain@master
         with:
+          toolchain: ${{ env.RUST_VERSION }}
           # Add armv7, aarch64, i686, x86_64 targets
           targets: armv7-linux-androideabi, aarch64-linux-android, i686-linux-android, x86_64-linux-android
           components: rust-std
