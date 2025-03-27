@@ -182,6 +182,10 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
     }
 }
 
+/// # Panics
+///
+/// - Runtime is not initialized and successfully loaded
+/// - If the passed action is not valid
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_stremio_core_Core_dispatchNative(
     env: JNIEnv,
@@ -202,6 +206,50 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_dispatchNative(
         .as_ref()
         .expect("RUNTIME not initialized");
     runtime.dispatch(runtime_action);
+}
+
+/// # Returns
+///
+/// - JObject::null() on success
+/// - EnvError protobuf encoded to_jni_byte_array
+///
+/// # Panics
+///
+/// - Runtime is not initialized and successfully loaded
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_stremio_core_Core_dispatchNativeResult(
+    env: JNIEnv,
+    _class: JClass,
+    action_protobuf: jbyteArray,
+) -> jobject {
+    let result = move || -> Result<(), EnvError> {
+        let runtime_action = env
+            .convert_byte_array(action_protobuf)
+            .map_err(|err| EnvError::Other(err.to_string()))
+            .map(Cursor::new)
+            .and_then(|buf| {
+                runtime::RuntimeAction::decode(buf).map_err(|err| EnvError::Other(err.to_string()))
+            })
+            .map(|action| action.from_protobuf())?;
+
+        let runtime = RUNTIME.read().expect("RUNTIME read failed");
+        let runtime = runtime
+            .as_ref()
+            .expect("RUNTIME not initialized")
+            .as_ref()
+            .expect("RUNTIME not initialized");
+        runtime.dispatch(runtime_action);
+
+        Ok(())
+    };
+
+    match result() {
+        Ok(_) => JObject::null().into_inner(),
+        Err(error) => error
+            .to_protobuf::<AndroidEnv>(&())
+            .encode_to_vec()
+            .to_jni_byte_array(&env),
+    }
 }
 
 #[no_mangle]
