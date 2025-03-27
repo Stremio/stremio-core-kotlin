@@ -37,3 +37,10 @@ pub trait FromProtobuf<T> {
     #[allow(clippy::wrong_self_convention)]
     fn from_protobuf(&self) -> T;
 }
+
+pub trait TryFromProtobuf<T> {
+    type Error;
+
+    #[allow(clippy::wrong_self_convention)]
+    fn try_from_protobuf(&self) -> Result<T, Self::Error>;
+}
