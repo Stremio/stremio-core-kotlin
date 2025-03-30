@@ -1,15 +1,22 @@
 use stremio_core::{
+    deep_links::VideoDeepLinks,
     models::{
         ctx::Ctx,
         player::{Player, Selected, VideoParams},
         streaming_server::StreamingServer,
     },
-    types::streams::{AudioTrack, StreamItemState, SubtitleTrack},
+    runtime::Env,
+    types::{
+        addon::ResourceRequest,
+        resource::Video,
+        streams::{AudioTrack, StreamItemState, SubtitleTrack},
+    },
 };
+use url::Url;
 
 use crate::{
     bridge::{FromProtobuf, ToProtobuf},
-    protobuf::stremio::core::models,
+    protobuf::stremio::core::{models, types},
 };
 
 impl FromProtobuf<Selected> for models::player::Selected {
@@ -164,20 +171,52 @@ impl ToProtobuf<models::Player, (&Ctx, &StreamingServer)> for Player {
             next_video: self
                 .selected
                 .as_ref()
-                .and_then(|selected| selected.meta_request.as_ref())
-                .and_then(|meta_request| {
+                .and_then(|selected| {
+                    Some((
+                        selected.meta_request.as_ref()?,
+                        selected.stream_request.as_ref()?,
+                    ))
+                })
+                .and_then(|(meta_request, stream_request)| {
                     self.next_video.to_protobuf::<E>(&(
                         *ctx,
                         streaming_server.base_url.as_ref(),
-                        self.library_item.as_ref(),
-                        self.watched.as_ref(),
-                        None,
                         meta_request,
+                        stream_request,
                     ))
                 }),
             series_info: self.series_info.to_protobuf::<E>(&()),
             library_item: self.library_item.to_protobuf::<E>(&(*ctx, None)),
             stream_state: self.stream_state.to_protobuf::<E>(&()),
+        }
+    }
+}
+
+impl ToProtobuf<types::Video, (&Ctx, Option<&Url>, &ResourceRequest, &ResourceRequest)> for Video {
+    fn to_protobuf<E: Env + 'static>(
+        &self,
+        (ctx, streaming_server_url, meta_request, stream_request): &(
+            &Ctx,
+            Option<&Url>,
+            &ResourceRequest,
+            &ResourceRequest,
+        ),
+    ) -> types::Video {
+        types::Video {
+            id: self.id.to_string(),
+            title: self.title.to_string(),
+            released: self.released.to_protobuf::<E>(&()),
+            overview: self.overview.clone(),
+            thumbnail: self.thumbnail.clone(),
+            deep_links: VideoDeepLinks::from((
+                self,
+                *stream_request,
+                *meta_request,
+                &streaming_server_url.cloned(),
+                &ctx.profile.settings,
+            ))
+            .to_protobuf::<E>(&()),
+            ..Default::default()
         }
     }
 }
