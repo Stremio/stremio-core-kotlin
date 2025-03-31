@@ -208,6 +208,7 @@ impl ToProtobuf<types::Video, (&Ctx, Option<&Url>, &ResourceRequest, &ResourceRe
             released: self.released.to_protobuf::<E>(&()),
             overview: self.overview.clone(),
             thumbnail: self.thumbnail.clone(),
+            series_info: self.series_info.to_protobuf::<E>(&()),
             deep_links: VideoDeepLinks::from((
                 self,
                 *stream_request,
