@@ -12,7 +12,8 @@ message AuthRequest {
     Login login = 1;
     LoginWithToken login_with_token = 2;
     Facebook facebook = 3;
-    Register register = 4;
+    Apple apple = 4;
+    Register register = 5;
   }
 
   message Login {
@@ -27,6 +28,13 @@ message AuthRequest {
 
   message Facebook {
     required string token = 1;
+  }
+
+  message Apple {
+    required string token = 1;
+    required string sub = 2;
+    required string email = 3;
+    required string name = 4;
   }
 
   message Register {
