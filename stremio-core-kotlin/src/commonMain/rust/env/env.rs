@@ -122,6 +122,7 @@ impl AndroidEnv {
                             AuthRequest::Login { facebook, .. } if *facebook => "facebook",
                             AuthRequest::Login { .. } => "login",
                             AuthRequest::Facebook { .. } => "authWithFacebook",
+                            AuthRequest::Apple { .. } => "authWithApple",
                             AuthRequest::LoginWithToken { .. } => "loginWithToken",
                             AuthRequest::Register { .. } => "register",
                         },
