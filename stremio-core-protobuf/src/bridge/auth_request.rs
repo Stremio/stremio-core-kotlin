@@ -19,6 +19,12 @@ impl FromProtobuf<AuthRequest> for types::AuthRequest {
             Some(types::auth_request::Type::Facebook(facebook)) => AuthRequest::Facebook {
                 token: facebook.token.to_owned(),
             },
+            Some(types::auth_request::Type::Apple(apple)) => AuthRequest::Apple {
+                token: apple.token.to_owned(),
+                sub: apple.sub.to_owned(),
+                email: apple.email.to_owned(),
+                name: apple.name.to_owned(),
+            },
             Some(types::auth_request::Type::Register(register)) => AuthRequest::Register {
                 email: register.email.to_owned(),
                 password: register.password.to_owned(),
@@ -54,6 +60,17 @@ impl ToProtobuf<types::AuthRequest, ()> for AuthRequest {
                     token: token.to_owned(),
                 })
             }
+            AuthRequest::Apple {
+                token,
+                sub,
+                email,
+                name,
+            } => types::auth_request::Type::Apple(types::auth_request::Apple {
+                token: token.to_owned(),
+                sub: sub.to_owned(),
+                email: email.to_owned(),
+                name: name.to_owned(),
+            }),
             AuthRequest::Register {
                 email,
                 password,
