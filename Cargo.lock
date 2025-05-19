@@ -2266,7 +2266,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#0c511d8272a796390441bb8439ff177d1a213ead"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#4bf8907908f6e2bc5fcc3a6a54261135aa3d7c60"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2373,7 +2373,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#0c511d8272a796390441bb8439ff177d1a213ead"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#4bf8907908f6e2bc5fcc3a6a54261135aa3d7c60"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2396,8 +2396,7 @@ dependencies = [
 [[package]]
 name = "stremio-serde-hex"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5a5600c4d6b97a1e6b4c0a9fa6e14d94eba885f2aa7610fc52a1557a9a140e69"
+source = "git+https://github.com/Stremio/serde-hex?branch=fix/zero-sized-chunks-panic#e06baea18dc14efeeb88b6545b33238d85b9fb71"
 dependencies = [
  "array-init",
  "serde",
@@ -2407,7 +2406,7 @@ dependencies = [
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#0c511d8272a796390441bb8439ff177d1a213ead"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#4bf8907908f6e2bc5fcc3a6a54261135aa3d7c60"
 dependencies = [
  "base64 0.13.1",
  "flate2",
