@@ -13,7 +13,7 @@ message Profile {
 
   message Settings {
     required string interface_language = 1;
-    required  bool hide_spoilers = 2;
+    required bool hide_spoilers = 2;
     required string streaming_server_url = 3;
     required bool binge_watching = 4;
     required bool play_in_background = 5;
