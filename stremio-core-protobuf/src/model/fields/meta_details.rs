@@ -159,7 +159,6 @@ impl ToProtobuf<types::VideoDeepLinks, ()> for VideoDeepLinks {
                         .as_ref()
                         .map(|core_op| types::video_deep_links::OpenPlayerLink {
                             ios: core_op.ios.clone(),
-                            android: core_op.android.clone(),
                             macos: core_op.macos.clone(),
                             visionos: core_op.visionos.clone(),
                         })

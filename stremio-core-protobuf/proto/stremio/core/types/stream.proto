@@ -87,8 +87,7 @@ message StreamDeepLinks {
 
   message OpenPlayerLink {
     optional string ios = 1;
-    optional string android = 2;
-    optional string macos = 3;
-    optional string visionos = 4;
+    optional string macos = 2;
+    optional string visionos = 3;
   }
 }
