@@ -2,13 +2,15 @@ use boolinator::Boolinator;
 
 use stremio_core::deep_links::{MetaItemDeepLinks, VideoDeepLinks};
 use stremio_core::models::ctx::Ctx;
+use stremio_core::models::common::Loadable;
 use stremio_core::models::{
     meta_details::{MetaDetails, Selected},
     streaming_server::StreamingServer,
 };
-use stremio_core::runtime::Env;
+use stremio_core::runtime::{Env, EnvError};
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::library::LibraryItem;
+use stremio_core::types::rating::{RatingInfo, Status};
 use stremio_core::types::resource::{MetaItem, SeriesInfo, Video};
 use stremio_core::types::watched_bitfield::WatchedBitField;
 
@@ -227,6 +229,45 @@ impl
     }
 }
 
+impl ToProtobuf<types::Status, ()> for Status {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> types::Status {
+        match self {
+            Status::Watched => types::Status::Watched,
+            Status::Liked => types::Status::Liked,
+            Status::Loved => types::Status::Loved,
+        }
+    }
+}
+
+impl FromProtobuf<Status> for types::Status {
+    fn from_protobuf(&self) -> Status {
+        match self {
+            types::Status::Watched => Status::Watched,
+            types::Status::Liked => Status::Liked,
+            types::Status::Loved => Status::Loved,
+            types::Status::Unspecified => Status::Liked, // Default fallback
+        }
+    }
+}
+
+impl ToProtobuf<types::RatingInfo, ()> for RatingInfo {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> types::RatingInfo {
+        types::RatingInfo {
+            meta_id: self.meta_id.clone(),
+            status: self.status.as_ref().map(|s| s.to_protobuf::<E>(&()) as i32),
+        }
+    }
+}
+
+impl FromProtobuf<RatingInfo> for types::RatingInfo {
+    fn from_protobuf(&self) -> RatingInfo {
+        RatingInfo {
+            meta_id: self.meta_id.clone(),
+            status: self.status.and_then(|s| types::Status::try_from(s).ok()).map(|s| s.from_protobuf()),
+        }
+    }
+}
+
 impl ToProtobuf<models::MetaDetails, (&Ctx, &StreamingServer)> for MetaDetails {
     fn to_protobuf<E: Env + 'static>(
         &self,
@@ -296,6 +337,26 @@ impl ToProtobuf<models::MetaDetails, (&Ctx, &StreamingServer)> for MetaDetails {
             )),
             streams: streams.to_protobuf::<E>(&(ctx, meta_request)),
             last_used_stream: self.last_used_stream.to_protobuf::<E>(&(ctx, meta_request)),
+            rating_info: Some(self.rating_info.to_protobuf::<E>(&())),
         }
+    }
+}
+
+impl ToProtobuf<models::LoadableRatingInfo, ()> for Option<Loadable<RatingInfo, EnvError>> {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> models::LoadableRatingInfo {
+        use models::loadable_rating_info::Content;
+        
+        let content = match self {
+            Some(loadable) => match loadable {
+                Loadable::Loading => Some(Content::Loading(models::Loading {})),
+                Loadable::Err(error) => Some(Content::Error(models::Error {
+                    message: error.to_string(),
+                })),
+                Loadable::Ready(rating_info) => Some(Content::Ready(rating_info.to_protobuf::<E>(&()))),
+            },
+            None => Some(Content::Loading(models::Loading {})),
+        };
+        
+        models::LoadableRatingInfo { content }
     }
 }

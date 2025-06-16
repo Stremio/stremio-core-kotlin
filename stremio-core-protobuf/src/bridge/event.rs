@@ -151,6 +151,11 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                     },
                 )
             }
+            Event::MetaItemRated { id } => {
+                runtime::event::Type::MetaItemRated(runtime::event::MetaItemRated {
+                    id: id.clone(),
+                })
+            }
             Event::NotificationsDismissed { id } => runtime::event::Type::NotificationsDismissed(
                 runtime::event::NotificationsDismissed { id: id.clone() },
             ),

@@ -39,18 +39,19 @@ message Event {
     LibraryItemRewinded library_item_rewinded = 28;
     LibraryItemNotificationsToggled library_item_notifications_toggled = 29;
     LibraryItemMarkedAsWatched library_item_marked_as_watched = 30;
-    NotificationsDismissed notifications_dismissed = 31;
-    PlayerPlaying player_playing = 32;
-    PlayerStopped player_stopped = 33;
-    PlayerNextVideo player_next_video = 34;
-    PlayerEnded player_ended = 35;
-    TraktPlaying trakt_playing = 36;
-    TraktPaused trakt_paused = 37;
-    MagnetParsed magnet_parsed = 38;
-    TorrentParsed torrent_parsed = 39;
-    PlayingOnDevice playing_on_device = 40;
-    StreamingServerUrlsBucketChanged streaming_server_urls_bucket_changed = 41;
-    StreamingServerUrlsPushedToStorage streaming_server_urls_pushed_to_storage = 42;
+    MetaItemRated meta_item_rated = 31;
+    NotificationsDismissed notifications_dismissed = 32;
+    PlayerPlaying player_playing = 33;
+    PlayerStopped player_stopped = 34;
+    PlayerNextVideo player_next_video = 35;
+    PlayerEnded player_ended = 36;
+    TraktPlaying trakt_playing = 37;
+    TraktPaused trakt_paused = 38;
+    MagnetParsed magnet_parsed = 39;
+    TorrentParsed torrent_parsed = 40;
+    PlayingOnDevice playing_on_device = 41;
+    StreamingServerUrlsBucketChanged streaming_server_urls_bucket_changed = 42;
+    StreamingServerUrlsPushedToStorage streaming_server_urls_pushed_to_storage = 43;
     Error error = 100;
   }
 
@@ -148,6 +149,9 @@ message Event {
   message LibraryItemMarkedAsWatched {
     required string id = 1;
     required bool is_watched = 2;
+  }
+  message MetaItemRated {
+    required string id = 1;
   }
   message NotificationsDismissed {
     required string id = 1;
