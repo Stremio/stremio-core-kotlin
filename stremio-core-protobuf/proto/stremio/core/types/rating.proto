@@ -3,10 +3,9 @@ syntax = "proto3";
 package stremio.core.types;
 
 enum Status {
-  STATUS_UNSPECIFIED = 0;
-  STATUS_WATCHED = 1;
-  STATUS_LIKED = 2;
-  STATUS_LOVED = 3;
+  STATUS_WATCHED = 0;
+  STATUS_LIKED = 1;
+  STATUS_LOVED = 2;
 }
 
 message RatingInfo {

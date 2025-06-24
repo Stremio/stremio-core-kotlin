@@ -245,7 +245,6 @@ impl FromProtobuf<Status> for types::Status {
             types::Status::Watched => Status::Watched,
             types::Status::Liked => Status::Liked,
             types::Status::Loved => Status::Loved,
-            types::Status::Unspecified => Status::Liked, // Default fallback
         }
     }
 }
