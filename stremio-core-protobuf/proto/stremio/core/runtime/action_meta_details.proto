@@ -14,7 +14,7 @@ message ActionMetaDetails {
     bool mark_as_watched = 1;
     VideoState mark_video_as_watched = 2;
     MarkSeasonAsWatchedArgs mark_season_as_watched = 3;
-    OptionalStatus rate = 4;
+    string rate = 4;
   }
 
   message VideoState {
@@ -25,9 +25,5 @@ message ActionMetaDetails {
   message MarkSeasonAsWatchedArgs {
     required uint32 season = 1;
     required bool watched = 2;
-  }
-
-  message OptionalStatus {
-    optional stremio.core.types.Status status = 1;
   }
 }

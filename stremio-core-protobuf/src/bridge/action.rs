@@ -8,13 +8,17 @@ use stremio_core::runtime::{
     },
     RuntimeAction,
 };
+use stremio_core::types::rating::Status;
 
 use crate::{
     bridge::FromProtobuf,
-    protobuf::stremio::core::runtime::{
-        self, action_catalog_with_filters, action_catalogs_with_extra, action_ctx,
-        action_library_by_type, action_library_with_filters, action_link, action_load,
-        action_meta_details, action_player, action_streaming_server, create_torrent_args, Field,
+    protobuf::stremio::core::{
+        runtime::{
+            self, action_catalog_with_filters, action_catalogs_with_extra, action_ctx,
+            action_library_by_type, action_library_with_filters, action_link, action_load,
+            action_meta_details, action_player, action_streaming_server, create_torrent_args, Field,
+        },
+        types,
     },
 };
 
@@ -156,6 +160,15 @@ impl FromProtobuf<Action> for runtime::Action {
                             args.season,
                             args.watched,
                         ))
+                    }
+                    Some(action_meta_details::Args::Rate(status_string)) => {
+                        let status = match status_string.as_str() {
+                            "liked" => Some(Status::Liked),
+                            "loved" => Some(Status::Loved),
+                            "watched" => Some(Status::Watched),
+                            _ => None,
+                        };
+                        Action::MetaDetails(ActionMetaDetails::Rate(status))
                     }
                     None => unimplemented!("ActionMetaDetails missing"),
                 }
