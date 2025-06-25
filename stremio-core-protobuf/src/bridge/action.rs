@@ -8,7 +8,6 @@ use stremio_core::runtime::{
     },
     RuntimeAction,
 };
-use stremio_core::types::rating::Status;
 
 use crate::{
     bridge::FromProtobuf,
@@ -161,14 +160,10 @@ impl FromProtobuf<Action> for runtime::Action {
                             args.watched,
                         ))
                     }
-                    Some(action_meta_details::Args::Rate(status_string)) => {
-                        let status = match status_string.as_str() {
-                            "liked" => Some(Status::Liked),
-                            "loved" => Some(Status::Loved),
-                            "watched" => Some(Status::Watched),
-                            _ => None,
-                        };
-                        Action::MetaDetails(ActionMetaDetails::Rate(status))
+                    Some(action_meta_details::Args::Rate(status)) => {
+                        Action::MetaDetails(ActionMetaDetails::Rate(
+                            types::Status::try_from(*status).ok().map(|s| s.from_protobuf())
+                        ))
                     }
                     None => unimplemented!("ActionMetaDetails missing"),
                 }
