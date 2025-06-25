@@ -20,7 +20,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: "17"
+          java-version: "21"
           distribution: "adopt"
       - name: Setup Android SDK
         # newer version of the 2 actions will cause a LinkageError

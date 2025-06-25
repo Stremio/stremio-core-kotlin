@@ -35,7 +35,7 @@ buildscript {
 }
 
 kotlin {
-  jvmToolchain(17)
+  jvmToolchain(21)
   androidTarget {
     // TODO: Adding a "debug" variant here results in failing imports in KMM projects. Figure out why.
     publishLibraryVariants("release")
