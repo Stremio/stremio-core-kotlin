@@ -160,9 +160,11 @@ impl FromProtobuf<Action> for runtime::Action {
                             args.watched,
                         ))
                     }
-                    Some(action_meta_details::Args::Rate(status)) => {
+                    Some(action_meta_details::Args::Rate(rate_args)) => {
                         Action::MetaDetails(ActionMetaDetails::Rate(
-                            types::Status::try_from(*status).ok().map(|s| s.from_protobuf())
+                            rate_args.status.and_then(|status| 
+                                types::Status::try_from(status).ok().map(|s| s.from_protobuf())
+                            )
                         ))
                     }
                     None => unimplemented!("ActionMetaDetails missing"),
