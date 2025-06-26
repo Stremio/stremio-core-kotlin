@@ -10,7 +10,7 @@ use stremio_core::models::{
 use stremio_core::runtime::{Env, EnvError};
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::library::LibraryItem;
-use stremio_core::types::rating::{RatingInfo, Status};
+use stremio_core::types::rating::{RatingInfo, Rating};
 use stremio_core::types::resource::{MetaItem, SeriesInfo, Video};
 use stremio_core::types::watched_bitfield::WatchedBitField;
 
@@ -229,22 +229,22 @@ impl
     }
 }
 
-impl ToProtobuf<types::Status, ()> for Status {
-    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> types::Status {
+impl ToProtobuf<types::Rating, ()> for Rating {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> types::Rating {
         match self {
-            Status::Watched => types::Status::Watched,
-            Status::Liked => types::Status::Liked,
-            Status::Loved => types::Status::Loved,
+            Rating::Watched => types::Rating::Watched,
+            Rating::Liked => types::Rating::Liked,
+            Rating::Loved => types::Rating::Loved,
         }
     }
 }
 
-impl FromProtobuf<Status> for types::Status {
-    fn from_protobuf(&self) -> Status {
+impl FromProtobuf<Rating> for types::Rating {
+    fn from_protobuf(&self) -> Rating {
         match self {
-            types::Status::Watched => Status::Watched,
-            types::Status::Liked => Status::Liked,
-            types::Status::Loved => Status::Loved,
+            types::Rating::Watched => Rating::Watched,
+            types::Rating::Liked => Rating::Liked,
+            types::Rating::Loved => Rating::Loved,
         }
     }
 }
@@ -262,7 +262,7 @@ impl FromProtobuf<RatingInfo> for types::RatingInfo {
     fn from_protobuf(&self) -> RatingInfo {
         RatingInfo {
             meta_id: self.meta_id.clone(),
-            status: self.status.and_then(|s| types::Status::try_from(s).ok()).map(|s| s.from_protobuf()),
+            status: self.status.and_then(|s| types::Rating::try_from(s).ok()).map(|s| s.from_protobuf()),
         }
     }
 }

@@ -28,6 +28,6 @@ message ActionMetaDetails {
   }
 
   message RateArgs {
-    optional stremio.core.types.Status status = 1;
+    optional stremio.core.types.Rating status = 1;
   }
 }

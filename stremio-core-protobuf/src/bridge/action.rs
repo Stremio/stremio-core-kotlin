@@ -163,7 +163,7 @@ impl FromProtobuf<Action> for runtime::Action {
                     Some(action_meta_details::Args::Rate(rate_args)) => {
                         Action::MetaDetails(ActionMetaDetails::Rate(
                             rate_args.status.and_then(|status| 
-                                types::Status::try_from(status).ok().map(|s| s.from_protobuf())
+                                types::Rating::try_from(status).ok().map(|s| s.from_protobuf())
                             )
                         ))
                     }
