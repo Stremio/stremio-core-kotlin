@@ -11,10 +11,14 @@ use stremio_core::runtime::{
 
 use crate::{
     bridge::FromProtobuf,
-    protobuf::stremio::core::runtime::{
-        self, action_catalog_with_filters, action_catalogs_with_extra, action_ctx,
-        action_library_by_type, action_library_with_filters, action_link, action_load,
-        action_meta_details, action_player, action_streaming_server, create_torrent_args, Field,
+    protobuf::stremio::core::{
+        runtime::{
+            self, action_catalog_with_filters, action_catalogs_with_extra, action_ctx,
+            action_library_by_type, action_library_with_filters, action_link, action_load,
+            action_meta_details, action_player, action_streaming_server, create_torrent_args,
+            Field,
+        },
+        types,
     },
 };
 
@@ -157,6 +161,13 @@ impl FromProtobuf<Action> for runtime::Action {
                             args.watched,
                         ))
                     }
+                    Some(action_meta_details::Args::Rate(rate_args)) => Action::MetaDetails(
+                        ActionMetaDetails::Rate(rate_args.status.and_then(|status| {
+                            types::Rating::try_from(status)
+                                .ok()
+                                .map(|s| s.from_protobuf())
+                        })),
+                    ),
                     None => unimplemented!("ActionMetaDetails missing"),
                 }
             }

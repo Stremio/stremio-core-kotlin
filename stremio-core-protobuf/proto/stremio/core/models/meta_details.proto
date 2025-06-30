@@ -8,6 +8,7 @@ import "stremio/core/models/loadable.proto";
 import "stremio/core/types/addon.proto";
 import "stremio/core/types/meta_item.proto";
 import "stremio/core/types/stream.proto";
+import "stremio/core/types/rating.proto";
 
 message MetaDetails {
   optional Selected selected = 1;
@@ -15,6 +16,7 @@ message MetaDetails {
   optional LoadableMetaItem meta_item = 3;
   repeated LoadableStreams streams = 4;
   optional LoadableStream last_used_stream = 5;
+  optional LoadableRatingInfo rating_info = 6;
 
   message Selected {
     required stremio.core.types.ResourcePath meta_path = 1;
@@ -58,4 +60,12 @@ message LoadableStream {
 
 message OptionStream {
   optional stremio.core.types.Stream stream = 1;
+}
+
+message LoadableRatingInfo {
+  oneof content {
+    Loading loading = 1;
+    Error error = 2;
+    stremio.core.types.RatingInfo ready = 3;
+  }
 }

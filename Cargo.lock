@@ -59,12 +59,9 @@ checksum = "4c95c10ba0b00a02636238b814946408b1322d5ac4760326e6fb8ec956d85775"
 
 [[package]]
 name = "array-init"
-version = "0.0.4"
+version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23589ecb866b460d3a0f1278834750268c607e8e28a1b982c907219f3178cd72"
-dependencies = [
- "nodrop",
-]
+checksum = "3d62b7694a562cdf5a74227903507c56ab2cc8bdd1f781ed5cb4cf9c9f810bfc"
 
 [[package]]
 name = "async-trait"
@@ -834,7 +831,7 @@ dependencies = [
  "httparse",
  "itoa",
  "pin-project-lite",
- "smallvec 1.13.2",
+ "smallvec",
  "tokio",
  "want",
 ]
@@ -971,7 +968,7 @@ dependencies = [
  "icu_normalizer_data",
  "icu_properties",
  "icu_provider",
- "smallvec 1.13.2",
+ "smallvec",
  "utf16_iter",
  "utf8_iter",
  "write16",
@@ -1046,7 +1043,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "686f825264d630750a544639377bae737628043f20d38bbc029e8f29ea968a7e"
 dependencies = [
  "idna_adapter",
- "smallvec 1.13.2",
+ "smallvec",
  "utf8_iter",
 ]
 
@@ -1223,12 +1220,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "maybe-uninit"
-version = "2.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "60302e4db3a61da70c0cb7991976248362f30319e88850c487b9b95bbf059e00"
-
-[[package]]
 name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1338,12 +1329,6 @@ dependencies = [
  "security-framework-sys",
  "tempfile",
 ]
-
-[[package]]
-name = "nodrop"
-version = "0.1.14"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72ef4a56884ca558e5ddb05a1d1e7e1bfd9a68d9ed024c21704cc98872dae1bb"
 
 [[package]]
 name = "num"
@@ -2211,15 +2196,6 @@ dependencies = [
 
 [[package]]
 name = "smallvec"
-version = "0.6.14"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b97fcaeba89edba30f044a10c6a3cc39df9c3f17d7cd829dd1446cab35f890e0"
-dependencies = [
- "maybe-uninit",
-]
-
-[[package]]
-name = "smallvec"
 version = "1.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
@@ -2266,7 +2242,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#78b62f40773657d3f56c58c975a21511c09bd447"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#bf221ad2e814ea182094a76bc45295e6f4574380"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2373,7 +2349,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#78b62f40773657d3f56c58c975a21511c09bd447"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#bf221ad2e814ea182094a76bc45295e6f4574380"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2395,18 +2371,19 @@ dependencies = [
 
 [[package]]
 name = "stremio-serde-hex"
-version = "0.1.0"
-source = "git+https://github.com/Stremio/serde-hex?branch=fix/zero-sized-chunks-panic#e06baea18dc14efeeb88b6545b33238d85b9fb71"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51cd84ea7e099ea99f749dfb4b189bd415f01d7ac372a2f6a5e1972c369aa35d"
 dependencies = [
  "array-init",
  "serde",
- "smallvec 0.6.14",
+ "smallvec",
 ]
 
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#78b62f40773657d3f56c58c975a21511c09bd447"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#bf221ad2e814ea182094a76bc45295e6f4574380"
 dependencies = [
  "base64 0.13.1",
  "flate2",

@@ -7,12 +7,14 @@ option java_package = "com.stremio.core.runtime.msg";
 import "google/protobuf/empty.proto";
 
 import "stremio/core/types/video.proto";
+import "stremio/core/types/rating.proto";
 
 message ActionMetaDetails {
   oneof args {
     bool mark_as_watched = 1;
     VideoState mark_video_as_watched = 2;
     MarkSeasonAsWatchedArgs mark_season_as_watched = 3;
+    RateArgs rate = 4;
   }
 
   message VideoState {
@@ -23,5 +25,9 @@ message ActionMetaDetails {
   message MarkSeasonAsWatchedArgs {
     required uint32 season = 1;
     required bool watched = 2;
+  }
+
+  message RateArgs {
+    optional stremio.core.types.Rating status = 1;
   }
 }

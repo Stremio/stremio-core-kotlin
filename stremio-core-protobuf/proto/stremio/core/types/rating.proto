@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package stremio.core.types;
+
+enum Rating {
+  WATCHED = 0;
+  LIKED = 1;
+  LOVED = 2;
+}
+
+message RatingInfo {
+  string meta_id = 1;
+  optional Rating status = 2;
+} 
