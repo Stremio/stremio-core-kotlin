@@ -2242,7 +2242,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#bf221ad2e814ea182094a76bc45295e6f4574380"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#6150e0298b8fd683da721ab827898a374ae28340"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2349,7 +2349,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#bf221ad2e814ea182094a76bc45295e6f4574380"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#6150e0298b8fd683da721ab827898a374ae28340"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2361,13 +2361,9 @@ dependencies = [
 
 [[package]]
 name = "stremio-official-addons"
-version = "2.0.13"
+version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b3e82d97b318000ca095daa19f479fcf4569ecd0ba8e3d10e04bd1a56f768947"
-dependencies = [
- "once_cell",
- "serde_json",
-]
+checksum = "4bb5e344bd639722596917f372885c62b489b8442bca7f75b08f4af19e2230af"
 
 [[package]]
 name = "stremio-serde-hex"
@@ -2383,7 +2379,7 @@ dependencies = [
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#bf221ad2e814ea182094a76bc45295e6f4574380"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#6150e0298b8fd683da721ab827898a374ae28340"
 dependencies = [
  "base64 0.13.1",
  "flate2",
