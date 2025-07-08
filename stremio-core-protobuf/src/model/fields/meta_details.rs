@@ -358,7 +358,7 @@ impl ToProtobuf<models::LoadableRatingInfo, ()> for Option<Loadable<RatingInfo, 
                     Some(Content::Ready(rating_info.to_protobuf::<E>(&())))
                 }
             },
-            None => Some(Content::Loading(models::Loading {})),
+            None => None,
         };
 
         models::LoadableRatingInfo { content }
