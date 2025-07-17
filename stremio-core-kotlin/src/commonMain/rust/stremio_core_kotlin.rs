@@ -29,7 +29,7 @@ use stremio_core::{
     },
 };
 use stremio_core_protobuf::{FromProtobuf, ToProtobuf};
-use tracing::info;
+use tracing::{error, info};
 use tracing_subscriber::EnvFilter;
 
 use crate::{
@@ -247,16 +247,42 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateNative(
         .call_method(field, "getValue", "()I", &[])
         .and_then(|result| result.i())
         .ok()
-        .and_then(|result| Field::try_from(result).ok().from_protobuf())
+        .and_then(|result| Field::try_from(result).inspect_err(|err| {
+            error!("AndroidModelField (rust) failed to be parsed from the Field.getValue() (kotlin) passed value: {err}")
+        }).ok().from_protobuf())
         .expect("AndroidModelField convert failed");
-    let runtime = RUNTIME.read().expect("RUNTIME read failed");
-    let runtime = runtime
-        .as_ref()
-        .expect("RUNTIME not initialized")
-        .as_ref()
-        .expect("RUNTIME not initialized");
-    let model = runtime.model().expect("model read failed");
-    model.get_state_binary(&field).to_jni_byte_array(&env)
+    let runtime = RUNTIME
+        .read()
+        .inspect_err(|_err| {
+            error!("Runtime read failed due to RwLock poisoning");
+        })
+        .expect("RUNTIME read failed");
+    let runtime = runtime.as_ref();
+    if runtime.is_none() {
+        error!("Runtime initialization is not set yet (None)");
+    }
+
+    let runtime = runtime.expect("RUNTIME not initialized").as_ref();
+    match runtime {
+        Loadable::Loading => {
+            error!("Runtime initialization hasn't loaded yet (Loadable::Loading)");
+            panic!("Runtime initialization hasn't loaded yet (Loadable::Loading)")
+        }
+        Loadable::Err(err) => {
+            error!("Runtime initialization hasn't errored (Loadable::Error): {err}");
+            panic!("Runtime initialization hasn't errored (Loadable::Error): {err}");
+        }
+        Loadable::Ready(runtime) => {
+            let model = runtime
+                .model()
+                .inspect_err(|_err| {
+                    error!("Runtime RwLock model read has failed due to poisoning");
+                })
+                .expect("model read failed");
+
+            model.get_state_binary(&field).to_jni_byte_array(&env)
+        }
+    }
 }
 
 #[no_mangle]
