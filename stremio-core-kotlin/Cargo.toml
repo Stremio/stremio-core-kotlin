@@ -20,7 +20,12 @@ kotlin = [
     # java bindings
     "dep:jni",
     "dep:getrandom",
+    "dep:tracing",
+    "dep:tracing-subscriber",
 ]
+# enables TRACE log level no matter the build - dev, release, profiling, etc.
+# We still override this value with the env. variable `RUST_LOG`
+log-trace = []
 
 [lib]
 name = "stremio_core_kotlin"
@@ -71,6 +76,10 @@ reqwest = { workspace = true, features = ["json", "rustls-tls"], optional = true
 openssl = { workspace = true, features = ["vendored"], optional = true }
 http-cache-reqwest = { workspace = true, optional = true }
 reqwest-middleware = { workspace = true, optional = true }
+
+# Logging
+tracing = { workspace = true, optional = true }
+tracing-subscriber = { workspace = true, optional = true, features = ["env-filter", "registry"] }
 
 # Bytes / Protobuf
 bytes = "1.1.0"
