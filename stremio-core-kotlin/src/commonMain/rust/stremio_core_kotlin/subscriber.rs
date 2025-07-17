@@ -3,13 +3,12 @@
 
 use core::fmt::{self, Write};
 
-use tracing::Subscriber;
 use tracing::{
     dispatcher::SetGlobalDefaultError,
     field::{Field, Visit},
+    Subscriber,
 };
-use tracing_subscriber::layer::*;
-use tracing_subscriber::registry::*;
+use tracing_subscriber::{layer::*, registry::*};
 
 use crate::env::{android_log_write, LOG_TAG};
 
