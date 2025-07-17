@@ -248,7 +248,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateNative(
         .and_then(|result| result.i())
         .ok()
         .and_then(|result| Field::try_from(result).inspect_err(|err| {
-            error!("AndroidModelField (rust) failed to be parsed from the Field.getValue() (kotlin) passed value: {err}")
+            error!("Field (rust) failed to be parsed from the Field.getValue() (kotlin) passed value: {err}")
         }).ok().from_protobuf())
         .expect("AndroidModelField convert failed");
     let runtime = RUNTIME
