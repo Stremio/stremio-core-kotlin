@@ -27,6 +27,10 @@ name = "stremio_core_kotlin"
 path = "src/commonMain/rust/lib.rs"
 crate-type = ["staticlib", "dylib"]
 
+
+[target.'cfg(target="i686-linux-android")'.dependencies]
+compiler_builtins = "0.1"
+
 [dependencies]
 stremio-core.workspace = true
 # stremio-core-web.workspace = true
