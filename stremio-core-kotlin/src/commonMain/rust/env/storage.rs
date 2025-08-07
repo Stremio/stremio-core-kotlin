@@ -106,8 +106,7 @@ impl Storage {
                     Err(EnvError::StorageReadError(message))
                 }
                 _ => Err(EnvError::StorageReadError(format!(
-                    "Invalid Storage$Result: {}",
-                    storage_result_class_name
+                    "Invalid Storage$Result: {storage_result_class_name}"
                 ))),
             }
         })
@@ -178,8 +177,7 @@ impl Storage {
                     Err(EnvError::StorageReadError(message))
                 }
                 _ => Err(EnvError::StorageReadError(format!(
-                    "Invalid Storage$Result: {}",
-                    storage_result_class_name
+                    "Invalid Storage$Result: {storage_result_class_name}"
                 ))),
             }
         })

@@ -30,9 +30,10 @@ use crate::{
 
 const INSTALLATION_ID_STORAGE_KEY: &str = "installation_id";
 #[cfg(debug_assertions)]
-const LOG_DEBUG_PRIORITY: i32 = 3;
-#[cfg(debug_assertions)]
-const LOG_TAG: &str = "AndroidEnv";
+pub(crate) const ENV_LOG_TAG: &str = "AndroidEnv";
+
+pub(crate) const PANIC_LOG_TAG: &str = "core_panic";
+pub(crate) const LOG_TAG: &str = "tracing_subscriber";
 
 static CONCURRENT_RUNTIME: Lazy<RwLock<tokio::runtime::Runtime>> = Lazy::new(|| {
     RwLock::new(
@@ -61,8 +62,65 @@ static ANALYTICS: Lazy<Analytics<AndroidEnv>> = Lazy::new(Default::default);
 static INSTALLATION_ID: Lazy<RwLock<Option<String>>> = Lazy::new(Default::default);
 static VISIT_ID: Lazy<String> = Lazy::new(|| hex::encode(AndroidEnv::random_buffer(10)));
 
+#[derive(Debug, Clone, Copy)]
+#[repr(u8)]
+pub enum AndroidLogPriority {
+    /// ANDROID_LOG_UNKNOWN = 0,
+    Unknown = 0,
+    /// ANDROID_LOG_DEFAULT,
+    Default = 1,
+    /// ANDROID_LOG_VERBOSE,
+    Verbose = 2,
+    /// ANDROID_LOG_DEBUG,
+    Debug = 3,
+    /// ANDROID_LOG_INFO,
+    Info = 4,
+    /// ANDROID_LOG_WARN,
+    Warn = 5,
+    /// ANDROID_LOG_ERROR,
+    Error = 6,
+    /// ANDROID_LOG_FATAL,
+    Fatal = 7,
+    /// ANDROID_LOG_SILENT
+    Silent = 8,
+}
+
+impl AndroidLogPriority {
+    #[inline]
+    pub fn as_i32(&self) -> i32 {
+        i32::from(*self as u8)
+    }
+}
 extern "C" {
-    fn __android_log_write(prio: c_int, tag: *const c_char, text: *const c_char) -> c_int;
+    pub(crate) fn __android_log_write(
+        prio: c_int,
+        tag: *const c_char,
+        text: *const c_char,
+    ) -> c_int;
+}
+
+/// # Returns
+/// `Ok(())` - if message was written to the log
+/// `Err(-xx)` - `-EPERM`` if it was not
+pub(crate) fn android_log_write(
+    priority: AndroidLogPriority,
+    tag: &str,
+    message: &str,
+) -> Result<(), i32> {
+    use std::ffi::CString;
+    let tag = CString::new(tag).unwrap();
+    let message = CString::new(message).unwrap();
+
+    // Returns
+    // 1 if the message was written to the log, or -EPERM if it was not; see __android_log_is_loggable().
+    let ret =
+        unsafe { __android_log_write(priority.as_i32() as c_int, tag.as_ptr(), message.as_ptr()) };
+
+    if ret == 1 {
+        Ok(())
+    } else {
+        Err(ret)
+    }
 }
 
 #[derive(Serialize)]
@@ -250,13 +308,9 @@ impl Env for AndroidEnv {
     }
     #[cfg(debug_assertions)]
     fn log(message: String) {
-        use std::ffi::CString;
-        let tag = CString::new(LOG_TAG).unwrap();
-        let message = CString::new(message).unwrap();
-
-        unsafe {
-            __android_log_write(LOG_DEBUG_PRIORITY as c_int, tag.as_ptr(), message.as_ptr());
-        }
+        let _ret = android_log_write(AndroidLogPriority::Debug, ENV_LOG_TAG, &message).inspect_err(|err| {
+            tracing::error!("Failed to log debug message via android_log_write and AndroidLogPriority::Debug: {err}")
+        });
     }
 }
 
