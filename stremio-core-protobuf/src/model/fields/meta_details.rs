@@ -156,6 +156,15 @@ impl ToProtobuf<types::VideoDeepLinks, ()> for VideoDeepLinks {
                     .external_player
                     .as_ref()
                     .and_then(|ep| ep.streaming.clone()),
+                open_player: self.external_player.as_ref().and_then(|ep| {
+                    ep.open_player
+                        .as_ref()
+                        .map(|core_op| types::video_deep_links::OpenPlayerLink {
+                            ios: core_op.ios.clone(),
+                            macos: core_op.macos.clone(),
+                            visionos: core_op.visionos.clone(),
+                        })
+                }),
             },
         }
     }
