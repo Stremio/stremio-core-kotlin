@@ -82,5 +82,14 @@ message StreamDeepLinks {
   message ExternalPlayerLink {
     optional string download = 1;
     optional string streaming = 2;
+    optional OpenPlayerLink open_player_link = 3;
+
+    message OpenPlayerLink {
+	  optional string ios = 1;
+      optional string android = 2;
+      optional string windows = 3;
+      optional string macos = 4;
+      optional string visionos = 5;
+    }
   }
 }

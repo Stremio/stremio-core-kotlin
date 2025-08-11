@@ -1,5 +1,5 @@
 use hex::FromHex;
-use stremio_core::deep_links::StreamDeepLinks;
+use stremio_core::deep_links::{ExternalPlayerLink, StreamDeepLinks};
 use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{
@@ -8,6 +8,7 @@ use stremio_core::types::resource::{
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::types;
+use crate::stremio_core_models::types::stream_deep_links::external_player_link::OpenPlayerLink;
 
 impl FromProtobuf<StreamSource> for types::stream::Source {
     fn from_protobuf(&self) -> StreamSource {
@@ -191,6 +192,12 @@ impl
             )),
         };
 
+        let external_player = ExternalPlayerLink::from((
+            self,
+            &ctx.map(|ctx| ctx.profile.settings.streaming_server_url.clone()),
+            &settings,
+        ));
+
         types::Stream {
             name: self.name.to_owned().or_else(|| addon_name.cloned()),
             description: self.description.clone(),
@@ -214,6 +221,15 @@ impl
                 external_player: types::stream_deep_links::ExternalPlayerLink {
                     download: deep_links.external_player.download,
                     streaming: deep_links.external_player.streaming,
+                    open_player_link: external_player.open_player.map(|open_player| {
+                        OpenPlayerLink {
+                            ios: open_player.ios,
+                            android: open_player.android,
+                            windows: open_player.windows,
+                            macos: open_player.macos,
+                            visionos: open_player.visionos,
+                        }
+                    }),
                 },
             },
             source: Some(self.source.to_protobuf::<E>(&())),
