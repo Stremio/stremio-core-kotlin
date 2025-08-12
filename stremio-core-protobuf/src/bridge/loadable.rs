@@ -7,7 +7,7 @@ use stremio_core::{
         common::{Loadable, ResourceError},
         ctx::{Ctx, CtxError},
         link::LinkError,
-        streaming_server::{PlaybackDevice, StreamingServer},
+        streaming_server::PlaybackDevice,
     },
     runtime::EnvError,
     types::{
@@ -54,7 +54,7 @@ impl
         models::loadable_meta_item::Content,
         (
             &Ctx,
-            &StreamingServer,
+            Option<&Url>,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
             Option<&String>,
@@ -64,9 +64,9 @@ impl
 {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
-        (ctx, streaming_server, library_item, watched, addon_name, meta_request): &(
+        (ctx, streaming_server_url, library_item, watched, addon_name, meta_request): &(
             &Ctx,
-            &StreamingServer,
+            Option<&Url>,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
             Option<&String>,
@@ -77,7 +77,7 @@ impl
             Loadable::Ready(ready) => {
                 models::loadable_meta_item::Content::Ready(ready.to_protobuf::<E>(&(
                     *ctx,
-                    *streaming_server,
+                    *streaming_server_url,
                     *library_item,
                     *watched,
                     *addon_name,
@@ -95,13 +95,20 @@ impl
 impl
     ToProtobuf<
         models::loadable_streams::Content,
-        (&Ctx, &String, &ResourceRequest, Option<&ResourceRequest>),
+        (
+            &Ctx,
+            Option<&Url>,
+            &String,
+            &ResourceRequest,
+            Option<&ResourceRequest>,
+        ),
     > for Loadable<Vec<Stream>, ResourceError>
 {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
-        (ctx, addon_name, stream_request, meta_request): &(
+        (ctx, streaming_server_url, addon_name, stream_request, meta_request): &(
             &Ctx,
+            Option<&Url>,
             &String,
             &ResourceRequest,
             Option<&ResourceRequest>,
@@ -111,6 +118,7 @@ impl
             Loadable::Ready(ready) => models::loadable_streams::Content::Ready(models::Streams {
                 streams: ready.to_protobuf::<E>(&(
                     Some(*ctx),
+                    *streaming_server_url,
                     Some(*addon_name),
                     Some(*stream_request),
                     *meta_request,
@@ -127,13 +135,20 @@ impl
 impl
     ToProtobuf<
         models::loadable_stream::Content,
-        (&Ctx, &String, &ResourceRequest, Option<&ResourceRequest>),
+        (
+            &Ctx,
+            Option<&Url>,
+            &String,
+            &ResourceRequest,
+            Option<&ResourceRequest>,
+        ),
     > for Loadable<Option<Stream>, ResourceError>
 {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
-        (ctx, addon_name, stream_request, meta_request): &(
+        (ctx, streaming_server_url, addon_name, stream_request, meta_request): &(
             &Ctx,
+            Option<&Url>,
             &String,
             &ResourceRequest,
             Option<&ResourceRequest>,
@@ -144,6 +159,7 @@ impl
                 models::loadable_stream::Content::Ready(models::OptionStream {
                     stream: ready.to_protobuf::<E>(&(
                         Some(*ctx),
+                        *streaming_server_url,
                         Some(*addon_name),
                         Some(*stream_request),
                         *meta_request,

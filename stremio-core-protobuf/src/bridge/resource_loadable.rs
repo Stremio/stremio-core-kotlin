@@ -6,7 +6,6 @@ use stremio_core::{
     models::{
         common::{DescriptorLoadable, ResourceLoadable},
         ctx::Ctx,
-        streaming_server::StreamingServer,
     },
     types::{
         addon::{Descriptor, ResourceRequest},
@@ -66,7 +65,7 @@ impl
         models::LoadableMetaItem,
         (
             &Ctx,
-            &StreamingServer,
+            Option<&Url>,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
         ),
@@ -74,9 +73,9 @@ impl
 {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
-        (ctx, streming_server, library_item, watched): &(
+        (ctx, streaming_server_url, library_item, watched): &(
             &Ctx,
-            &StreamingServer,
+            Option<&Url>,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
         ),
@@ -87,7 +86,7 @@ impl
             request: self.request.to_protobuf::<E>(&()),
             content: self.content.to_protobuf::<E>(&(
                 *ctx,
-                *streming_server,
+                *streaming_server_url,
                 *library_item,
                 *watched,
                 Some(&addon_name),
@@ -97,12 +96,12 @@ impl
     }
 }
 
-impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
+impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&Url>, Option<&ResourceRequest>)>
     for ResourceLoadable<Vec<Stream>>
 {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
-        (ctx, meta_request): &(&Ctx, Option<&ResourceRequest>),
+        (ctx, streaming_server_url, meta_request): &(&Ctx, Option<&Url>, Option<&ResourceRequest>),
     ) -> models::LoadableStreams {
         let addon_name = get_addon_name(ctx, &self.request.base);
         models::LoadableStreams {
@@ -110,6 +109,7 @@ impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
             request: self.request.to_protobuf::<E>(&()),
             content: self.content.to_protobuf::<E>(&(
                 ctx,
+                *streaming_server_url,
                 &addon_name,
                 &self.request,
                 *meta_request,
@@ -118,18 +118,19 @@ impl ToProtobuf<models::LoadableStreams, (&Ctx, Option<&ResourceRequest>)>
     }
 }
 
-impl ToProtobuf<models::LoadableStream, (&Ctx, Option<&ResourceRequest>)>
+impl ToProtobuf<models::LoadableStream, (&Ctx, Option<&Url>, Option<&ResourceRequest>)>
     for ResourceLoadable<Option<Stream>>
 {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
-        (ctx, meta_request): &(&Ctx, Option<&ResourceRequest>),
+        (ctx, streaming_server_url, meta_request): &(&Ctx, Option<&Url>, Option<&ResourceRequest>),
     ) -> models::LoadableStream {
         let addon_name = get_addon_name(ctx, &self.request.base);
         models::LoadableStream {
             request: self.request.to_protobuf::<E>(&()),
             content: self.content.to_protobuf::<E>(&(
                 ctx,
+                *streaming_server_url,
                 &addon_name,
                 &self.request,
                 *meta_request,
