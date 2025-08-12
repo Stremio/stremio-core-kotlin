@@ -214,6 +214,15 @@ impl
                 external_player: types::stream_deep_links::ExternalPlayerLink {
                     download: deep_links.external_player.download,
                     streaming: deep_links.external_player.streaming,
+                    open_player: deep_links
+                        .external_player
+                        .open_player
+                        .as_ref()
+                        .map(|core_op| types::stream_deep_links::OpenPlayerLink {
+                            ios: core_op.ios.clone(),
+                            macos: core_op.macos.clone(),
+                            visionos: core_op.visionos.clone(),
+                        }),
                 },
             },
             source: Some(self.source.to_protobuf::<E>(&())),
