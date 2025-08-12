@@ -243,7 +243,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
         Err(_) => return JObject::null().into_inner(),
     };
     stream
-        .to_protobuf::<AndroidEnv>(&(None, None, None, None))
+        .to_protobuf::<AndroidEnv>(&(None, None, None, None, None))
         .encode_to_vec()
         .to_jni_byte_array(&env)
 }
