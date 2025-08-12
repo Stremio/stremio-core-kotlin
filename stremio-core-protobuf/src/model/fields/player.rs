@@ -130,10 +130,10 @@ impl ToProtobuf<models::player::AudioTrack, ()> for AudioTrack {
     }
 }
 
-impl ToProtobuf<models::player::Selected, Ctx> for Selected {
+impl ToProtobuf<models::player::Selected, (&Ctx, Option<&Url>)> for Selected {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
-        ctx: &Ctx,
+        (ctx, streaming_server_url): &(&Ctx, Option<&Url>),
     ) -> models::player::Selected {
         let addon_name = self.stream_request.as_ref().and_then(|request| {
             ctx.profile
@@ -143,9 +143,13 @@ impl ToProtobuf<models::player::Selected, Ctx> for Selected {
                 .map(|addon| &addon.manifest.name)
         });
         models::player::Selected {
-            stream: self
-                .stream
-                .to_protobuf::<E>(&(Some(ctx), addon_name, None, None)),
+            stream: self.stream.to_protobuf::<E>(&(
+                Some(*ctx),
+                *streaming_server_url,
+                addon_name,
+                None,
+                None,
+            )),
             stream_request: self.stream_request.to_protobuf::<E>(&()),
             meta_request: self.meta_request.to_protobuf::<E>(&()),
             subtitles_path: self.subtitles_path.to_protobuf::<E>(&()),
@@ -159,11 +163,13 @@ impl ToProtobuf<models::Player, (&Ctx, &StreamingServer)> for Player {
         (ctx, streaming_server): &(&Ctx, &StreamingServer),
     ) -> models::Player {
         models::Player {
-            selected: self.selected.to_protobuf::<E>(*ctx),
+            selected: self
+                .selected
+                .to_protobuf::<E>(&(*ctx, streaming_server.base_url.as_ref())),
             video_params: self.video_params.to_protobuf::<E>(&()),
             meta_item: self.meta_item.as_ref().to_protobuf::<E>(&(
                 *ctx,
-                *streaming_server,
+                streaming_server.base_url.as_ref(),
                 self.library_item.as_ref(),
                 self.watched.as_ref(),
             )),

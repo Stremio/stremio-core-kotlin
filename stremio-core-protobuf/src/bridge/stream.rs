@@ -5,6 +5,7 @@ use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{
     Stream, StreamBehaviorHints, StreamProxyHeaders, StreamSource,
 };
+use url::Url;
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
 use crate::protobuf::stremio::core::types;
@@ -156,6 +157,7 @@ impl
         types::Stream,
         (
             Option<&Ctx>,
+            Option<&Url>,
             Option<&String>,
             Option<&ResourceRequest>,
             Option<&ResourceRequest>,
@@ -164,8 +166,9 @@ impl
 {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
-        (ctx, addon_name, stream_request, meta_request): &(
+        (ctx, streaming_server_url, addon_name, stream_request, meta_request): &(
             Option<&Ctx>,
+            Option<&Url>,
             Option<&String>,
             Option<&ResourceRequest>,
             Option<&ResourceRequest>,
@@ -181,14 +184,10 @@ impl
                 self,
                 *stream_request,
                 *meta_request,
-                &ctx.map(|ctx| ctx.profile.settings.streaming_server_url.clone()),
+                &streaming_server_url.map(Clone::clone),
                 &settings,
             )),
-            _ => StreamDeepLinks::from((
-                self,
-                &ctx.map(|ctx| ctx.profile.settings.streaming_server_url.clone()),
-                &settings,
-            )),
+            _ => StreamDeepLinks::from((self, &streaming_server_url.map(Clone::clone), &settings)),
         };
 
         types::Stream {

@@ -1,23 +1,29 @@
 use boolinator::Boolinator;
 
-use stremio_core::deep_links::{MetaItemDeepLinks, VideoDeepLinks};
-use stremio_core::models::common::Loadable;
-use stremio_core::models::ctx::Ctx;
-use stremio_core::models::{
-    meta_details::{MetaDetails, Selected},
-    streaming_server::StreamingServer,
+use stremio_core::{
+    deep_links::{MetaItemDeepLinks, VideoDeepLinks},
+    models::{
+        common::Loadable,
+        ctx::Ctx,
+        meta_details::{MetaDetails, Selected},
+        streaming_server::StreamingServer,
+    },
+    runtime::{Env, EnvError},
+    types::{
+        addon::ResourceRequest,
+        library::LibraryItem,
+        rating::{Rating, RatingInfo},
+        resource::{MetaItem, SeriesInfo, Video},
+        watched_bitfield::WatchedBitField,
+    },
 };
-use stremio_core::runtime::{Env, EnvError};
-use stremio_core::types::addon::ResourceRequest;
-use stremio_core::types::library::LibraryItem;
-use stremio_core::types::rating::{Rating, RatingInfo};
-use stremio_core::types::resource::{MetaItem, SeriesInfo, Video};
-use stremio_core::types::watched_bitfield::WatchedBitField;
 
 use url::Url;
 
-use crate::bridge::{FromProtobuf, ToProtobuf};
-use crate::protobuf::stremio::core::{models, types};
+use crate::{
+    bridge::{FromProtobuf, ToProtobuf},
+    protobuf::stremio::core::{models, types},
+};
 
 impl FromProtobuf<Selected> for models::meta_details::Selected {
     fn from_protobuf(&self) -> Selected {
@@ -88,9 +94,13 @@ impl
             released: self.released.to_protobuf::<E>(&()),
             overview: self.overview.clone(),
             thumbnail: self.thumbnail.clone(),
-            streams: self
-                .streams
-                .to_protobuf::<E>(&(None, *addon_name, None, None)),
+            streams: self.streams.to_protobuf::<E>(&(
+                None,
+                *streaming_server_url,
+                *addon_name,
+                None,
+                None,
+            )),
             series_info: self.series_info.to_protobuf::<E>(&()),
             upcoming: self
                 .released
@@ -175,7 +185,7 @@ impl
         types::MetaItem,
         (
             &Ctx,
-            &StreamingServer,
+            Option<&Url>,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
             Option<&String>,
@@ -185,9 +195,9 @@ impl
 {
     fn to_protobuf<E: Env + 'static>(
         &self,
-        (ctx, streaming_server, library_item, watched, addon_name, meta_request): &(
+        (ctx, streaming_server_url, library_item, watched, addon_name, meta_request): &(
             &Ctx,
-            &StreamingServer,
+            Option<&Url>,
             Option<&LibraryItem>,
             Option<&WatchedBitField>,
             Option<&String>,
@@ -210,10 +220,10 @@ impl
             trailer_streams: self
                 .preview
                 .trailer_streams
-                .to_protobuf::<E>(&(None, None, None, None)),
+                .to_protobuf::<E>(&(None, None, None, None, None)),
             videos: self.videos.to_protobuf::<E>(&(
                 *ctx,
-                streaming_server.base_url.as_ref(),
+                *streaming_server_url,
                 *library_item,
                 *watched,
                 *addon_name,
@@ -341,13 +351,21 @@ impl ToProtobuf<models::MetaDetails, (&Ctx, &StreamingServer)> for MetaDetails {
             selected: self.selected.to_protobuf::<E>(&()),
             title,
             meta_item: meta_item.to_protobuf::<E>(&(
-                ctx,
-                streaming_server,
+                *ctx,
+                streaming_server.base_url.as_ref(),
                 self.library_item.as_ref(),
                 self.watched.as_ref(),
             )),
-            streams: streams.to_protobuf::<E>(&(ctx, meta_request)),
-            last_used_stream: self.last_used_stream.to_protobuf::<E>(&(ctx, meta_request)),
+            streams: streams.to_protobuf::<E>(&(
+                ctx,
+                streaming_server.base_url.as_ref(),
+                meta_request,
+            )),
+            last_used_stream: self.last_used_stream.to_protobuf::<E>(&(
+                *ctx,
+                streaming_server.base_url.as_ref(),
+                meta_request,
+            )),
             rating_info: Some(self.rating_info.to_protobuf::<E>(&())),
         }
     }
