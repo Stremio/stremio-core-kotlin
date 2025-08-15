@@ -51,11 +51,13 @@ static RUNTIME: Lazy<RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, E
 #[no_mangle]
 pub unsafe extern "C" fn JNI_OnLoad(_: JavaVM, _: *mut c_void) -> jint {
     std::panic::set_hook(Box::new(|info| {
+        let info_str = info.to_string();
+        eprintln!("FATAL: {}", &info_str);
         // Attempt to set the flag from false to true.
         let _ret = android_log_write(
             crate::env::AndroidLogPriority::Fatal,
             PANIC_LOG_TAG,
-            &info.to_string(),
+            &info_str,
         )
         .inspect_err(|err| {
             eprintln!("Failed to log PANIC log with AndroidLogPriority::Fatal: {err}")
