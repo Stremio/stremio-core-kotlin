@@ -17,7 +17,7 @@ impl TryFrom<String> for KotlinClassName {
     fn try_from(value: String) -> Result<Self, Self::Error> {
         KotlinClassName::iter()
             .find(|class_name| class_name.value() == value)
-            .ok_or(format!("Class name not found: {}", value))
+            .ok_or(format!("Class name not found: {value}"))
     }
 }
 
