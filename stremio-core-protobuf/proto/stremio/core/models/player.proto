@@ -22,6 +22,7 @@ message Player {
   optional stremio.core.types.Video.SeriesInfo series_info = 6;
   optional stremio.core.types.LibraryItem library_item = 7;
   optional StreamState stream_state = 8;
+  optional IntroOutro intro_outro = 9;
 
   message VideoParams {
     optional string hash = 1;
@@ -52,6 +53,17 @@ message Player {
     optional stremio.core.types.ResourceRequest stream_request = 2;
     optional stremio.core.types.ResourceRequest meta_request = 3;
     optional stremio.core.types.ResourcePath subtitles_path = 4;
+  }
+
+  message IntroOutro {
+    optional IntroData intro = 1;
+    optional uint64 outro = 2;
+  }
+
+  message IntroData {
+    required uint64 from = 1;
+    required uint64 to = 2;
+    optional uint64 duration = 3;
   }
 }
 
