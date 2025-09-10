@@ -57,7 +57,7 @@ kotlin {
 }
 
 android {
-  ndkVersion = "27.2.12479018" // configure in .cargo/config.toml and workflows/release.yml as well
+  ndkVersion = "28.2.13676358" // configure in .cargo/config.toml and workflows/release.yml as well
 
   defaultConfig {
     namespace = "com.stremio.core"

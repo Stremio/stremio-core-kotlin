@@ -1,7 +1,7 @@
 [env]
 # Make sure to keep this version in line with the `.github/workflows/release.yml`
 # action for releaseing stremio-core-kotlin!
-NDK_VERSION = "27.2.12479018"
+NDK_VERSION = "28.2.13676358"
 
 # Set the same RANLIB binary location for all the 4 targets:
 # armv7-linux-androideabi, aarch64-linux-android, i686-linux-android, x86_64-linux-android

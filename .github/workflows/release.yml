@@ -7,7 +7,7 @@ on:
 env:
   # Make sure to keep this version in line with `.config/cargo.toml` file for
   # stremio-core-kotlin!
-  NDK_VERSION: '27.2.12479018'
+  NDK_VERSION: '28.2.13676358'
   RUST_VERSION: '1.77'
 
 jobs:
