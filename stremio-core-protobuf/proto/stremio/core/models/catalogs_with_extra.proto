@@ -24,13 +24,17 @@ message Catalog {
 
 message LoadablePage {
   required string title = 1;
-  required stremio.core.types.ResourceRequest request = 2;
+  optional string addon_id = 2;
+  optional string catalog_id = 3;
+  optional string catalog_name = 4;
+  optional string catalog_type = 5;
+  required stremio.core.types.ResourceRequest request = 6;
   oneof content {
-    Loading loading = 3;
-    Error error = 4;
-    Page ready = 5;
+    Loading loading = 7;
+    Error error = 8;
+    Page ready = 9;
   }
-  required DiscoverDeepLinks deep_links = 6;
+  required DiscoverDeepLinks deep_links = 10;
 }
 
 message Page {

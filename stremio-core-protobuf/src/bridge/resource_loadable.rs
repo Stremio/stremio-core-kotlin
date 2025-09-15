@@ -22,7 +22,7 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
         &self,
         ctx: &Ctx,
     ) -> models::LoadablePage {
-        let title = ctx
+        let addon_and_catalog = ctx
             .profile
             .addons
             .iter()
@@ -37,7 +37,8 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
                             && manifest_catalog.r#type == self.request.path.r#type
                     })
                     .map(|manifest_catalog| (addon, manifest_catalog))
-            })
+            });
+        let title = addon_and_catalog
             .map(|(addon, manifest_catalog)| {
                 format!(
                     "{} - {}",
@@ -53,6 +54,10 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
         let deep_links = DiscoverDeepLinks::from(&self.request).to_protobuf::<E>(&());
         models::LoadablePage {
             title,
+            addon_id: addon_and_catalog.map(|(addon, _)| addon.manifest.id.to_owned()),
+            catalog_id: addon_and_catalog.map(|(_, catalog)| catalog.id.to_owned()),
+            catalog_name: addon_and_catalog.and_then(|(_, catalog)| catalog.name.to_owned()),
+            catalog_type: addon_and_catalog.map(|(_, catalog)| catalog.r#type.to_owned()),
             request: self.request.to_protobuf::<E>(&()),
             content: self.content.to_protobuf::<E>(&(ctx, &self.request)),
             deep_links,
