@@ -56,7 +56,12 @@ impl ToProtobuf<models::LoadablePage, Ctx> for ResourceLoadable<Vec<MetaItemPrev
             title,
             addon_id: addon_and_catalog.map(|(addon, _)| addon.manifest.id.to_owned()),
             catalog_id: addon_and_catalog.map(|(_, catalog)| catalog.id.to_owned()),
-            catalog_name: addon_and_catalog.and_then(|(_, catalog)| catalog.name.to_owned()),
+            catalog_name: addon_and_catalog.and_then(|(addon, catalog)| {
+                catalog
+                    .name
+                    .to_owned()
+                    .or(Some(addon.manifest.name.to_owned()))
+            }),
             catalog_type: addon_and_catalog.map(|(_, catalog)| catalog.r#type.to_owned()),
             request: self.request.to_protobuf::<E>(&()),
             content: self.content.to_protobuf::<E>(&(ctx, &self.request)),
