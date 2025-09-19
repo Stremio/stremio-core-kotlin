@@ -273,22 +273,22 @@ impl ToProtobuf<models::LoadableAuthKey, ()> for Loadable<LinkAuthKey, LinkError
     }
 }
 
-impl ToProtobuf<models::LoadableTorrent, ()> for Loadable<ResourcePath, EnvError> {
+impl ToProtobuf<models::LoadableTramvai, ()> for Loadable<ResourcePath, EnvError> {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
         _args: &(),
-    ) -> models::LoadableTorrent {
+    ) -> models::LoadableTramvai {
         let content = match &self {
             Loadable::Ready(ready) => {
                 let deeplinks = MetaItemDeepLinks::from(ready).to_protobuf::<E>(&());
-                models::loadable_torrent::Deeplinks::Ready(deeplinks)
+                models::loadable_tramvai::Deeplinks::Ready(deeplinks)
             }
-            Loadable::Err(error) => models::loadable_torrent::Deeplinks::Error(models::Error {
+            Loadable::Err(error) => models::loadable_tramvai::Deeplinks::Error(models::Error {
                 message: error.to_string(),
             }),
-            Loadable::Loading => models::loadable_torrent::Deeplinks::Loading(models::Loading {}),
+            Loadable::Loading => models::loadable_tramvai::Deeplinks::Loading(models::Loading {}),
         };
-        models::LoadableTorrent {
+        models::LoadableTramvai {
             deeplinks: Some(content),
         }
     }

@@ -10,7 +10,7 @@ message Stream {
   oneof source {
     Url url = 1;
     YouTube you_tube = 2;
-    Torrent torrent = 3;
+    Tramvai tramvai = 3;
     External external = 4;
     PlayerFrame player_frame = 5;
     Rar rar = 6;
@@ -31,7 +31,7 @@ message Stream {
     required string yt_id = 1;
   }
 
-  message Torrent {
+  message Tramvai {
     required string info_hash = 1;
     optional int32 file_idx = 2;
     repeated string announce = 3;
