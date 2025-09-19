@@ -28,7 +28,7 @@ message ActionCtx {
     LibraryItemToggle toggle_library_item_notifications = 14;
     string dismiss_notification_item = 15;
     google.protobuf.Empty push_user_to_api = 16;
-    google.protobuf.Empty pull_user_from_api = 17;
+    PullUserFromApi pull_user_from_api = 17;
     google.protobuf.Empty push_addons_to_api = 18;
     google.protobuf.Empty pull_addons_from_api = 19;
     google.protobuf.Empty sync_library_with_api = 20;
@@ -39,6 +39,10 @@ message ActionCtx {
     string add_server_url = 24;
     // Delete a server URL from the list of available streaming servers
     string delete_server_url = 25;
+  }
+
+  message PullUserFromApi {
+    optional string token = 1;
   }
 
   message LibraryItemToggle {
