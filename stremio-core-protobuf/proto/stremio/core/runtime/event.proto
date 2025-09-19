@@ -48,7 +48,7 @@ message Event {
     TraktPlaying trakt_playing = 37;
     TraktPaused trakt_paused = 38;
     MagnetParsed magnet_parsed = 39;
-    TorrentParsed torrent_parsed = 40;
+    TramvaiParsed tramvai_parsed = 40;
     PlayingOnDevice playing_on_device = 41;
     StreamingServerUrlsBucketChanged streaming_server_urls_bucket_changed = 42;
     StreamingServerUrlsPushedToStorage streaming_server_urls_pushed_to_storage = 43;
@@ -177,8 +177,8 @@ message Event {
   message MagnetParsed {
     required string magnet = 1;
   }
-  message TorrentParsed {
-    required bytes torrent = 1;
+  message TramvaiParsed {
+    required bytes tramvai = 1;
   }
   message PlayingOnDevice {
     required string device = 1;
