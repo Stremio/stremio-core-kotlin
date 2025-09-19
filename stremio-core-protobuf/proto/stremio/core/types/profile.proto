@@ -42,6 +42,7 @@ message Profile {
     required bool send_crash_reports = 29;
     required bool server_in_foreground = 30;
     required bool quit_on_close = 31;
+    required bool gamepad_support = 32;
   }
 
   enum FrameRateMatchingStrategy {

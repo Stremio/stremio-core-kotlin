@@ -1,12 +1,16 @@
 use std::ops::Range;
 
-use stremio_core::runtime::{
-    msg::{
-        Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx, ActionLibraryByType,
-        ActionLibraryWithFilters, ActionLink, ActionLoad, ActionMetaDetails, ActionPlayer,
-        ActionStreamingServer, CreateTorrentArgs, PlayOnDeviceArgs,
+use stremio_core::{
+    runtime::{
+        msg::{
+            Action, ActionCatalogWithFilters, ActionCatalogsWithExtra, ActionCtx,
+            ActionLibraryByType, ActionLibraryWithFilters, ActionLink, ActionLoad,
+            ActionMetaDetails, ActionPlayer, ActionStreamingServer, CreateTorrentArgs,
+            PlayOnDeviceArgs,
+        },
+        RuntimeAction,
     },
-    RuntimeAction,
+    types::profile::AuthKey,
 };
 
 use crate::{
@@ -73,8 +77,10 @@ impl FromProtobuf<Action> for runtime::Action {
                 Some(action_ctx::Args::PushUserToApi(_args)) => {
                     Action::Ctx(ActionCtx::PushUserToAPI)
                 }
-                Some(action_ctx::Args::PullUserFromApi(_args)) => {
-                    Action::Ctx(ActionCtx::PullUserFromAPI)
+                Some(action_ctx::Args::PullUserFromApi(args)) => {
+                    Action::Ctx(ActionCtx::PullUserFromAPI {
+                        token: args.token.clone().map(AuthKey),
+                    })
                 }
                 Some(action_ctx::Args::PushAddonsToApi(_args)) => {
                     Action::Ctx(ActionCtx::PushAddonsToAPI)

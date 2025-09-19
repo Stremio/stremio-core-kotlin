@@ -100,6 +100,7 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             server_in_foreground: self.server_in_foreground,
             send_crash_reports: self.send_crash_reports,
             quit_on_close: self.quit_on_close,
+            gamepad_support: self.gamepad_support,
         }
     }
 }
@@ -214,6 +215,7 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             server_in_foreground: self.server_in_foreground,
             send_crash_reports: self.send_crash_reports,
             quit_on_close: self.quit_on_close,
+            gamepad_support: self.gamepad_support,
         }
     }
 }
