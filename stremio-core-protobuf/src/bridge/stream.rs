@@ -19,7 +19,7 @@ impl FromProtobuf<StreamSource> for types::stream::Source {
             types::stream::Source::YouTube(source) => StreamSource::YouTube {
                 yt_id: source.yt_id.to_owned(),
             },
-            types::stream::Source::Torrent(source) => StreamSource::Torrent {
+            types::stream::Source::Tramvai(source) => StreamSource::Torrent {
                 info_hash: <[u8; 20]>::from_hex(source.info_hash.as_str())
                     .expect("Stream.info_hash parse failed"),
                 file_idx: source.file_idx.map(|idx| idx as u16),
@@ -99,7 +99,7 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
                 file_idx,
                 announce,
                 file_must_include,
-            } => types::stream::Source::Torrent(types::stream::Torrent {
+            } => types::stream::Source::Tramvai(types::stream::Tramvai {
                 info_hash: hex::encode(info_hash),
                 file_idx: file_idx.map(|idx| idx as i32),
                 announce: announce.clone(),

@@ -11,13 +11,13 @@ message ActionStreamingServer {
   oneof args {
     google.protobuf.Empty reload = 1;
     stremio.core.models.StreamingServer.Settings update_settings = 2;
-    CreateTorrentArgs create_torrent = 3;
+    CreateTramvaiArgs create_tramvai = 3;
     stremio.core.models.StreamingServer.StatisticsRequest get_statistics = 4;
     PlayOnDeviceArgs play_on_device = 5;
   }
 }
 
-message CreateTorrentArgs {
+message CreateTramvaiArgs {
   oneof args {
     bytes file = 1;
     string magnet = 2;

@@ -206,8 +206,8 @@ impl ToProtobuf<runtime::Event, ()> for Event {
                 })
             }
             Event::TorrentParsed { torrent } => {
-                runtime::event::Type::TorrentParsed(runtime::event::TorrentParsed {
-                    torrent: torrent.to_owned(),
+                runtime::event::Type::TramvaiParsed(runtime::event::TramvaiParsed {
+                    tramvai: torrent.to_owned(),
                 })
             }
             Event::PlayingOnDevice { device } => {

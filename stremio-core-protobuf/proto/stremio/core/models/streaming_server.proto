@@ -12,7 +12,7 @@ message StreamingServer {
   optional string base_url = 2;
   optional string remote_url = 3;
   required LoadableSettings settings = 4;
-  optional LoadableTorrent torrent = 5;
+  optional LoadableTramvai tramvai = 5;
   required LoadablePlaybackDevices playback_devices = 6;
   optional LoadableStatistics statistics = 7;
 
@@ -81,7 +81,7 @@ message LoadableBaseUrl {
   }
 }
 
-message LoadableTorrent {
+message LoadableTramvai {
   oneof deeplinks {
     Loading loading = 1;
     Error error = 2;

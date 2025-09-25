@@ -122,7 +122,7 @@ impl ToProtobuf<models::StreamingServer, ()> for StreamingServer {
             settings: self.settings.to_protobuf::<E>(&()),
             base_url: self.base_url.to_protobuf::<E>(&()),
             remote_url: self.remote_url.to_protobuf::<E>(&()),
-            torrent: self
+            tramvai: self
                 .torrent
                 .to_owned()
                 .map(|torrent| torrent.1)

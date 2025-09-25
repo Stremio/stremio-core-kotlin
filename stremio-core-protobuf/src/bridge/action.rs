@@ -19,7 +19,7 @@ use crate::{
         runtime::{
             self, action_catalog_with_filters, action_catalogs_with_extra, action_ctx,
             action_library_by_type, action_library_with_filters, action_link, action_load,
-            action_meta_details, action_player, action_streaming_server, create_torrent_args,
+            action_meta_details, action_player, action_streaming_server, create_tramvai_args,
             Field,
         },
         types,
@@ -187,14 +187,14 @@ impl FromProtobuf<Action> for runtime::Action {
                             settings.from_protobuf(),
                         ))
                     }
-                    Some(action_streaming_server::Args::CreateTorrent(create_args)) => {
+                    Some(action_streaming_server::Args::CreateTramvai(create_args)) => {
                         match &create_args.args {
-                            Some(create_torrent_args::Args::File(file)) => {
+                            Some(create_tramvai_args::Args::File(file)) => {
                                 Action::StreamingServer(ActionStreamingServer::CreateTorrent(
                                     CreateTorrentArgs::File(file.to_owned()),
                                 ))
                             }
-                            Some(create_torrent_args::Args::Magnet(magnet)) => {
+                            Some(create_tramvai_args::Args::Magnet(magnet)) => {
                                 Action::StreamingServer(ActionStreamingServer::CreateTorrent(
                                     CreateTorrentArgs::Magnet(magnet.from_protobuf()),
                                 ))
