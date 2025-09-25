@@ -1,8 +1,6 @@
 // TODO: Add safety docs and remove suppression of linter!
 #![allow(clippy::missing_safety_doc)]
 
-#[cfg(debug_assertions)]
-use std::panic;
 use std::{io::Cursor, os::raw::c_void, sync::RwLock};
 
 use enclose::enclose;
@@ -31,25 +29,62 @@ use stremio_core::{
     },
 };
 use stremio_core_protobuf::{FromProtobuf, ToProtobuf};
+use tracing::{error, info};
+use tracing_subscriber::EnvFilter;
 
 use crate::{
     bridge::ToJNIByteArray,
-    env::{AndroidEnv, AndroidEvent, KotlinClassName},
+    env::{android_log_write, AndroidEnv, AndroidEvent, KotlinClassName, PANIC_LOG_TAG},
     jni_ext::ExceptionDescribeExt,
     model::AndroidModel,
     protobuf::stremio::core::runtime::{self, Field},
+    subscriber::KotlinLayerConfigBuilder,
 };
+
+pub mod subscriber;
 
 #[allow(clippy::type_complexity)]
 static RUNTIME: Lazy<RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, EnvError>>>> =
     Lazy::new(Default::default);
 
+/// Initialize panic hook to send data to Kotlin
 #[no_mangle]
 pub unsafe extern "C" fn JNI_OnLoad(_: JavaVM, _: *mut c_void) -> jint {
-    #[cfg(debug_assertions)]
-    panic::set_hook(Box::new(|info| {
-        AndroidEnv::log(info.to_string());
+    std::panic::set_hook(Box::new(|info| {
+        let info_str = info.to_string();
+        eprintln!("FATAL: {}", &info_str);
+        // Attempt to set the flag from false to true.
+        let _ret = android_log_write(
+            crate::env::AndroidLogPriority::Fatal,
+            PANIC_LOG_TAG,
+            &info_str,
+        )
+        .inspect_err(|err| {
+            eprintln!("Failed to log PANIC log with AndroidLogPriority::Fatal: {err}")
+        });
     }));
+
+    let env_filter = EnvFilter::builder().from_env_lossy();
+    let max_level_hint = env_filter.max_level_hint();
+
+    #[cfg(any(debug_assertions, feature = "log-trace"))]
+    let max_level = tracing::Level::TRACE;
+    #[cfg(all(not(debug_assertions), not(feature = "log-trace")))]
+    let max_level = tracing::Level::INFO;
+
+    let max_level = max_level_hint
+        .and_then(|level_filter| level_filter.into_level())
+        .unwrap_or(max_level);
+
+    let config = KotlinLayerConfigBuilder::default()
+        .set_max_level(max_level)
+        .build();
+
+    // setup Swift tracing Subscriber
+    subscriber::set_as_global_default_with_config(config);
+
+    info!(?max_level, "Logging level");
+
     // TODO: consider using ensure_local_capacity
     JNI_VERSION_1_6
 }
@@ -214,16 +249,42 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateNative(
         .call_method(field, "getValue", "()I", &[])
         .and_then(|result| result.i())
         .ok()
-        .and_then(|result| Field::try_from(result).ok().from_protobuf())
+        .and_then(|result| Field::try_from(result).inspect_err(|err| {
+            error!("Field (rust) failed to be parsed from the Field.getValue() (kotlin) passed value: {err}")
+        }).ok().from_protobuf())
         .expect("AndroidModelField convert failed");
-    let runtime = RUNTIME.read().expect("RUNTIME read failed");
-    let runtime = runtime
-        .as_ref()
-        .expect("RUNTIME not initialized")
-        .as_ref()
-        .expect("RUNTIME not initialized");
-    let model = runtime.model().expect("model read failed");
-    model.get_state_binary(&field).to_jni_byte_array(&env)
+    let runtime = RUNTIME
+        .read()
+        .inspect_err(|_err| {
+            error!("Runtime read failed due to RwLock poisoning");
+        })
+        .expect("RUNTIME read failed");
+    let runtime = runtime.as_ref();
+    if runtime.is_none() {
+        error!("Runtime initialization is not set yet (None)");
+    }
+
+    let runtime = runtime.expect("RUNTIME not initialized").as_ref();
+    match runtime {
+        Loadable::Loading => {
+            error!("Runtime initialization hasn't loaded yet (Loadable::Loading)");
+            panic!("Runtime initialization hasn't loaded yet (Loadable::Loading)")
+        }
+        Loadable::Err(err) => {
+            error!("Runtime initialization hasn't errored (Loadable::Error): {err}");
+            panic!("Runtime initialization hasn't errored (Loadable::Error): {err}");
+        }
+        Loadable::Ready(runtime) => {
+            let model = runtime
+                .model()
+                .inspect_err(|_err| {
+                    error!("Runtime RwLock model read has failed due to poisoning");
+                })
+                .expect("model read failed");
+
+            model.get_state_binary(&field).to_jni_byte_array(&env)
+        }
+    }
 }
 
 #[no_mangle]
