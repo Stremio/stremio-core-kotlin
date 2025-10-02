@@ -8,6 +8,7 @@ use stremio_core::{
     runtime::Env,
     types::{
         addon::ResourceRequest,
+        player::{IntroOutro, IntroData},
         resource::Video,
         streams::{AudioTrack, StreamItemState, SubtitleTrack},
     },
@@ -70,6 +71,50 @@ impl FromProtobuf<VideoParams> for models::player::VideoParams {
             hash: self.hash.to_owned(),
             size: self.size.to_owned(),
             filename: self.filename.to_owned(),
+        }
+    }
+}
+
+impl FromProtobuf<IntroOutro> for models::player::IntroOutro {
+    fn from_protobuf(&self) -> IntroOutro {
+        IntroOutro {
+            intro: self.intro.from_protobuf(),
+            outro: self.outro.to_owned(),
+        }
+    }
+}
+
+impl FromProtobuf<IntroData> for models::player::IntroData {
+    fn from_protobuf(&self) -> IntroData {
+        IntroData {
+            from: self.from.to_owned(),
+            to: self.to.to_owned(),
+            duration: self.duration.to_owned(),
+        }
+    }
+}
+
+impl ToProtobuf<models::player::IntroOutro, ()> for IntroOutro {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::player::IntroOutro {
+        models::player::IntroOutro {
+            intro: self.intro.to_protobuf::<E>(&()),
+            outro: self.outro.to_owned(),
+        }
+    }
+}
+
+impl ToProtobuf<models::player::IntroData, ()> for IntroData {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> models::player::IntroData {
+        models::player::IntroData {
+            from: self.from.to_owned(),
+            to: self.to.to_owned(),
+            duration: self.duration.to_owned(),
         }
     }
 }
@@ -194,6 +239,7 @@ impl ToProtobuf<models::Player, (&Ctx, &StreamingServer)> for Player {
             series_info: self.series_info.to_protobuf::<E>(&()),
             library_item: self.library_item.to_protobuf::<E>(&(*ctx, None)),
             stream_state: self.stream_state.to_protobuf::<E>(&()),
+            intro_outro: self.intro_outro.to_protobuf::<E>(&()),
         }
     }
 }
