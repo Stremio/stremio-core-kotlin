@@ -8,7 +8,7 @@ use stremio_core::{
     runtime::Env,
     types::{
         addon::ResourceRequest,
-        player::{IntroOutro, IntroData},
+        player::{IntroData, IntroOutro},
         resource::Video,
         streams::{AudioTrack, StreamItemState, SubtitleTrack},
     },
