@@ -95,26 +95,20 @@ impl FromProtobuf<IntroData> for models::player::IntroData {
 }
 
 impl ToProtobuf<models::player::IntroOutro, ()> for IntroOutro {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
-        &self,
-        _args: &(),
-    ) -> models::player::IntroOutro {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> models::player::IntroOutro {
         models::player::IntroOutro {
             intro: self.intro.to_protobuf::<E>(&()),
-            outro: self.outro.to_owned(),
+            outro: self.outro,
         }
     }
 }
 
 impl ToProtobuf<models::player::IntroData, ()> for IntroData {
-    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
-        &self,
-        _args: &(),
-    ) -> models::player::IntroData {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> models::player::IntroData {
         models::player::IntroData {
-            from: self.from.to_owned(),
-            to: self.to.to_owned(),
-            duration: self.duration.to_owned(),
+            from: self.from,
+            to: self.to,
+            duration: self.duration,
         }
     }
 }
