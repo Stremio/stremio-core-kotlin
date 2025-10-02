@@ -75,25 +75,6 @@ impl FromProtobuf<VideoParams> for models::player::VideoParams {
     }
 }
 
-impl FromProtobuf<IntroOutro> for models::player::IntroOutro {
-    fn from_protobuf(&self) -> IntroOutro {
-        IntroOutro {
-            intro: self.intro.from_protobuf(),
-            outro: self.outro.to_owned(),
-        }
-    }
-}
-
-impl FromProtobuf<IntroData> for models::player::IntroData {
-    fn from_protobuf(&self) -> IntroData {
-        IntroData {
-            from: self.from.to_owned(),
-            to: self.to.to_owned(),
-            duration: self.duration.to_owned(),
-        }
-    }
-}
-
 impl ToProtobuf<models::player::IntroOutro, ()> for IntroOutro {
     fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> models::player::IntroOutro {
         models::player::IntroOutro {
