@@ -65,6 +65,7 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             binge_watching: self.binge_watching,
             play_in_background: self.play_in_background,
             hardware_decoding: self.hardware_decoding,
+            video_mode: self.video_mode.to_owned(),
             frame_rate_matching_strategy: types::profile::FrameRateMatchingStrategy::try_from(
                 self.frame_rate_matching_strategy,
             )
@@ -190,6 +191,7 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             binge_watching: self.binge_watching,
             play_in_background: self.play_in_background,
             hardware_decoding: self.hardware_decoding,
+            video_mode: self.video_mode.to_owned(),
             audio_passthrough: self.audio_passthrough,
             audio_language: self.audio_language.clone(),
             subtitles_language: self.subtitles_language.clone(),
