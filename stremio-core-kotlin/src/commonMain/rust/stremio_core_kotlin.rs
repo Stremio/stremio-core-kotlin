@@ -90,6 +90,11 @@ pub unsafe extern "C" fn JNI_OnLoad(_: JavaVM, _: *mut c_void) -> jint {
 }
 
 #[no_mangle]
+/// Initializes core and starts the Runtime. Run only once!
+///
+/// # Returns
+///
+/// - `JObject::null()` - if initializeNative has already been called once.
 pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
     env: JNIEnv,
     _class: JClass,
@@ -222,24 +227,86 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_dispatchNative(
     env: JNIEnv,
     _class: JClass,
     action_protobuf: jbyteArray,
-) {
+) -> jobject {
     let runtime_action = env
         .convert_byte_array(action_protobuf)
-        .ok()
-        .map(Cursor::new)
-        .and_then(|buf| runtime::RuntimeAction::decode(buf).ok())
-        .map(|action| action.from_protobuf())
-        .expect("Action convert failed");
+        .map_err(|err| {
+            EnvError::Other(format!(
+                "dispatchNative: Couldn't convert a java byte array to a rust vector of bytes: {err}"
+            ))
+        })
+        .and_then(|bytes| {
+            let buf = Cursor::new(bytes);
+
+            match runtime::RuntimeAction::decode(buf) {
+            Ok(action) => Ok(action.from_protobuf()),
+            Err(err) => Err(EnvError::Other(format!(
+                "dispatchNative: Couldn't decode Runtime Action: {err}"
+            )))
+        }
+    });
+
+    let runtime_action = match runtime_action {
+        Ok(x) => x,
+        // return early with error encoded to protobuf
+        Err(err) => {
+            return err
+                .to_protobuf::<AndroidEnv>(&())
+                .encode_to_vec()
+                .to_jni_byte_array(&env)
+        }
+    };
     let runtime = RUNTIME.read().expect("RUNTIME read failed");
-    let runtime = runtime
-        .as_ref()
-        .expect("RUNTIME not initialized")
-        .as_ref()
-        .expect("RUNTIME not initialized");
-    runtime.dispatch(runtime_action);
+
+    match runtime.as_ref() {
+        Some(Loadable::Loading) => {
+            error!(
+                function = "dispatchNative",
+                "Runtime initialization hasn't loaded yet (Loadable::Loading)"
+            );
+            EnvError::Other(
+                "dispatchNative: Runtime initialization hasn't loaded yet (Loadable::Loading)"
+                    .to_string(),
+            )
+            .to_protobuf::<AndroidEnv>(&())
+            .encode_to_vec()
+            .to_jni_byte_array(&env)
+        }
+        Some(Loadable::Err(err)) => {
+            error!(
+                function = "dispatchNative",
+                "Runtime initialization hasn't errored (Loadable::Error): {err}"
+            );
+
+            EnvError::Other(format!(
+                "dispatchNative: Runtime initialization hasn't errored (Loadable::Error): {err}"
+            ))
+            .to_protobuf::<AndroidEnv>(&())
+            .encode_to_vec()
+            .to_jni_byte_array(&env)
+        }
+        Some(Loadable::Ready(runtime)) => {
+            runtime.dispatch(runtime_action);
+
+            JObject::null().into_inner()
+        }
+        None => {
+            error!(
+                function = "dispatchNative",
+                "Runtime initialization is not set yet (None)"
+            );
+            EnvError::Other(
+                "dispatchNative: Runtime initialization is not set yet (None)".to_string(),
+            )
+            .to_protobuf::<AndroidEnv>(&())
+            .encode_to_vec()
+            .to_jni_byte_array(&env)
+        }
+    }
 }
 
 #[no_mangle]
+/// Will return null if core hasn't been initialized yet
 pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateNative(
     env: JNIEnv,
     _class: JClass,
@@ -259,30 +326,42 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_getStateNative(
             error!("Runtime read failed due to RwLock poisoning");
         })
         .expect("RUNTIME read failed");
-    let runtime = runtime.as_ref();
-    if runtime.is_none() {
-        error!("Runtime initialization is not set yet (None)");
-    }
 
-    let runtime = runtime.expect("RUNTIME not initialized").as_ref();
-    match runtime {
-        Loadable::Loading => {
-            error!("Runtime initialization hasn't loaded yet (Loadable::Loading)");
-            panic!("Runtime initialization hasn't loaded yet (Loadable::Loading)")
+    match runtime.as_ref() {
+        Some(Loadable::Loading) => {
+            error!(
+                function = "getStateNative",
+                "Runtime initialization hasn't loaded yet (Loadable::Loading)"
+            );
+
+            JObject::null().into_inner()
         }
-        Loadable::Err(err) => {
-            error!("Runtime initialization hasn't errored (Loadable::Error): {err}");
-            panic!("Runtime initialization hasn't errored (Loadable::Error): {err}");
+        Some(Loadable::Err(err)) => {
+            error!(
+                function = "getStateNative",
+                "Runtime initialization hasn't errored (Loadable::Error): {err}"
+            );
+            JObject::null().into_inner()
         }
-        Loadable::Ready(runtime) => {
+        Some(Loadable::Ready(runtime)) => {
             let model = runtime
                 .model()
                 .inspect_err(|_err| {
-                    error!("Runtime RwLock model read has failed due to poisoning");
+                    error!(
+                        function = "getStateNative",
+                        "Runtime RwLock model read has failed due to poisoning"
+                    );
                 })
                 .expect("model read failed");
 
             model.get_state_binary(&field).to_jni_byte_array(&env)
+        }
+        None => {
+            error!(
+                function = "getStateNative",
+                "Runtime initialization is not set yet (None)"
+            );
+            JObject::null().into_inner()
         }
     }
 }
