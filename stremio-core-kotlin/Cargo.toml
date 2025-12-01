@@ -90,8 +90,3 @@ prost-types.workspace = true
 prost-build.workspace = true
 protox.workspace = true
 glob.workspace = true
-
-# A way to quickly test with local version of `core` crates
-# [patch.'https://github.com/Stremio/stremio-core']
-# stremio-core = { path = "../core" }
-# stremio-core-web = { path = "../core/stremio-core-web" }

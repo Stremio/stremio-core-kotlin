@@ -100,7 +100,15 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
     _class: JClass,
     storage: JObject,
 ) -> jobject {
-    if RUNTIME.read().expect("RUNTIME read failed").is_some() {
+    if RUNTIME
+        .read()
+        .inspect_err(|err| tracing::error!(runtime = ?err, context="initializeNative", "RUNTIME read failed due to poisoning"))
+        .ok()
+        .map(|runtime| runtime.as_ref().is_some())
+        .unwrap_or(false)
+    {
+        tracing::warn!(context="initializeNative", "RUNTIME already initialized Some(Runtime)");
+
         return JObject::null().into_inner();
     };
 
@@ -165,18 +173,42 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
                     AndroidEnv::exec_concurrent(rx.for_each(move |event| {
                         if let RuntimeEvent::CoreEvent(event) = &event {
                             AndroidEnv::exec_concurrent(enclose!((event) async move {
-                                let runtime = RUNTIME.read().expect("runtime read failed");
-                                let runtime = runtime
-                                    .as_ref()
-                                    .expect("runtime is not ready")
-                                    .as_ref()
-                                    .expect("runtime is not ready");
-                                let model = runtime.model().expect("model read failed");
-                                AndroidEnv::emit_to_analytics(
-                                    &AndroidEvent::CoreEvent(event.to_owned()),
-                                    &model,
-                                    "TODO"
-                                );
+                                let handle_event = || -> Option<bool> {
+                                    let lock = RUNTIME.read().inspect_err(|err| tracing::error!(context="Receive core event", runtime = ?err, "RUNTIME read failed")).ok()?;
+
+                                    let runtime = lock
+                                        .as_ref()
+                                        .map_or_else(|| {
+                                            tracing::error!(runtime = "None", context="Receive core event", "RUNTIME hasn't been not initialized");
+
+                                            None
+                                        }, |runtime_initialized| match runtime_initialized.as_ref() {
+                                            Loadable::Ready(runtime) => Some(runtime),
+                                            Loadable::Loading => {
+                                                tracing::warn!(runtime = ?Loadable::<(), EnvError>::Loading, context="Receive core event", "Runtime is still initializing (Loadable::Loading)");
+
+                                                None
+                                            },
+                                            Loadable::Err(err) => {
+                                                tracing::error!(runtime = ?Loadable::<(), _>::Err(err), context="Receive core event", "Runtime initialization error");
+                                                None
+                                            }
+                                        })?;
+
+                                    let model = runtime.model().inspect_err(|err| {
+                                        tracing::error!(model = ?err, context="Receive core event", "Runtime model read failed due to poisoning")
+                                    }).ok()?;
+
+                                    AndroidEnv::emit_to_analytics(
+                                        &AndroidEvent::CoreEvent(event.to_owned()),
+                                        &model,
+                                        "TODO"
+                                    );
+
+                                    Some(true)
+                                };
+
+                                let _option = handle_event();
                             }));
                         };
                         let classes = AndroidEnv::kotlin_classes().unwrap();
