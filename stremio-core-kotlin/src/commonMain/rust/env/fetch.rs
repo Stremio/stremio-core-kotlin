@@ -1,6 +1,9 @@
-use std::convert::TryFrom;
-use std::env;
-use std::time::Duration;
+use std::{
+    convert::TryFrom,
+    env::{self, VarError},
+    path::PathBuf,
+    time::Duration,
+};
 
 use futures::{future, TryFutureExt};
 use http::{Method, Request};
@@ -29,26 +32,37 @@ pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Se
         Ok(request) => request,
         Err(error) => return future::err(EnvError::Fetch(error.to_string())).boxed_env(),
     };
-    let client = if env::var("TMPDIR").is_ok() {
-        CLIENT_WITH_CACHE.get_or_init(|| {
-            ClientBuilder::new(
-                Client::builder()
-                    .connect_timeout(Duration::from_secs(30))
-                    .use_rustls_tls()
-                    .build()
-                    .unwrap_or_default(),
-            )
-            .with(Cache(HttpCache::<CACacheManager> {
-                mode: CacheMode::Default,
-                manager: CACacheManager {
-                    path: env::temp_dir().join("http-cacache"),
-                },
-                options: HttpCacheOptions::default(),
-            }))
-            .build()
-        })
-    } else {
-        CLIENT_WITHOUT_CACHE.get_or_init(|| {
+
+    let client = match env::var("TMPDIR") {
+        Ok(tmpdir) => {
+            CLIENT_WITH_CACHE.get_or_init(|| {
+                let tmpdir_path = PathBuf::from(tmpdir);
+                let cacache_path = tmpdir_path.join("http-cacache");
+                let connection_timeout = Duration::from_secs(30);
+
+                tracing::info!(tmpdir_path = %tmpdir_path.display(), cacache_path = %cacache_path.display(), ?connection_timeout, "Client Cacache middleware will be initialized...");
+                ClientBuilder::new(
+                    Client::builder()
+                        .connect_timeout(connection_timeout)
+                        .use_rustls_tls()
+                        .build()
+                        .unwrap_or_default(),
+                )
+                .with(Cache(HttpCache::<CACacheManager> {
+                    mode: CacheMode::Default,
+                    manager: CACacheManager {
+                        path: cacache_path,
+                    },
+                    options: HttpCacheOptions::default(),
+                }))
+                .build()
+            })
+        }
+        Err(err) => CLIENT_WITHOUT_CACHE.get_or_init(|| {
+            // we log the error only once when initializing the Client.
+            if let VarError::NotUnicode(_) = &err {
+                tracing::error!(?err, "TMPDIR env. variable is not a valid Unicode, no Client Cacache middleware will be used");
+            }
             ClientBuilder::new(
                 Client::builder()
                     .connect_timeout(Duration::from_secs(30))
