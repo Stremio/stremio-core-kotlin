@@ -299,7 +299,7 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_decodeStreamDataNative(
         .expect("stream data convert failed")
         .to_string_lossy()
         .into_owned();
-    let stream = match Stream::decode(stream_data) {
+    let stream = match Stream::decode(&stream_data) {
         Ok(stream) => stream,
         Err(_) => return JObject::null().into_inner(),
     };
