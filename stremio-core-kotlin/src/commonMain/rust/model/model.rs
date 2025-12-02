@@ -28,7 +28,7 @@ use stremio_core_protobuf::model::AddonsWithFilters;
 
 use crate::{bridge::ToProtobuf, env::AndroidEnv};
 
-#[derive(Model, Clone)]
+#[derive(Model, Debug, Clone)]
 #[model(AndroidEnv)]
 pub struct AndroidModel {
     pub ctx: Ctx,
@@ -181,7 +181,7 @@ impl AndroidModel {
                 .to_protobuf::<AndroidEnv>(&(&self.ctx, &self.streaming_server))
                 .encode_to_vec(),
 
-            // guard against new fields  being added to the CSharp model
+            // guard against new fields  being added to the Kotlin model
             #[allow(unreachable_patterns)]
             _ => unimplemented!("You've requested unimplemented field"),
         }

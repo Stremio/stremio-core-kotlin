@@ -1210,6 +1210,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "lz-str"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "39f3d72d77227090eed75ea331285a53726e78374a1f357ff5757702c23c70cc"
+
+[[package]]
 name = "magnet-url"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2291,7 +2297,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 [[package]]
 name = "stremio-core"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#cb9e69dafdc52c432d53a68a003a39849aea1d3c"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#56eb5c74678bb0b3ba430d5241e5daa9810bdc0a"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2308,6 +2314,7 @@ dependencies = [
  "itertools",
  "lazysort",
  "localsearch",
+ "lz-str",
  "magnet-url",
  "num",
  "once_cell",
@@ -2400,7 +2407,7 @@ dependencies = [
 [[package]]
 name = "stremio-derive"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#cb9e69dafdc52c432d53a68a003a39849aea1d3c"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#56eb5c74678bb0b3ba430d5241e5daa9810bdc0a"
 dependencies = [
  "case",
  "proc-macro-crate",
@@ -2430,7 +2437,7 @@ dependencies = [
 [[package]]
 name = "stremio-watched-bitfield"
 version = "0.1.0"
-source = "git+https://github.com/Stremio/stremio-core?branch=development#cb9e69dafdc52c432d53a68a003a39849aea1d3c"
+source = "git+https://github.com/Stremio/stremio-core?branch=development#56eb5c74678bb0b3ba430d5241e5daa9810bdc0a"
 dependencies = [
  "base64 0.13.1",
  "flate2",

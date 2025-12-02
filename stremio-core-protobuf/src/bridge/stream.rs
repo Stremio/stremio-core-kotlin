@@ -3,7 +3,7 @@ use stremio_core::deep_links::StreamDeepLinks;
 use stremio_core::models::ctx::Ctx;
 use stremio_core::types::addon::ResourceRequest;
 use stremio_core::types::resource::{
-    Stream, StreamBehaviorHints, StreamProxyHeaders, StreamSource,
+    ArchiveUrl, Stream, StreamBehaviorHints, StreamProxyHeaders, StreamSource,
 };
 use url::Url;
 
@@ -36,14 +36,33 @@ impl FromProtobuf<StreamSource> for types::stream::Source {
                 player_frame_url: source.player_frame_url.from_protobuf(),
             },
             types::stream::Source::Rar(source) => StreamSource::Rar {
-                rar_urls: source.rar_urls.from_protobuf(),
+                urls: source.rar_urls.from_protobuf(),
                 file_idx: source.file_idx.map(|idx| idx as u16),
                 file_must_include: source.file_must_include.to_owned(),
             },
             types::stream::Source::Zip(source) => StreamSource::Zip {
-                zip_urls: source.zip_urls.from_protobuf(),
+                urls: source.zip_urls.from_protobuf(),
                 file_idx: source.file_idx.map(|idx| idx as u16),
                 file_must_include: source.file_must_include.to_owned(),
+            },
+            types::stream::Source::Zip7(source) => StreamSource::Zip7 {
+                urls: source.zip7_urls.from_protobuf(),
+                file_idx: source.file_idx.map(|idx| idx as u16),
+                file_must_include: source.file_must_include.to_owned(),
+            },
+            types::stream::Source::Tgz(source) => StreamSource::Tgz {
+                urls: source.tgz_urls.from_protobuf(),
+                file_idx: source.file_idx.map(|idx| idx as u16),
+                file_must_include: source.file_must_include.to_owned(),
+            },
+            types::stream::Source::Tar(source) => StreamSource::Tar {
+                urls: source.tar_urls.from_protobuf(),
+                file_idx: source.file_idx.map(|idx| idx as u16),
+                file_must_include: source.file_must_include.to_owned(),
+            },
+            types::stream::Source::Nzb(source) => StreamSource::Nzb {
+                nzb_url: source.nzb_url.from_protobuf(),
+                servers: source.servers.from_protobuf(),
             },
         }
     }
@@ -119,23 +138,56 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
                 })
             }
             StreamSource::Rar {
-                rar_urls,
+                urls,
                 file_idx,
                 file_must_include,
             } => types::stream::Source::Rar(types::stream::Rar {
-                rar_urls: rar_urls.to_protobuf::<E>(&()),
+                rar_urls: urls.to_protobuf::<E>(&()),
                 file_idx: file_idx.map(|idx| idx as i32),
                 file_must_include: file_must_include.to_owned(),
             }),
             StreamSource::Zip {
-                zip_urls,
+                urls,
                 file_idx,
                 file_must_include,
             } => types::stream::Source::Zip(types::stream::Zip {
-                zip_urls: zip_urls.to_protobuf::<E>(&()),
+                zip_urls: urls.to_protobuf::<E>(&()),
                 file_idx: file_idx.map(|idx| idx as i32),
                 file_must_include: file_must_include.to_owned(),
             }),
+            StreamSource::Zip7 {
+                urls,
+                file_idx,
+                file_must_include,
+            } => types::stream::Source::Zip7(types::stream::Zip7 {
+                zip7_urls: urls.to_protobuf::<E>(&()),
+                file_idx: file_idx.map(|idx| idx as i32),
+                file_must_include: file_must_include.to_owned(),
+            }),
+            StreamSource::Tgz {
+                urls,
+                file_idx,
+                file_must_include,
+            } => types::stream::Source::Tgz(types::stream::Tgz {
+                tgz_urls: urls.to_protobuf::<E>(&()),
+                file_idx: file_idx.map(|idx| idx as i32),
+                file_must_include: file_must_include.to_owned(),
+            }),
+            StreamSource::Tar {
+                urls,
+                file_idx,
+                file_must_include,
+            } => types::stream::Source::Tar(types::stream::Tar {
+                tar_urls: urls.to_protobuf::<E>(&()),
+                file_idx: file_idx.map(|idx| idx as i32),
+                file_must_include: file_must_include.to_owned(),
+            }),
+            StreamSource::Nzb { nzb_url, servers } => {
+                types::stream::Source::Nzb(types::stream::Nzb {
+                    nzb_url: nzb_url.to_protobuf::<E>(&()),
+                    servers: servers.to_protobuf::<E>(&()),
+                })
+            }
         }
     }
 }
@@ -184,10 +236,10 @@ impl
                 self,
                 *stream_request,
                 *meta_request,
-                &streaming_server_url.map(Clone::clone),
+                *streaming_server_url,
                 &settings,
             )),
-            _ => StreamDeepLinks::from((self, &streaming_server_url.map(Clone::clone), &settings)),
+            _ => StreamDeepLinks::from((self, *streaming_server_url, &settings)),
         };
 
         types::Stream {
@@ -225,6 +277,27 @@ impl
                 },
             },
             source: Some(self.source.to_protobuf::<E>(&())),
+        }
+    }
+}
+
+impl ToProtobuf<types::stream::ArchiveUrl, ()> for ArchiveUrl {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::stream::ArchiveUrl {
+        types::stream::ArchiveUrl {
+            url: self.url.to_string(),
+            bytes: self.bytes,
+        }
+    }
+}
+
+impl FromProtobuf<ArchiveUrl> for types::stream::ArchiveUrl {
+    fn from_protobuf(&self) -> ArchiveUrl {
+        ArchiveUrl {
+            url: self.url.from_protobuf(),
+            bytes: self.bytes,
         }
     }
 }

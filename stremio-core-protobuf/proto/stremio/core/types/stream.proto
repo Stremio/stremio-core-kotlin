@@ -15,13 +15,17 @@ message Stream {
     PlayerFrame player_frame = 5;
     Rar rar = 6;
     Zip zip = 7;
+    Zip7 zip7 = 8;
+    Tgz tgz = 9;
+    Tar tar = 10;
+    Nzb nzb = 11;
   }
-  optional string name = 8;
-  optional string description = 9;
-  optional string thumbnail = 10;
-  repeated Subtitle subtitles = 11;
-  required StreamBehaviorHints behavior_hints = 12;
-  required StreamDeepLinks deep_links = 13;
+  optional string name = 12;
+  optional string description = 13;
+  optional string thumbnail = 14;
+  repeated Subtitle subtitles = 15;
+  required StreamBehaviorHints behavior_hints = 16;
+  required StreamDeepLinks deep_links = 17;
 
   message Url {
     required string url = 1;
@@ -48,15 +52,43 @@ message Stream {
   }
 
   message Rar {
-    repeated string rar_urls = 1;
+    repeated ArchiveUrl rar_urls = 1;
     optional int32 file_idx = 2;
     repeated string file_must_include = 3;
   }
 
   message Zip {
-    repeated string zip_urls = 1;
+    repeated ArchiveUrl zip_urls = 1;
     optional int32 file_idx = 2;
     repeated string file_must_include = 3;
+  }
+
+  message Zip7 {
+    repeated ArchiveUrl zip7_urls = 1;
+    optional int32 file_idx = 2;
+    repeated string file_must_include = 3;
+  }
+
+  message Tgz {
+    repeated ArchiveUrl tgz_urls = 1;
+    optional int32 file_idx = 2;
+    repeated string file_must_include = 3;
+  }
+
+  message Tar {
+    repeated ArchiveUrl tar_urls = 1;
+    optional int32 file_idx = 2;
+    repeated string file_must_include = 3;
+  }
+
+  message Nzb {
+    required string nzb_url = 1;
+    repeated string servers = 2;
+  }
+
+  message ArchiveUrl {
+    required string url = 1;
+    optional uint64 bytes = 2;
   }
 }
 
