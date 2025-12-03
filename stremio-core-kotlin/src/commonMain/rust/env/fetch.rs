@@ -39,7 +39,7 @@ pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Se
                     .unwrap_or_default(),
             )
             .with(Cache(HttpCache::<CACacheManager> {
-                mode: CacheMode::Default,
+                mode: CacheMode::Reload,
                 manager: CACacheManager {
                     path: env::temp_dir().join("http-cacache"),
                 },
