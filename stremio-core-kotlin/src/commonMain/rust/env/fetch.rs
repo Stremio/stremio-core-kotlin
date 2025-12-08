@@ -95,7 +95,6 @@ pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Se
         let result = serde_path_to_error::deserialize::<_, OUT>(&mut deserializer);
 
         result.map_err(|error| EnvError::Serde(error.to_string()))
-        // .boxed_env()
     };
 
     fut.boxed_env()
