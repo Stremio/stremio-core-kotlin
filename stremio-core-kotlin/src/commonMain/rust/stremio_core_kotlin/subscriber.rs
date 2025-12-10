@@ -1,5 +1,4 @@
 //! A `tracing` subscriber for Kotlin.
-//!
 
 use core::fmt::{self, Write};
 

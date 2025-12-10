@@ -6,12 +6,12 @@ use std::{io::Cursor, os::raw::c_void, sync::RwLock};
 use enclose::enclose;
 use futures::{future, StreamExt};
 use jni::{
-    objects::{JClass, JObject},
+    objects::{JClass, JObject, JString},
     sys::{jbyteArray, jint, jobject, JNI_VERSION_1_6},
     JNIEnv, JavaVM,
 };
 
-use once_cell::sync::Lazy;
+use once_cell::sync::{Lazy, OnceCell};
 use prost::Message;
 
 use stremio_core::{
@@ -46,6 +46,9 @@ pub mod subscriber;
 #[allow(clippy::type_complexity)]
 static RUNTIME: Lazy<RwLock<Option<Loadable<Runtime<AndroidEnv, AndroidModel>, EnvError>>>> =
     Lazy::new(Default::default);
+
+/// The CACache directory on [`Java_com_stremio_core_Core_initializeNative`] of `stremio-core-kotlin`.
+pub static CACHE_DIR: OnceCell<Option<String>> = OnceCell::new();
 
 /// Initialize panic hook to send data to Kotlin
 #[no_mangle]
@@ -94,10 +97,29 @@ pub unsafe extern "C" fn Java_com_stremio_core_Core_initializeNative(
     env: JNIEnv,
     _class: JClass,
     storage: JObject,
+    cache_dir: JString,
 ) -> jobject {
     if RUNTIME.read().expect("RUNTIME read failed").is_some() {
         return JObject::null().into_inner();
     };
+
+    {
+        let cache_dir: Option<String> = match env.get_string(cache_dir) {
+            Ok(java_str) => Some(java_str.into()),
+            // if null, disable cache
+            Err(jni::errors::Error::NullPtr(_)) => None,
+            // on any other error, log it and continue
+            Err(err) => {
+                error!(?err, "The passed cache dir failed to be converted to a string, no caching will be used for requests");
+                None
+            }
+        };
+
+        // Set the cache directory only once on initialization!
+        CACHE_DIR
+            .set(cache_dir)
+            .expect("Cache directory should be set only once!");
+    }
 
     let init_result = AndroidEnv::exec_sync(AndroidEnv::init(&env, storage));
     match init_result {
