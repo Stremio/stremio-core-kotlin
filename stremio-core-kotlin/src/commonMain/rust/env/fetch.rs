@@ -1,7 +1,7 @@
 use std::{
     convert::TryFrom,
-    fs,
-    path::{Path, PathBuf},
+    env::{self, VarError},
+    path::PathBuf,
     time::Duration,
 };
 
@@ -15,26 +15,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::Deserializer;
 use stremio_core::runtime::{EnvError, EnvFutureExt, TryEnvFuture};
 
-use crate::CACHE_DIR;
-
 static CLIENT_WITH_CACHE: OnceCell<ClientWithMiddleware> = OnceCell::new();
 static CLIENT_WITHOUT_CACHE: OnceCell<ClientWithMiddleware> = OnceCell::new();
-
-/// 1. Creates all directories for the path if they don't exist
-/// 2. writes a test file to see if the app has write permission
-/// 3. deletes the file to clean up and check delete permission
-fn ensure_cache_dir_permissions(path: &Path) -> std::io::Result<()> {
-    // Ensure directory exists
-    fs::create_dir_all(path)?;
-
-    // Attempt to create a temp file
-    let test_file = path.join(".cache_permission_test");
-    fs::write(&test_file, b"test")?;
-
-    // Attempt to delete it
-    fs::remove_file(&test_file)?;
-    Ok(())
-}
 
 pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Send + 'static>(
     request: Request<IN>,
@@ -51,49 +33,48 @@ pub fn fetch<IN: Serialize + Send + 'static, OUT: for<'de> Deserialize<'de> + Se
         Err(error) => return future::err(EnvError::Fetch(error.to_string())).boxed_env(),
     };
 
-    let fut = async {
-        // should always be set as we set it on initializeNative
-        let client = CACHE_DIR.get().cloned().flatten().and_then(|cache_dir| {
-            let cacache_path = PathBuf::from(cache_dir);
+    let client = match env::var("TMPDIR") {
+        Ok(tmpdir) => {
+            CLIENT_WITH_CACHE.get_or_init(|| {
+                let tmpdir_path = PathBuf::from(tmpdir);
+                let cacache_path = tmpdir_path.join("http-cacache");
+                let connection_timeout = Duration::from_secs(30);
 
-            match ensure_cache_dir_permissions(&cacache_path) {
-                Ok(_) => {
-
-                    let cacache_manager = CACacheManager { path: cacache_path.clone() };
-
-                    Some(CLIENT_WITH_CACHE.get_or_init(|| {
-                        let connection_timeout = Duration::from_secs(30);
-
-                        tracing::info!(cacache_path = %cacache_path.display(), ?connection_timeout, "Client CACache middleware will be initialized...");
-                        ClientBuilder::new(
-                            Client::builder()
-                                .connect_timeout(connection_timeout)
-                                .use_rustls_tls()
-                                .build()
-                                .unwrap_or_default(),
-                        )
-                        .with(Cache(HttpCache {
-                            mode: CacheMode::Default,
-                            manager: cacache_manager,
-                            options: HttpCacheOptions::default(),
-                        }))
-                        .build()
-                    }))
-                },
-                Err(_) => None,
-            }
-            }).unwrap_or_else(|| { CLIENT_WITHOUT_CACHE.get_or_init(|| {
+                tracing::info!(tmpdir_path = %tmpdir_path.display(), cacache_path = %cacache_path.display(), ?connection_timeout, "Client Cacache middleware will be initialized...");
                 ClientBuilder::new(
                     Client::builder()
-                        .connect_timeout(Duration::from_secs(30))
+                        .connect_timeout(connection_timeout)
                         .use_rustls_tls()
                         .build()
                         .unwrap_or_default(),
                 )
+                .with(Cache(HttpCache::<CACacheManager> {
+                    mode: CacheMode::Default,
+                    manager: CACacheManager {
+                        path: cacache_path,
+                    },
+                    options: HttpCacheOptions::default(),
+                }))
                 .build()
             })
-        });
+        }
+        Err(err) => CLIENT_WITHOUT_CACHE.get_or_init(|| {
+            // we log the error only once when initializing the Client.
+            if let VarError::NotUnicode(_) = &err {
+                tracing::error!(?err, "TMPDIR env. variable is not a valid Unicode, no Client Cacache middleware will be used");
+            }
+            ClientBuilder::new(
+                Client::builder()
+                    .connect_timeout(Duration::from_secs(30))
+                    .use_rustls_tls()
+                    .build()
+                    .unwrap_or_default(),
+            )
+            .build()
+        })
+    };
 
+    let fut = async {
         let resp = client
             .execute(request)
             .map_err(|error| EnvError::Fetch(error.to_string()))
