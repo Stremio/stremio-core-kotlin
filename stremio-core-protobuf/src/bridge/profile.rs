@@ -102,6 +102,7 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             send_crash_reports: self.send_crash_reports,
             quit_on_close: self.quit_on_close,
             gamepad_support: self.gamepad_support,
+            ass_subtitles_styling: self.ass_subtitles_styling,
         }
     }
 }
@@ -218,6 +219,7 @@ impl ToProtobuf<types::profile::Settings, ()> for Settings {
             send_crash_reports: self.send_crash_reports,
             quit_on_close: self.quit_on_close,
             gamepad_support: self.gamepad_support,
+            ass_subtitles_styling: self.ass_subtitles_styling,
         }
     }
 }
