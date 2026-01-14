@@ -44,6 +44,7 @@ message Profile {
     required bool server_in_foreground = 30;
     required bool quit_on_close = 31;
     required bool gamepad_support = 32;
+    required bool ass_subtitles_styling = 33;
   }
 
   enum FrameRateMatchingStrategy {
