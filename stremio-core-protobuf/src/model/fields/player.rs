@@ -215,6 +215,9 @@ impl ToProtobuf<models::Player, (&Ctx, &StreamingServer)> for Player {
             library_item: self.library_item.to_protobuf::<E>(&(*ctx, None)),
             stream_state: self.stream_state.to_protobuf::<E>(&()),
             intro_outro: self.intro_outro.to_protobuf::<E>(&()),
+            stream: self
+                .stream
+                .to_protobuf::<E>(&(&ctx.profile.settings, streaming_server.base_url.as_ref())),
         }
     }
 }
