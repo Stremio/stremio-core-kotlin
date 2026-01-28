@@ -14,8 +14,10 @@ use stremio_core::{
         addon::{Descriptor, ResourcePath, ResourceRequest},
         api::{GetModalResponse, GetNotificationResponse, LinkAuthKey, LinkCodeResponse},
         library::LibraryItem,
-        resource::{MetaItem, MetaItemPreview, Stream, Subtitles},
-        streaming_server::{Settings, Statistics},
+        profile::Settings,
+        resource::{MetaItem, MetaItemPreview, Stream, StreamUrls, Subtitles},
+        streaming_server::{Settings as ServerSettings, Statistics},
+        streams::ConvertedStreamSource,
         watched_bitfield::WatchedBitField,
     },
 };
@@ -195,7 +197,7 @@ impl ToProtobuf<models::loadable_subtitles::Content, Option<&String>>
     }
 }
 
-impl ToProtobuf<models::LoadableSettings, ()> for Loadable<Settings, EnvError> {
+impl ToProtobuf<models::LoadableSettings, ()> for Loadable<ServerSettings, EnvError> {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
         _args: &(),
@@ -210,6 +212,32 @@ impl ToProtobuf<models::LoadableSettings, ()> for Loadable<Settings, EnvError> {
             Loadable::Loading => models::loadable_settings::Content::Loading(models::Loading {}),
         };
         models::LoadableSettings {
+            content: Some(content),
+        }
+    }
+}
+
+impl ToProtobuf<models::LoadableConvertedStream, (&Settings, Option<&Url>)>
+    for Loadable<(StreamUrls, Stream<ConvertedStreamSource>), EnvError>
+{
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        (settings, streaming_server_url): &(&Settings, Option<&Url>),
+    ) -> models::LoadableConvertedStream {
+        let content = match &self {
+            Loadable::Ready((_, stream)) => models::loadable_converted_stream::Content::Ready(
+                stream.to_protobuf::<E>(&(settings, *streaming_server_url)),
+            ),
+            Loadable::Err(error) => {
+                models::loadable_converted_stream::Content::Error(models::Error {
+                    message: error.to_string(),
+                })
+            }
+            Loadable::Loading => {
+                models::loadable_converted_stream::Content::Loading(models::Loading {})
+            }
+        };
+        models::LoadableConvertedStream {
             content: Some(content),
         }
     }

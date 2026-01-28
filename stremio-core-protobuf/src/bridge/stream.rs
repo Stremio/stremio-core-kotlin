@@ -1,10 +1,13 @@
 use hex::FromHex;
 use stremio_core::deep_links::StreamDeepLinks;
 use stremio_core::models::ctx::Ctx;
+use stremio_core::runtime::Env;
 use stremio_core::types::addon::ResourceRequest;
+use stremio_core::types::profile::Settings;
 use stremio_core::types::resource::{
     ArchiveUrl, Stream, StreamBehaviorHints, StreamProxyHeaders, StreamSource,
 };
+use stremio_core::types::streams::ConvertedStreamSource;
 use url::Url;
 
 use crate::bridge::{FromProtobuf, ToProtobuf};
@@ -192,6 +195,49 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
     }
 }
 
+impl ToProtobuf<types::stream::Source, ()> for ConvertedStreamSource {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::stream::Source {
+        match self {
+            ConvertedStreamSource::Url { url } => types::stream::Source::Url(types::stream::Url {
+                url: url.to_string(),
+            }),
+            ConvertedStreamSource::YouTube { yt_id, .. } => {
+                types::stream::Source::YouTube(types::stream::YouTube {
+                    yt_id: yt_id.to_string(),
+                })
+            }
+            ConvertedStreamSource::Torrent {
+                info_hash,
+                file_idx,
+                announce,
+                file_must_include,
+                ..
+            } => types::stream::Source::Tramvai(types::stream::Tramvai {
+                info_hash: hex::encode(info_hash),
+                file_idx: file_idx.map(|idx| idx as i32),
+                announce: announce.clone(),
+                file_must_include: file_must_include.to_owned(),
+            }),
+            ConvertedStreamSource::PlayerFrame { player_frame_url } => {
+                types::stream::Source::PlayerFrame(types::stream::PlayerFrame {
+                    player_frame_url: player_frame_url.to_string(),
+                })
+            }
+            ConvertedStreamSource::External {
+                external_url,
+                android_tv_url,
+                ..
+            } => types::stream::Source::External(types::stream::External {
+                external_url: external_url.to_protobuf::<E>(&()),
+                android_tv_url: android_tv_url.to_protobuf::<E>(&()),
+            }),
+        }
+    }
+}
+
 impl ToProtobuf<types::StreamProxyHeaders, ()> for StreamProxyHeaders {
     fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
         &self,
@@ -260,22 +306,7 @@ impl
                 video_hash: self.behavior_hints.video_hash.to_owned(),
                 video_size: self.behavior_hints.video_size,
             },
-            deep_links: types::StreamDeepLinks {
-                player: deep_links.player,
-                external_player: types::stream_deep_links::ExternalPlayerLink {
-                    download: deep_links.external_player.download,
-                    streaming: deep_links.external_player.streaming,
-                    open_player: deep_links
-                        .external_player
-                        .open_player
-                        .as_ref()
-                        .map(|core_op| types::stream_deep_links::OpenPlayerLink {
-                            ios: core_op.ios.clone(),
-                            macos: core_op.macos.clone(),
-                            visionos: core_op.visionos.clone(),
-                        }),
-                },
-            },
+            deep_links: deep_links.to_protobuf::<E>(&()),
             source: Some(self.source.to_protobuf::<E>(&())),
         }
     }
@@ -298,6 +329,61 @@ impl FromProtobuf<ArchiveUrl> for types::stream::ArchiveUrl {
         ArchiveUrl {
             url: self.url.from_protobuf(),
             bytes: self.bytes,
+        }
+    }
+}
+
+impl ToProtobuf<types::Stream, (&Settings, Option<&Url>)> for Stream<ConvertedStreamSource> {
+    fn to_protobuf<E: Env + 'static>(
+        &self,
+        (settings, streaming_server_url): &(&Settings, Option<&Url>),
+    ) -> types::Stream {
+        let deep_links = StreamDeepLinks::from((self, *streaming_server_url, *settings));
+
+        types::Stream {
+            name: self.name.to_owned(),
+            description: self.description.to_owned(),
+            thumbnail: self.thumbnail.to_owned(),
+            subtitles: self.subtitles.to_protobuf::<E>(&(None)),
+            behavior_hints: self.behavior_hints.to_protobuf::<E>(&()),
+            source: Some(self.source.to_protobuf::<E>(&())),
+            deep_links: deep_links.to_protobuf::<E>(&()),
+        }
+    }
+}
+
+impl ToProtobuf<types::StreamBehaviorHints, ()> for StreamBehaviorHints {
+    fn to_protobuf<E: stremio_core::runtime::Env + 'static>(
+        &self,
+        _args: &(),
+    ) -> types::StreamBehaviorHints {
+        types::StreamBehaviorHints {
+            not_web_ready: self.not_web_ready,
+            binge_group: self.binge_group.to_owned(),
+            country_whitelist: self.country_whitelist.to_owned().unwrap_or_default(),
+            proxy_headers: self.proxy_headers.to_protobuf::<E>(&()),
+            filename: self.filename.to_owned(),
+            video_hash: self.video_hash.to_owned(),
+            video_size: self.video_size,
+        }
+    }
+}
+
+impl ToProtobuf<types::StreamDeepLinks, ()> for StreamDeepLinks {
+    fn to_protobuf<E: Env + 'static>(&self, _args: &()) -> types::StreamDeepLinks {
+        types::StreamDeepLinks {
+            player: self.player.to_owned(),
+            external_player: types::stream_deep_links::ExternalPlayerLink {
+                download: self.external_player.download.to_owned(),
+                streaming: self.external_player.streaming.to_owned(),
+                open_player: self.external_player.open_player.as_ref().map(|core_op| {
+                    types::stream_deep_links::OpenPlayerLink {
+                        ios: core_op.ios.clone(),
+                        macos: core_op.macos.clone(),
+                        visionos: core_op.visionos.clone(),
+                    }
+                }),
+            },
         }
     }
 }
