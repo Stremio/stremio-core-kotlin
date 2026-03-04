@@ -397,6 +397,7 @@ impl ToProtobuf<types::StreamDeepLinks, ()> for StreamDeepLinks {
                         ios: core_op.ios.clone(),
                         macos: core_op.macos.clone(),
                         visionos: core_op.visionos.clone(),
+                        tvos: core_op.tvos.clone()
                     }
                 }),
             },
