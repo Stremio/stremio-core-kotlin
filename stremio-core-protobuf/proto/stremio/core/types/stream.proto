@@ -121,5 +121,6 @@ message StreamDeepLinks {
     optional string ios = 1;
     optional string macos = 2;
     optional string visionos = 3;
+    optional string tvos = 4;
   }
 }
