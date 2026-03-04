@@ -173,6 +173,7 @@ impl ToProtobuf<types::VideoDeepLinks, ()> for VideoDeepLinks {
                             ios: core_op.ios.clone(),
                             macos: core_op.macos.clone(),
                             visionos: core_op.visionos.clone(),
+                            tvos: core_op.tvos.clone(),
                         })
                 }),
             },
