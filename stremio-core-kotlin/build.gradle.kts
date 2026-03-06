@@ -74,6 +74,10 @@ android {
     }
   }
 
+  packagingOptions {
+    doNotStrip += setOf("**/*.so")
+  }
+
   packaging {
     resources {
       excludes += "**/*.proto"
