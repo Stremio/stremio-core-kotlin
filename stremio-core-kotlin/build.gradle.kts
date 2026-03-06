@@ -12,7 +12,7 @@ allprojects {
 
 plugins {
   kotlin("multiplatform") version "1.9.25"
-  id("org.mozilla.rust-android-gradle.rust-android") version "0.9.4"
+  id("org.mozilla.rust-android-gradle.rust-android") version "0.9.6"
   id("com.google.protobuf") version "0.9.4"
   id("com.android.library") version "8.5.2"
   id("maven-publish")
