@@ -4,7 +4,10 @@ use url::Url;
 
 impl FromProtobuf<Url> for String {
     fn from_protobuf(&self) -> Url {
-        Url::parse(self).expect("url parse failed")
+        match Url::parse(self) {
+            Ok(url) => url,
+            _ => Url::parse("https://stremio.com/malformed").expect("Failed to parse url"),
+        }
     }
 }
 
