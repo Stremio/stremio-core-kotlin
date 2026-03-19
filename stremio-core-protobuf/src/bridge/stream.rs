@@ -64,7 +64,8 @@ impl FromProtobuf<StreamSource> for types::stream::Source {
                 file_must_include: source.file_must_include.to_owned(),
             },
             types::stream::Source::Nzb(source) => StreamSource::Nzb {
-                nzb_url: source.nzb_url.from_protobuf(),
+                url: source.nzb_url.from_protobuf(),
+                urls: source.nzb_urls.from_protobuf(),
                 servers: source.servers.from_protobuf(),
             },
         }
@@ -185,9 +186,10 @@ impl ToProtobuf<types::stream::Source, ()> for StreamSource {
                 file_idx: file_idx.map(|idx| idx as i32),
                 file_must_include: file_must_include.to_owned(),
             }),
-            StreamSource::Nzb { nzb_url, servers } => {
+            StreamSource::Nzb { url, urls, servers } => {
                 types::stream::Source::Nzb(types::stream::Nzb {
-                    nzb_url: nzb_url.to_protobuf::<E>(&()),
+                    nzb_url: url.to_protobuf::<E>(&()),
+                    nzb_urls: urls.to_protobuf::<E>(&()),
                     servers: servers.to_protobuf::<E>(&()),
                 })
             }

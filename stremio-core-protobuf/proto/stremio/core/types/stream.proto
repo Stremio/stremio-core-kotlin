@@ -82,8 +82,9 @@ message Stream {
   }
 
   message Nzb {
-    required string nzb_url = 1;
-    repeated string servers = 2;
+    optional string nzb_url = 1;
+    repeated string nzb_urls = 2;
+    repeated string servers = 3;
   }
 
   message ArchiveUrl {
