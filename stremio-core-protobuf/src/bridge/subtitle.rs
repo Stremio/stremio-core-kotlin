@@ -9,6 +9,7 @@ impl FromProtobuf<Subtitles> for types::Subtitle {
             id: self.id.clone(),
             lang: self.lang.to_string(),
             url: self.url.from_protobuf(),
+            label: self.label.clone(),
         }
     }
 }
@@ -23,6 +24,7 @@ impl ToProtobuf<types::Subtitle, Option<&String>> for Subtitles {
             lang: self.lang.to_string(),
             url: self.url.to_string(),
             name: addon_name.cloned(),
+            label: self.label.clone(),
         }
     }
 }

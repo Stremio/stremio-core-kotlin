@@ -9,4 +9,5 @@ message Subtitle {
   required string lang = 2;
   required string url = 3;
   optional string name = 4;
+  optional string label = 5;
 }
